@@ -395,30 +395,30 @@ begin
   -- }}}
   ---------------------------------------------------------------------------------------}}}
   -- floating point ---------------------------------------------------------------------------------------{{{
-  float_units_inst: if FLOAT_IMPLEMENT /= 0 generate
-    float_inst: entity float_units port map(
-        float_a => float_a, -- level 9.
-        float_b => float_b, -- level 9.
-        fsub => code_vec(7)(CODE_W-1), -- level 9.
-        code => code_vec(0),  -- level 16.
+  -- float_units_inst: if FLOAT_IMPLEMENT /= 0 generate
+  --   float_inst: entity float_units port map(
+  --       float_a => float_a, -- level 9.
+  --       float_b => float_b, -- level 9.
+  --       fsub => code_vec(7)(CODE_W-1), -- level 9.
+  --       code => code_vec(0),  -- level 16.
 
-        res_float => res_float, -- level MAX_FPU_DELAY+10. (38 if fdiv, 21 if fadd)
-        clk    => clk
-    );
-    process(clk)
-    begin
-      if rising_edge(clk) then
-        res_float_d0 <= res_float; -- @ MAX_FPU_DELAY+11 (39 if fdiv, 22 if fadd)
-        res_float_d1 <= res_float_d0; -- @ MAX_FPU_DELAY+12 (40 if fdiv, 23 if fadd)
-        -- float_ce <= '0';
-        -- for i in 0 to N_REG_BLOCKS-1 loop
-        --   if regBlock_re_vec(1)(i) = '1' then
-        --     float_ce <= '1';
-        --   end if;
-        -- end loop;
-      end if;
-    end process;
-  end generate;
+  --       res_float => res_float, -- level MAX_FPU_DELAY+10. (38 if fdiv, 21 if fadd)
+  --       clk    => clk
+  --   );
+  --   process(clk)
+  --   begin
+  --     if rising_edge(clk) then
+  --       res_float_d0 <= res_float; -- @ MAX_FPU_DELAY+11 (39 if fdiv, 22 if fadd)
+  --       res_float_d1 <= res_float_d0; -- @ MAX_FPU_DELAY+12 (40 if fdiv, 23 if fadd)
+  --       -- float_ce <= '0';
+  --       -- for i in 0 to N_REG_BLOCKS-1 loop
+  --       --   if regBlock_re_vec(1)(i) = '1' then
+  --       --     float_ce <= '1';
+  --       --   end if;
+  --       -- end loop;
+  --     end if;
+  --   end process;
+  -- end generate;
   ---------------------------------------------------------------------------------------------------------}}}
   -- branch control ---------------------------------------------------------------------------------------{{{
   process(clk)
