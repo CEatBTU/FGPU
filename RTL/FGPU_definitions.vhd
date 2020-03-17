@@ -7,7 +7,7 @@ use std.textio.all;
 ------------------------------------------------------------------------------------------------- }}}
 package FGPU_definitions is
   -- Begin of Configurable FGPU Parameters ----------------------------------------------------------------{{{
-  constant N_CU_W                         : natural := 0; --0 to 3
+  constant N_CU_W                         : natural := 2; --0 to 3
     -- Bitwidth of # of CUs
 
   constant LMEM_ADDR_W                    : natural := 10;

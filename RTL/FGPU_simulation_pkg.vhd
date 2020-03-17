@@ -8,7 +8,7 @@ use std.textio.all;
 package FGPU_simulation_pkg is
   type kernel_type is ( copy, max_half_atomic, bitonic,  fadd,  median, floydwarshall, fir_char4, add_float, parallelSelection,  mat_mul,  fir,  xcorr,  sum_atomic,  fft_hard,   mul_float,  sobel);
   --                    0     1                 2        3       4       5             6          7           8                   9         10    11      12            13        14          15
-  CONSTANT kernel_name        : kernel_type := fft_hard;
+  CONSTANT kernel_name        : kernel_type := copy;
   -- byte(0), half word(1), word(2)
   CONSTANT COMP_TYPE          : natural := 2;
 
