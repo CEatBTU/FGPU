@@ -1,0 +1,10 @@
+cmake
+ctags
+g++
+gawk
+gcc-multilib
+python
+tar
+wget
+xz-utils
+zlib1g-dev
