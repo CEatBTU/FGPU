@@ -1,0 +1,1 @@
+rm -rf fgpu_vivado*
