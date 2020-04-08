@@ -130,6 +130,7 @@ update_compile_order -fileset sources_1
 #create wrapper
 make_wrapper -files [get_files ./${project_name}.srcs/sources_1/bd/${bd_name}/${bd_name}.bd] -top
 add_files -norecurse ./${project_name}.srcs/sources_1/bd/${bd_name}/hdl/${bd_name}_wrapper.vhd
+set_property top FGPU_bd_wrapper [current_fileset]
 
 #generate bitstream (also runs synthesis and implementation)
 #launch_runs impl_1 -to_step write_bitstream -jobs 48
