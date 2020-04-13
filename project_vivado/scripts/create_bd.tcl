@@ -18,7 +18,7 @@
 ##############################################################################
 
 #create a new block design
-create_bd_design $bd_name
+create_bd_design ${name_bd}
 
 #set IP repository to point to the FGPU's IP location
 set_property ip_repo_paths ${fgpu_ip_dir} [current_project]
@@ -128,8 +128,8 @@ save_bd_design
 update_compile_order -fileset sources_1
 
 #create wrapper
-make_wrapper -files [get_files ./${project_name}.srcs/sources_1/bd/${bd_name}/${bd_name}.bd] -top
-add_files -norecurse ./${project_name}.srcs/sources_1/bd/${bd_name}/hdl/${bd_name}_wrapper.vhd
+make_wrapper -files [get_files ${path_project}/${name_project}.srcs/sources_1/bd/${name_bd}/${name_bd}.bd] -top
+add_files -norecurse ${path_project}/${name_project}.srcs/sources_1/bd/${name_bd}/hdl/${name_bd}_wrapper.vhd
 set_property top FGPU_bd_wrapper [current_fileset]
 
 #generate bitstream (also runs synthesis and implementation)

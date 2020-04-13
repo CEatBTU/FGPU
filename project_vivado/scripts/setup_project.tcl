@@ -18,8 +18,8 @@
 ##############################################################################
 
 # create a project if there isn't one already
-if {[file exists ./${project_name}.xpr] == 0} {
-	create_project -verbose fgpu_vivado -part xc7z045ffg900-2
+if {[file exists ${path_project}/${name_project}.xpr] == 0} {
+	create_project -verbose ${name_project} ${path_project}
 }
 
 set_property board_part ${board_part} [current_project]
