@@ -34,6 +34,10 @@ set name_project "fgpu"
 set path_project "${path_repository}/project_vivado/${name_project}"
 set fgpu_ip_dir "${path_project}/${name_project}.ip_user_files/FGPU"
 
+# Choose one
+set OS "linux"
+#set OS "win"
+
 set target_board "ZC706"
 
 set num_threads 8
@@ -41,7 +45,10 @@ set num_threads 8
 set FREQ        100
 set name_bd     "FGPU_bd"
 
+# PATH to the ModelSim installation. Will look like this in Windows:
 set path_modelsim "C:/modeltech64_2020.1/win64"
+# and like this in linux:
+# set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###
