@@ -1,13 +1,20 @@
-# Vivado Project Folder
+# Vivado project with FGPU
 
-The files inside the `scripts/` directory to set everything up.
+It is possible to automatically:
+* create / start FGPU project;
+* compile Vivado libraries / compile RTL files / start behavioral simulation;
+* perform synthesis / package FGPU IP / generate IPs for FPGA board;
+* configure FGPU desing by including / excluding FPU
+by using the provided scripts.
 
-## Instructions
+## Usage
 
-1. `cd` into *this* directory and run Vivado from here. Alternatively, launch Vivado and change the directory to this one by using the Tcl Console.
-2. Call the scripts inside the `script/` folder from inside vivado by executing the following commands, in the following order:
-  1. `source scripts/setup_environment.tcl`. This will set up some project variables.
-  2. `source scripts/setup_project.tcl`. This will create the project.
-  3. `source scripts/pack_fgpu_ip.tcl`. This will turn FGPU into an IP package.
-  4. `source scripts/create_bd.tcl`. This will create a block diagram containing the FGPU, the Processing System, the AXI interconnects, the clock generator and so on.
-  5. `source scripts/synthesize.tcl`. This will synthesize the FGPU.
+First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, you **must** specify in this script:
+- the project name (your choice)
+- the project path (your choice)
+- the target board (choose one from the available targets in the `scripts/targets` folder)
+- the PATH of your *ModelSim* installation
+
+Examples of typical *simulation* and *implementation* flows are provided in the `scripts/main.tcl` script. This script can be run by start Vivado in tcl mode by invoking `vivado -mode tcl` or simply using the *Tcl Console* inside Vivado.
+
+After running the scripts, it is desirable to run the command `reset_project`.
