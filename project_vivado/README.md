@@ -10,7 +10,7 @@ by using the provided scripts.
 ## Usage
 
 First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, **it is critical** that one specifies in this script:
-- the operating system (windows or linux)
+- the operating system (windows or linux - that will impact some filenames that are used by these scripts)
 - the project name (your choice)
 - the project path (your choice)
 - the *ModelSim* installation path (use "/" as delimiter, both in windows and in linux)
