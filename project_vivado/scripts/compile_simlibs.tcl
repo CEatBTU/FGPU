@@ -17,24 +17,13 @@
 #
 ##############################################################################
 
-set_property default_lib work [current_project]
-
-# rename the default sim fileset
-if {[get_filesets fgpu_sim] != "fgpu_sim"} {
-	create_fileset -simset -clone_properties sim_1 fgpu_sim
+# Guard clause to ensure everything is properly set up
+if (![info exists set_up_fgpu_environment]) {
+	puts "\[ERROR\] You must first source the setup_environment.tcl script."
+	return
 }
-current_fileset -simset fgpu_sim
-if {[get_filesets sim_1] == "sim_1"} {
-	delete_fileset sim_1
-}
-
-# set simulation properties
-set_property TARGET_SIMULATOR ModelSim [current_project]
-set_property top FGPU_tb [get_fileset fgpu_sim]
-set_property top_file {$rtl_path/FGPU_tb.vhd} [current_fileset]
 
 # compile vivado libraries for simulation (manually override the command to avoid the -novopt option)
-puts "Compiling simulation libraries..."
 config_compile_simlib -cfgopt {modelsim.vhdl.unisim: +acc -source} -simulator modelsim \
 	-cfgopt {modelsim.vhdl.axi_bfm: +acc -source} \
 	-cfgopt {modelsim.vhdl.ieee: +acc -source} \
@@ -48,15 +37,25 @@ config_compile_simlib -cfgopt {modelsim.vhdl.unisim: +acc -source} -simulator mo
 	-cfgopt {modelsim.verilog.simprim: +acc -source} \
 	-cfgopt {modelsim.verilog.vl: +acc -source}
 
-# compile all libraries except secureip (its compilation will result in error due to -novopt option)
-if {[file exists ${path_project}/${name_project}.cache/.cxl.modelsim.lin64.cmd] == 0} {
-	compile_simlib -directory ${path_project}/${name_project}.cache/ -family zynq -library unisim -simulator modelsim -quiet
-    # compile secureip library manually as -novopt option cannot be disabled for this library by using previous command
+if { ${OS} == "linux" && [file exists ${path_modelsim_libs}/.cxl.modelsim.lin64.cmd]} {
+	puts "ModelSim simulation libraries already available in \"${path_modelsim_libs}\"."
+	return
+} elseif { ${OS} == "windows" && [file exists ${path_modelsim_libs}/.cxl.modelsim.nt64.cmd]} {
+	puts "ModelSim simulation libraries already available in \"${path_modelsim_libs}\"."
+	return
+}
 
+if {[file exists ${path_modelsim_libs}/.cxl.modelsim.lin64.cmd] == 0} {
+	puts "Compiling simulation libraries for ModelSim..."
+	puts "This may take a while..."
+	# compile all libraries except secureip (its compilation will result in error due to -novopt option)
+	compile_simlib -directory ${path_modelsim_libs} -family zynq -library unisim -simulator modelsim -simulator_exec_path ${path_modelsim}
+
+	# as said, "secureip" lib will fail and must be manually compiled:
     if { ${OS} == "linux" } {
-		exec ${path_modelsim}/vlog -source +acc -64 -work secureip -f ${path_project}/${name_project}.cache/secureip/.cxl.verilog.secureip.secureip.lin64.cmf
+		exec ${path_modelsim}/vlog -source +acc -64 -work secureip -f ${path_modelsim_libs}/secureip/.cxl.verilog.secureip.secureip.lin64.cmf
 	} elseif { ${OS} == "windows" } {
-		exec ${path_modelsim}/vlog -source +acc -64 -work secureip -f ${path_project}/${name_project}.cache/secureip/.cxl.verilog.secureip.secureip.nt64.cmf
+		exec ${path_modelsim}/vlog -source +acc -64 -work secureip -f ${path_modelsim_libs}/secureip/.cxl.verilog.secureip.secureip.nt64.cmf
 	}
 	puts "Done!"
 }

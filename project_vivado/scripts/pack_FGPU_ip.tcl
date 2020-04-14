@@ -17,7 +17,15 @@
 #
 ##############################################################################
 
+# Guard clause to ensure everything is properly set up
+if (![info exists set_up_fgpu_environment]) {
+	puts "\[ERROR\] You must first source the setup_environment.tcl script."
+	return
+}
+
 set_property top FGPU_v2_1 [current_fileset]
+set_property file_type {VHDL} [get_files *.vhd]
+puts "Project files set to VHDL (no-2008) to make the IP packager happy."
 
 #launch ip packager to pack the current project
 ipx::package_project -root_dir ${fgpu_ip_dir} -vendor user.org -library user -taxonomy /UserIP -import_files -set_current false

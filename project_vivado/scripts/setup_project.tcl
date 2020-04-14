@@ -17,16 +17,35 @@
 #
 ##############################################################################
 
-# create a project if there isn't one already
+# Guard clause to ensure everything is properly set up
+if (![info exists set_up_fgpu_environment]) {
+	puts "\[ERROR\] You must first source the setup_environment.tcl script."
+	return
+}
+
 if {[file exists ${path_project}/${name_project}.xpr] == 0} {
 	create_project -verbose ${name_project} ${path_project}
+	puts "Creating project ..."
+} elseif {[catch {current_project} result]} {
+	open_project -verbose ${path_project}/${name_project}
+	puts "Opening project ..."
+# if it exists and it is opened, do nothing
+} else {
+	puts "Project is already open."
+	#close_project
+	#open_project -verbose ${path_project}/${name_project}
 }
+puts "- Project Name: ${name_project}"
+puts "- Project Path: ${path_project}"		
 
 set_property board_part ${board_part} [current_project]
 set_property target_language VHDL [current_project]
+set_property default_lib work [current_project]
+set_property TARGET_SIMULATOR ModelSim [current_project]
 
 #read the files in normal VHDL mode
-read_vhdl -verbose $vhdl_files 
+read_vhdl -verbose -library work -vhdl2008 ${files_vhdl}
 
 #read the memory files
-read_mem  -verbose $mif_files
+read_mem  -verbose ${files_mif}
+

@@ -17,6 +17,12 @@
 #
 ##############################################################################
 
+# Guard clause to ensure everything is properly set up
+if (![info exists set_up_fgpu_environment]) {
+  puts "\[ERROR\] You must first source the setup_environment.tcl script."
+  return
+}
+
 #create a new block design
 create_bd_design ${name_bd}
 
