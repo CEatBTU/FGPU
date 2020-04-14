@@ -17,6 +17,14 @@
 #
 ##############################################################################
 
+
+
+
+
+##############################################################################
+########################## BEGIN DON'T TOUCH #################################
+##############################################################################
+
 # Guard clause to prevent this script from running twice
 if ([info exists set_up_fgpu_environment]) {
 	puts "File [file tail [info script]] has already been sourced."
@@ -24,40 +32,47 @@ if ([info exists set_up_fgpu_environment]) {
 	return
 }
 
-##############################################################################
-########### These two lines must come on top and are used to determine #######
-########### the absolute path where these scripts and the repository   #######
-########### are located.                                               #######
-##############################################################################
-
+# These two lines must come on top and are used to determine the absolute 
+# path where these scripts and the repository are located.
 set path_tclscripts [file normalize "[info script]/../"]
 set path_repository [file normalize "${path_tclscripts}/../../"]
+
+##############################################################################
+############################ END DON'T TOUCH #################################
+##############################################################################
+
+
+
+
 
 ##############################################################################
 ########### Modify the variables below according to your setup ###############
 ##############################################################################
 
-set name_project "fgpu"
-set path_project "${path_repository}/project_vivado/${name_project}"
-set fgpu_ip_dir "${path_project}/${name_project}.ip_user_files/FGPU"
-
 # Choose one
 #set OS "linux"
 set OS "windows"
 
-set target_board "ZC706"
-
-set num_threads 8
-
-set FREQ        100
-set name_bd     "FGPU_bd"
+set name_project "fgpu"
+set path_project "${path_repository}/project_vivado/${name_project}"
 
 # PATH to the ModelSim installation. Will look like this in Windows:
 set path_modelsim "C:/modeltech64_2020.1/win64"
 # and like this in linux:
 # set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
-set path_modelsim_libs "${path_project}/${name_project}/compile_simlib/modelsim"
+# The number of threads with which to run simulation, synthesis and impl.
+set num_threads 8
+
+
+
+
+# Set the target board
+set target_board "ZC706"
+# The target frequency for implementation
+set FREQ        100
+
+
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###
@@ -71,9 +86,17 @@ set ip_ps_ver "5.5"
 # For Vivado 2018.3
 set ip_clk_wiz_v "5.4"
 
+
+
+
 ##############################################################################
 ########### Variables below "should" not require modification ################
 ##############################################################################
+
+set name_bd     "FGPU_bd"
+
+set path_fgpu_ip       "${path_project}/${name_project}.ip_user_files/FGPU"
+set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/modelsim"
 
 set path_rtl "${path_repository}/RTL"
 set path_fpu "${path_rtl}/floating_point"

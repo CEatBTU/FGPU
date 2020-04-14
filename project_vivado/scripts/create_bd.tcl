@@ -27,7 +27,7 @@ if (![info exists set_up_fgpu_environment]) {
 create_bd_design ${name_bd}
 
 #set IP repository to point to the FGPU's IP location
-set_property ip_repo_paths ${fgpu_ip_dir} [current_project]
+set_property ip_repo_paths ${path_fgpu_ip} [current_project]
 update_ip_catalog
 
 #add a ZYNQ PS

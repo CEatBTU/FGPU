@@ -1,8 +1,8 @@
 # change the paths to project and RTL files !
 
 # Choose between "implement" and "simulate"
-set action "implement"
-#set action "simulate"
+#set action "implement"
+set action "simulate"
 
 set path_thiscript [file normalize "[info script]/../"]
 source "${path_thiscript}/setup_environment.tcl"

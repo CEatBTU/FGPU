@@ -28,11 +28,11 @@ set_property file_type {VHDL} [get_files *.vhd]
 puts "Project files set to VHDL (no-2008) to make the IP packager happy."
 
 #launch ip packager to pack the current project
-ipx::package_project -root_dir ${fgpu_ip_dir} -vendor user.org -library user -taxonomy /UserIP -import_files -set_current false
+ipx::package_project -root_dir ${path_fgpu_ip} -vendor user.org -library user -taxonomy /UserIP -import_files -set_current false
 ipx::unload_core IPs/component.xml
 
 #set a temporary project for the IP packing and pack automatically
-ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory ${fgpu_ip_dir} ${fgpu_ip_dir}/component.xml
+ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory ${path_fgpu_ip} ${path_fgpu_ip}/component.xml
 
 #set the revision and be ready to pack
 set_property core_revision 2 [ipx::current_core]
@@ -46,5 +46,5 @@ ipx::save_core [ipx::current_core]
 close_project -delete
 
 #add the new IP to the IP's pository
-set_property  ip_repo_paths ${fgpu_ip_dir} [current_project]
+set_property  ip_repo_paths ${path_fgpu_ip} [current_project]
 update_ip_catalog

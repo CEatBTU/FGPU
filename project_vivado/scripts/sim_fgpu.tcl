@@ -27,17 +27,18 @@ if (![info exists set_up_fgpu_environment]) {
 if {[get_filesets fgpu_sim] != "fgpu_sim"} {
 	create_fileset -simset -clone_properties sim_1 fgpu_sim
 }
-
 current_fileset -simset fgpu_sim
 if {[get_filesets sim_1] == "sim_1"} {
 	delete_fileset sim_1
 }
 
 # set simulation properties
-set_property top FGPU_tb [get_fileset fgpu_sim]
-set_property top_file "${path_rtl}/FGPU_tb.vhd" [current_fileset]
-set_property file_type {VHDL 2008} [get_files *.vhd]
+set_property top FGPU_tb [get_filesets fgpu_sim]
+set_property top_file "${path_rtl}/FGPU_tb.vhd" [get_filesets fgpu_sim]
+
+# Some VHDL-2008 features are present in the code
+set_property file_type {VHDL 2008} [get_filesets fgpu_sim]
 
 # Launching simulation
 puts "Starting simulation..."
-launch_simulation -mode behavioral -install_path ${path_modelsim}
+launch_simulation -mode behavioral -simset fgpu_sim -install_path ${path_modelsim}

@@ -9,12 +9,14 @@ by using the provided scripts.
 
 ## Usage
 
-First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, you **must** specify in this script:
+First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, **it is critical** that one specifies in this script:
+- the operating system (windows or linux)
 - the project name (your choice)
 - the project path (your choice)
+- the *ModelSim* installation path (use "/" as delimiter, both in windows and in linux)
+
+Additionally, this same script also allows selecting:
 - the target board (choose one from the available targets in the `scripts/targets` folder)
-- the PATH of your *ModelSim* installation
+- the desired clock frequency
 
 Examples of typical *simulation* and *implementation* flows are provided in the `scripts/main.tcl` script. This script can be run by start Vivado in tcl mode by invoking `vivado -mode tcl` or simply using the *Tcl Console* inside Vivado.
-
-After running the scripts, it is desirable to run the command `reset_project`.

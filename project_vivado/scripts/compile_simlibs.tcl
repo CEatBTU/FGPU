@@ -48,8 +48,12 @@ if { ${OS} == "linux" && [file exists ${path_modelsim_libs}/.cxl.modelsim.lin64.
 if {[file exists ${path_modelsim_libs}/.cxl.modelsim.lin64.cmd] == 0} {
 	puts "Compiling simulation libraries for ModelSim..."
 	puts "This may take a while..."
-	# compile all libraries except secureip (its compilation will result in error due to -novopt option)
-	compile_simlib -directory ${path_modelsim_libs} -family zynq -library unisim -simulator modelsim -simulator_exec_path ${path_modelsim}
+	
+	# compile all libraries except secureip (its compilation will result in error due to -novopt option) 
+	# hence, we use the catch statement to prevent the error from blocking the further evaluation of this script
+	catch { compile_simlib -directory ${path_modelsim_libs} -family zynq -library unisim -simulator modelsim -simulator_exec_path ${path_modelsim} }
+	puts "It is possible that compile_simlib failed to compile for modelsim with 1 errors."
+	puts "If that is the case, don't worry: we will compile the secureip library manually now."
 
 	# as said, "secureip" lib will fail and must be manually compiled:
     if { ${OS} == "linux" } {
