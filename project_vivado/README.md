@@ -10,6 +10,7 @@ by using the provided scripts.
 ## Usage
 
 First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, you **must** specify in this script:
+- your operating system (windows or linux - that impacts some filenames that are used by these scripts)
 - the project name (your choice)
 - the project path (your choice)
 - the target board (choose one from the available targets in the `scripts/targets` folder)
