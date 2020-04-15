@@ -139,6 +139,7 @@ set files_fpu [list \
 	${path_fpu}/fdiv.vhd \
 	${path_fpu}/fmul.vhd \
 	${path_fpu}/fsqrt.vhd \
+	${path_fpu}/frsqrt.vhd \
 	${path_fpu}/fslt.vhd \
 	${path_fpu}/fsqrt.vhd \
 	${path_fpu}/uitofp.vhd \
