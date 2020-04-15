@@ -110,6 +110,7 @@ set files_vhdl [list \
 	${path_rtl}/mult_add_sub.vhd \
 	${path_rtl}/regFile.vhd \
 	${path_rtl}/ALU.vhd \
+	${path_rtl}/float_units.vhd \
 	${path_rtl}/CV.vhd \
 	${path_rtl}/CU_instruction_dispatcher.vhd \
 	${path_rtl}/CU_scheduler.vhd \
@@ -161,3 +162,4 @@ if {[file exists ${path_project}] != 0} {
 }
 
 set set_up_fgpu_environment true
+
