@@ -135,6 +135,14 @@ set files_mif [list \
 	${path_rtl}/krnl_ram.mif]
 
 set files_fpu [list \
+	${path_fpu}/fadd_fsub.vhd \
+	${path_fpu}/fdiv.vhd \
+	${path_fpu}/fmul.vhd \
+	${path_fpu}/fsqrt.vhd \
+	${path_fpu}/fslt.vhd \
+	${path_fpu}/fsqrt.vhd \
+	${path_fpu}/uitofp.vhd \
+	\
 	${path_fpu}/xbip_utils_v3_0_6/hdl/xbip_utils_v3_0_vh_rfs.vhd \
 	${path_fpu}/axi_utils_v2_0_2/hdl/axi_utils_v2_0_vh_rfs.vhd \
 	${path_fpu}/xbip_pipe_v3_0_2/hdl/xbip_pipe_v3_0_vh_rfs.vhd \
