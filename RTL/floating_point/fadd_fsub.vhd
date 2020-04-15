@@ -53,8 +53,8 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-LIBRARY floating_point_v7_1_2;
-USE floating_point_v7_1_2.floating_point_v7_1_2;
+LIBRARY floating_point_v7_1_4;
+USE floating_point_v7_1_4.floating_point_v7_1_4;
 
 ENTITY fadd_fsub IS
   PORT (
@@ -73,7 +73,7 @@ END fadd_fsub;
 ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
   ATTRIBUTE DowngradeIPIdentifiedWarnings : STRING;
   ATTRIBUTE DowngradeIPIdentifiedWarnings OF fadd_fsub_arch: ARCHITECTURE IS "yes";
-  COMPONENT floating_point_v7_1_2 IS
+  COMPONENT floating_point_v7_1_4 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
       C_HAS_ADD : INTEGER;
@@ -176,7 +176,7 @@ ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
       m_axis_result_tuser : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
       m_axis_result_tlast : OUT STD_LOGIC
     );
-  END COMPONENT floating_point_v7_1_2;
+  END COMPONENT floating_point_v7_1_4;
   ATTRIBUTE X_INTERFACE_INFO : STRING;
   ATTRIBUTE X_INTERFACE_INFO OF aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 aclk_intf CLK";
   ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TVALID";
@@ -188,7 +188,7 @@ ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TVALID";
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TDATA";
 BEGIN
-  U0 : floating_point_v7_1_2
+  U0 : floating_point_v7_1_4
     GENERIC MAP (
       C_XDEVICEFAMILY => "zynq",
       C_HAS_ADD => 1,
