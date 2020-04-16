@@ -5,8 +5,8 @@ use IEEE.NUMERIC_STD.ALL;
 library work;
 use work.all;
 use work.FGPU_definitions.all;
---library xil_defaultlib; -- necessray for synthesis
---use xil_defaultlib.all;
+library xil_defaultlib; -- necessray for synthesis
+use xil_defaultlib.all;
 ---------------------------------------------------------------------------------------------------------}}}
 entity float_units is -- {{{
 port(

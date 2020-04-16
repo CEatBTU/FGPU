@@ -40,13 +40,24 @@ puts "- Project Path: ${path_project}"
 
 set_property board_part ${board_part} [current_project]
 set_property target_language VHDL [current_project]
-set_property default_lib work [current_project]
-set_property TARGET_SIMULATOR ModelSim [current_project]
 
-#read the files in normal VHDL mode
-read_vhdl -verbose -library work -vhdl2008 ${files_vhdl}
-read_vhdl -verbose -library work -vhdl2008 ${files_fpu}
+if {${action} == "simulate"} {
+    set_property default_lib work [current_project]
+    set_property TARGET_SIMULATOR ModelSim [current_project]
 
-#read the memory files
-read_mem  -verbose ${files_mif}
+    #read the files in normal VHDL mode
+    read_vhdl -verbose -library work -vhdl2008 ${files_vhdl}
+    read_vhdl -verbose -library work -vhdl2008 ${files_fpu}
+
+    #read the memory files
+    read_mem  -verbose ${files_mif}
+}
+
+if {${action} == "generate_IP"} {
+    #read the files in normal VHDL mode
+    read_vhdl -verbose  ${vhdl_files}
+
+    #read the memory files
+    read_mem  -verbose ${files_mif}
+}
 

@@ -50,16 +50,26 @@ set path_repository [file normalize "${path_tclscripts}/../../"]
 ##############################################################################
 
 # Choose one
-#set OS "linux"
-set OS "windows"
+set OS "linux"
+#set OS "windows"
 
-set name_project "fgpu"
+################################################################################
+######                  Do not edit the fgpu_ip name                       #####
+######You may only change the name of the project inside the else statement#####
+################################################################################
+if {${action} == "generate_IP"} {
+    set name_project "fgpu_ip"
+} else {
+    set name_project "fgpu"
+}
+
+
 set path_project "${path_repository}/project_vivado/${name_project}"
 
 # PATH to the ModelSim installation. Will look like this in Windows:
-set path_modelsim "C:/modeltech64_2020.1/win64"
+#set path_modelsim "C:/modeltech64_2020.1/win64"
 # and like this in linux:
-# set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
+set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 # The number of threads with which to run simulation, synthesis and impl.
 set num_threads 8
@@ -95,7 +105,7 @@ set ip_clk_wiz_v "5.4"
 
 set name_bd     "FGPU_bd"
 
-set path_fgpu_ip       "${path_project}/${name_project}.ip_user_files/FGPU"
+set path_fgpu_ip       "${path_repository}/project_vivado/fgpu_ip/fgpu_ip.ip_user_files/FGPU"
 set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/modelsim"
 
 set path_rtl "${path_repository}/RTL"
@@ -159,6 +169,39 @@ set files_fpu [list \
 	${path_fpu}/xbip_dsp48_multadd_v3_0_2/hdl/xbip_dsp48_multadd_v3_0.vhd \
 	${path_fpu}/floating_point_v7_1_2/hdl/floating_point_v7_1_vh_rfs.vhd]
 
+set vhdl_files [list \
+    ${path_rtl}/FGPU_definitions.vhd \
+	${path_rtl}/lmem.vhd \
+	${path_rtl}/rd_cache_fifo.vhd \
+	${path_rtl}/CU_mem_cntrl.vhd \
+	${path_rtl}/DSP48E1.vhd \
+	${path_rtl}/mult_add_sub.vhd \
+	${path_rtl}/regFile.vhd \
+	${path_rtl}/ALU.vhd \
+    ${path_fpu}/fadd_fsub.vhd \
+	${path_fpu}/fdiv.vhd \
+	${path_fpu}/fmul.vhd \
+	${path_fpu}/fsqrt.vhd \
+	${path_fpu}/frsqrt.vhd \
+	${path_fpu}/fslt.vhd \
+	${path_fpu}/fsqrt.vhd \
+	${path_fpu}/uitofp.vhd \
+	${path_rtl}/float_units.vhd \
+	${path_rtl}/CV.vhd \
+	${path_rtl}/CU_instruction_dispatcher.vhd \
+	${path_rtl}/CU_scheduler.vhd \
+	${path_rtl}/RTM.vhd \
+	${path_rtl}/CU.vhd \
+	${path_rtl}/gmem_atomics.vhd \
+	${path_rtl}/gmem_cntrl_tag.vhd \
+	${path_rtl}/axi_controllers.vhd \
+	${path_rtl}/cache.vhd \
+	${path_rtl}/gmem_cntrl.vhd \
+	${path_rtl}/init_alu_en_ram.vhd \
+	${path_rtl}/loc_indcs_generator.vhd \
+	${path_rtl}/WG_dispatcher.vhd \
+	${path_rtl}/FGPU.vhd \
+    ${path_rtl}/FGPU_v2_1.vhd]
 ##############################################################################
 ############################ Commands ########################################
 ##############################################################################

@@ -24,12 +24,12 @@ if (![info exists set_up_fgpu_environment]) {
 }
 
 set_property top FGPU_v2_1 [current_fileset]
-set_property file_type {VHDL} [get_files *.vhd]
+#set_property file_type {VHDL} [get_files *.vhd]
 puts "Project files set to VHDL (no-2008) to make the IP packager happy."
 
 #launch ip packager to pack the current project
 ipx::package_project -root_dir ${path_fgpu_ip} -vendor user.org -library user -taxonomy /UserIP -import_files -set_current false
-ipx::unload_core IPs/component.xml
+ipx::unload_core ${path_fgpu_ip}/component.xml
 
 #set a temporary project for the IP packing and pack automatically
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory ${path_fgpu_ip} ${path_fgpu_ip}/component.xml
