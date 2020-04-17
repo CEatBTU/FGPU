@@ -4,4 +4,6 @@
 llvm-3.7.1.src
 llvm-3.7.1.build
 *.log
-
+project_vivado/*
+!project_vivado/scripts
+!project_vivado/README.md
