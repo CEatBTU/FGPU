@@ -58,7 +58,7 @@ set OS "linux"
 ######You may only change the name of the project inside the else statement#####
 ################################################################################
 if {${action} == "generate_IP"} {
-    set name_project "fgpu_ip"
+    set name_project "fgpu_ip_temp"
 } else {
     set name_project "fgpu"
 }
@@ -105,7 +105,7 @@ set ip_clk_wiz_v "5.4"
 
 set name_bd     "FGPU_bd"
 
-set path_fgpu_ip       "${path_repository}/project_vivado/fgpu_ip/fgpu_ip.ip_user_files/FGPU"
+set path_fgpu_ip       "${path_repository}/project_vivado/fgpu_ip"
 set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/modelsim"
 
 set path_rtl "${path_repository}/RTL"

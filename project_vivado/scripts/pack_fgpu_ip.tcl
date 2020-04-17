@@ -48,3 +48,10 @@ close_project -delete
 #add the new IP to the IP's pository
 set_property  ip_repo_paths ${path_fgpu_ip} [current_project]
 update_ip_catalog
+
+#clean flag for being able to implement direclty
+set set_up_fgpu_environment false
+
+#clean temporal project
+close_project -delete
+file delete -force "${path_repository}/project_vivado/fgpu_ip_temp/"

@@ -88,4 +88,5 @@ Instructions for uitofp.vhd
 5. Go to interface options and inside flow control select: "Nonblocking"
 6. Select Ok and when prompted, select "Generate" to start the OOC synthesis.
 
+For each case, vivado will output two files with the same name. We need the one that weihts less. All these files must be copied into RTL/floating_point of the current repostory.
 
