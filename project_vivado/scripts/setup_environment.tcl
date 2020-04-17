@@ -154,20 +154,20 @@ set files_fpu [list \
 	${path_fpu}/fsqrt.vhd \
 	${path_fpu}/uitofp.vhd \
 	\
-	${path_fpu}/xbip_utils_v3_0_6/hdl/xbip_utils_v3_0_vh_rfs.vhd \
-	${path_fpu}/axi_utils_v2_0_2/hdl/axi_utils_v2_0_vh_rfs.vhd \
-	${path_fpu}/xbip_pipe_v3_0_2/hdl/xbip_pipe_v3_0_vh_rfs.vhd \
-	${path_fpu}/xbip_pipe_v3_0_2/hdl/xbip_pipe_v3_0.vhd \
-	${path_fpu}/mult_gen_v12_0_11/hdl/mult_gen_v12_0_vh_rfs.vhd \
-	${path_fpu}/mult_gen_v12_0_11/hdl/mult_gen_v12_0.vhd \
-	${path_fpu}/xbip_bram18k_v3_0_2/hdl/xbip_bram18k_v3_0_vh_rfs.vhd \
-	${path_fpu}/xbip_bram18k_v3_0_2/hdl/xbip_bram18k_v3_0.vhd \
+	${path_fpu}/xbip_utils_v3_0_7/hdl/xbip_utils_v3_0_vh_rfs.vhd \
+	${path_fpu}/axi_utils_v2_0_3/hdl/axi_utils_v2_0_vh_rfs.vhd \
+	${path_fpu}/xbip_pipe_v3_0_3/hdl/xbip_pipe_v3_0_vh_rfs.vhd \
+	${path_fpu}/xbip_pipe_v3_0_3/hdl/xbip_pipe_v3_0.vhd \
+	${path_fpu}/mult_gen_v12_0_12/hdl/mult_gen_v12_0_vh_rfs.vhd \
+	${path_fpu}/mult_gen_v12_0_12/hdl/mult_gen_v12_0.vhd \
+	${path_fpu}/xbip_bram18k_v3_0_3/hdl/xbip_bram18k_v3_0_vh_rfs.vhd \
+	${path_fpu}/xbip_bram18k_v3_0_3/hdl/xbip_bram18k_v3_0.vhd \
 	${path_fpu}/xbip_dsp48_wrapper_v3_0_4/hdl/xbip_dsp48_wrapper_v3_0_vh_rfs.vhd \
-	${path_fpu}/xbip_dsp48_addsub_v3_0_2/hdl/xbip_dsp48_addsub_v3_0_vh_rfs.vhd \
-	${path_fpu}/xbip_dsp48_addsub_v3_0_2/hdl/xbip_dsp48_addsub_v3_0.vhd \
-	${path_fpu}/xbip_dsp48_multadd_v3_0_2/hdl/xbip_dsp48_multadd_v3_0_vh_rfs.vhd \
-	${path_fpu}/xbip_dsp48_multadd_v3_0_2/hdl/xbip_dsp48_multadd_v3_0.vhd \
-	${path_fpu}/floating_point_v7_1_2/hdl/floating_point_v7_1_vh_rfs.vhd]
+	${path_fpu}/xbip_dsp48_addsub_v3_0_3/hdl/xbip_dsp48_addsub_v3_0_vh_rfs.vhd \
+	${path_fpu}/xbip_dsp48_addsub_v3_0_3/hdl/xbip_dsp48_addsub_v3_0.vhd \
+	${path_fpu}/xbip_dsp48_multadd_v3_0_3/hdl/xbip_dsp48_multadd_v3_0_vh_rfs.vhd \
+	${path_fpu}/xbip_dsp48_multadd_v3_0_3/hdl/xbip_dsp48_multadd_v3_0.vhd \
+	${path_fpu}/floating_point_v7_1_4/hdl/floating_point_v7_1_vh_rfs.vhd]
 
 set vhdl_files [list \
     ${path_rtl}/FGPU_definitions.vhd \
