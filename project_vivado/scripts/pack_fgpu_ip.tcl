@@ -50,7 +50,8 @@ set_property  ip_repo_paths ${path_fgpu_ip} [current_project]
 update_ip_catalog
 
 #clean flag for being able to implement direclty
-set set_up_fgpu_environment false
+#set set_up_fgpu_environment false
+unset set_up_fgpu_environment
 
 #clean temporal project
 close_project -delete
