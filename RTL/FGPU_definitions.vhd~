@@ -7,7 +7,7 @@ use std.textio.all;
 ------------------------------------------------------------------------------------------------- }}}
 package FGPU_definitions is
   -- Begin of Configurable FGPU Parameters ----------------------------------------------------------------{{{
-  constant N_CU_W                         : natural := 1; --0 to 3
+  constant N_CU_W                         : natural := 2; --0 to 3
     -- Bitwidth of # of CUs
 
   constant LMEM_ADDR_W                    : natural := 10;
@@ -22,7 +22,7 @@ package FGPU_definitions is
   constant N_STATIONS_ALU                 : natural := 4;
     -- # stations to store memory requests sourced by a single ALU
 
-  constant ATOMIC_IMPLEMENT               : natural := 1;
+  constant ATOMIC_IMPLEMENT               : natural := 0;
     -- implement global atomic operations
   constant AADD_ATOMIC                    : natural := 1;
   constant AMAX_ATOMIC                    : natural := 1;
@@ -61,7 +61,7 @@ package FGPU_definitions is
       -- bitwidth of # of PEs within a CV (only 3 was tested, i.e. 8 PEs/CU)
 
   -- Floating-point hardware support:
-  constant FLOAT_IMPLEMENT                : natural := 0;
+  constant FLOAT_IMPLEMENT                : natural := 1;
   constant FADD_IMPLEMENT                 : integer := 1;
   constant FMUL_IMPLEMENT                 : integer := 1;
   constant FDIV_IMPLEMENT                 : integer := 1;
