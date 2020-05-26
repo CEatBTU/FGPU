@@ -44,8 +44,8 @@ set path_repository [file normalize "${path_tclscripts}/../../"]
 ##############################################################################
 
 # Choose one
-#set OS "linux"
-set OS "windows"
+set OS "linux"
+#set OS "windows"
 
 ################################################################################
 ######                  Do not edit the fgpu_ip name                       #####
@@ -61,12 +61,12 @@ if {${action} == "generate_IP"} {
 set path_project "${path_repository}/project_vivado/${name_project}"
 
 # PATH to the ModelSim installation. Will look like this in Windows:
-set path_modelsim "C:/modeltech64_2020.1/win64"
+#set path_modelsim "C:/modeltech64_2020.1/win64"
 # and like this in linux:
-#set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
+set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 # The number of threads with which to run simulation, synthesis and impl.
-set num_threads 8
+set num_threads 48
 
 # Set the target board
 set target_board "ZC706"
