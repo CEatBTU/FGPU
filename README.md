@@ -1,22 +1,43 @@
-# FGPU
-FGPU is a soft GPU-like architecture for FPGAs. It can be programmed using OpenCL and can be customized according to application needs.
+FGPU is a soft GPU-like architecture for FPGAs. It is described in VHDL, fully customizable, and can be programmed using OpenCL.
 
-The PYNQ interface of FGPU can be accessed on this [link](https://github.com/malkadi/FGPU_IPython).
+FGPU is currently being developed and maintained by the [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg], in Germany. It was originally developed by Muhammed Al Kadi from the [Ruhr University Bochum], in Germany.
 
+[Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg]: https://www.b-tu.de/en/computer-engineering-group
+[Ruhr University Bochum]: https://www.ei.ruhr-uni-bochum.de/fakultaet/
 
-## Repository Structure
-+ Setup information is available in the `scripts` folder
-+ Benchmarks are available in the `benchmark` folder
-+ Source VHDL files for synthesis and simulation are located in the `RTL` folder
-+ The LLVM backend files are located in the `llvm-3.7.1.src.fgpu` folder
-+ All synthesis and implementation files and reports can be found in `HW`
-+ `bitstreams` contains some pre-generated bitstreams
-+ OpenCL kernels are located in the `kernels` folder
+# Contents and Structure of the FGPU Repository
 
-## Supported Boards
-+ ZC706
+This repository contains the following resources:
+- The FGPU architecture, described in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation. These are located in the `RTL` folder.
+- The files for setting up and running an FGPU simulation project in Mentor ModelSim. These are located in the `project_modelsim` folder.
+- The files for setting up simulation and or implementation projects in Xilinx Vivado. In the current version, only the Xilinx Zynq-7000 SoC ZC706 board is supported. These files are located in the `project_vivado` folder.
+- The files for building the LLVM-based FGPU compiler. These are located in the `compiler` folder.
+- Pre-generated bitstreams that can be quickly loaded to the ZC706 board for testing new FGPU applications without worrying about the hardware generation step. These are located in the `bitstreams` folder.
+- Examples of OpenCL kernels for execution in FGPU the FGPU, located in the `kernels` folder.
+- Examples of complete benchmarks for execution in an ARM+FGPU system that can be configured using Vivado SDK. These are located in the `benchmark` folder.
 
-## Puplications
+# FGPU Quick Start
 
- * [M. Al Kadi, B. Janssen, and M. Huebner, "FGPU: An SIMT-Architecture for FPGAs", FPGA ’16, Monterey, CA, USA](http://dl.acm.org/citation.cfm?id=2847273)
- * [M. Al Kadi and M. Huebner, "Integer computations with soft GPGPU on FPGAs," FPT'16, Xi'an, China](https://doi.org/10.1109/FPT.2016.7929185)
+## Setting up the FGPU LLVM-based compiler
+
+The compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in `compiler/README.md.`
+
+## Setting up the Vivado SW/HW Development Environment
+
+First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, **it is critical** that one specifies in this script:
+- the operating system (windows or linux - that will impact some filenames that are used by these scripts)
+- the project name (your choice)
+- the project path (your choice)
+- the *ModelSim* installation path (use "/" as delimiter, both in Windows and in linux)
+
+Additionally, this same script also allows selecting:
+- the target board (choose one from the available targets in the `scripts/targets` folder)
+- the desired clock frequency
+
+## Running behavioral Simulation
+
+TODO
+
+## Implementing the design
+
+TODO
