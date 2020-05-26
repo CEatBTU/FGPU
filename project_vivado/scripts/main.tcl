@@ -18,9 +18,9 @@ if {${action} == "simulate"} {
 	source "${path_tclscripts}/sim_fgpu.tcl"
 }
 
-if {${action} == "generate_IP"} {
-	source "${path_tclscripts}/pack_fgpu_ip.tcl"
-}
+#if {${action} == "generate_IP"} {
+#	source "${path_tclscripts}/pack_fgpu_ip.tcl"
+#}
 
 if {${action} == "implement"} {
 	source "${path_tclscripts}/create_bd.tcl"

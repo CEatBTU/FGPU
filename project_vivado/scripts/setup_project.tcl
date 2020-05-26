@@ -41,12 +41,13 @@ puts "- Project Path: ${path_project}"
 # set some project properties
 set_property board_part ${board_part} [current_project]
 set_property target_language VHDL [current_project]
-set_property default_lib work [current_project]
-set_property TARGET_SIMULATOR ModelSim [current_project]
+
 
 set SIMULATION_MODE behavioral
 
 if {${action} == "simulate"} {
+    set_property default_lib work [current_project]
+    set_property TARGET_SIMULATOR ModelSim [current_project]
 	if {$SIMULATION_MODE != "behavioral"} {
 		read_vhdl -verbose -library work -vhdl2008 ${postimp_sim_files}
 		read_mem  -verbose ${mif_files}
