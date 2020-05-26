@@ -6,4 +6,5 @@ llvm-3.7.1.build
 *.log
 project_vivado/*
 !project_vivado/scripts
+!project_vivado/FGPU_arch.png
 !project_vivado/README.md
