@@ -22,36 +22,38 @@ if (![info exists set_up_fgpu_environment]) {
   puts "\[ERROR\] You must first source the setup_environment.tcl script."
   return
 }
-
-#create a new block design
-create_bd_design ${name_bd}
+# if BD not already created
+if {[file exists $path_project/${name_project}.srcs/sources_1/bd/$name_bd/${name_bd}.bd]} {
+	open_bd_design $path_project/${name_project}.srcs/sources_1/bd/$name_bd/${name_bd}.bd
+} else {
+# create a new block design 
+	create_bd_design $name_bd
+}
 
 #set IP repository to point to the FGPU's IP location
 set_property ip_repo_paths ${path_fgpu_ip} [current_project]
 update_ip_catalog
 
+# if BD cells not already created
+if {[get_bd_cells] == ""} {
 #add a ZYNQ PS
-create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:${ip_ps_ver} \
-    processing_system7_0
-
+	create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:${ip_ps_ver} \
+		processing_system7_0
 #add the FGPU block
-create_bd_cell -type ip -vlnv user.org:user:FGPU_v2_1:1.0 \
-    FGPU_v2_1_0
-
-#set ver [version -short]
-
+	create_bd_cell -type ip -vlnv user.org:user:FGPU_v2_1:1.0 \
+		FGPU_v2_1_0
 #add a clock wizzard
-create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:${ip_clk_wiz_v} \
-    clk_wiz_0
+	create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:${ip_clk_wiz_v} \
+		clk_wiz_0
+}
 
 #set properties for the clock wizard (frequency)
-set_property -dict [list \
-                        CONFIG.USE_PHASE_ALIGNMENT {false} \
-                        CONFIG.CLKOUT1_REQUESTED_OUT_FREQ  ${FREQ}.0 \
-                        CONFIG.USE_LOCKED {false} \
-                        CONFIG.USE_RESET {false} \
-                        CONFIG.SECONDARY_SOURCE {Single_ended_clock_capable_pin}] \
-    [get_bd_cells clk_wiz_0]
+set_property -dict [list CONFIG.USE_PHASE_ALIGNMENT {false} \
+                         CONFIG.CLKOUT1_REQUESTED_OUT_FREQ  ${FREQ}.0 \
+                         CONFIG.USE_LOCKED {false} \
+                         CONFIG.USE_RESET {false} \
+                         CONFIG.SECONDARY_SOURCE {Single_ended_clock_capable_pin}] \
+					[get_bd_cells clk_wiz_0]
 
 #apply automation for the current blocks (clk_wizzard, ZYNQ PS, and FGPU); connect their clk ports, etc.
 apply_bd_automation \
@@ -109,15 +111,17 @@ apply_bd_automation \
                   Clk "/clk_wiz_0/clk_out1 ($FREQ MHz)"} \
     [get_bd_intf_pins FGPU_v2_1_0/s0]
 
+# if not already connected
+if {[string first "FCLK_RESET0_N" [get_bd_nets]] || [string first "FCLK_CLK0" [get_bd_nets]]} {
 #connect remaining reset ports
-connect_bd_net \
-    [get_bd_pins processing_system7_0/FCLK_RESET0_N] \
-    [get_bd_pins rst_clk_wiz_0_$FREQ\M/ext_reset_in]
-
+	connect_bd_net \
+		[get_bd_pins processing_system7_0/FCLK_RESET0_N] \
+		[get_bd_pins rst_clk_wiz_0_$FREQ\M/ext_reset_in]
 #connect remaining clock ports 
-connect_bd_net \
-    [get_bd_pins processing_system7_0/FCLK_CLK0] \
-    [get_bd_pins clk_wiz_0/clk_in1]
+	connect_bd_net \
+		[get_bd_pins processing_system7_0/FCLK_CLK0] \
+		[get_bd_pins clk_wiz_0/clk_in1]
+}
 
 #set memory address of the FGPU interfaces to be of 1GB
 set_property range 1G \

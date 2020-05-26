@@ -22,23 +22,27 @@ if (![info exists set_up_fgpu_environment]) {
 	puts "\[ERROR\] You must first source the setup_environment.tcl script."
 	return
 }
-
-# rename the default sim fileset
-if {[get_filesets fgpu_sim] != "fgpu_sim"} {
-	create_fileset -simset -clone_properties sim_1 fgpu_sim
-}
-current_fileset -simset fgpu_sim
-if {[get_filesets sim_1] == "sim_1"} {
-	delete_fileset sim_1
-}
-
-# set simulation properties
-set_property top FGPU_tb [get_filesets fgpu_sim]
-set_property top_file "${path_rtl}/FGPU_tb.vhd" [get_filesets fgpu_sim]
-
-# Some VHDL-2008 features are present in the code
-set_property file_type {VHDL 2008} [get_filesets fgpu_sim]
+# Setting simulation properties
+if {$SIMULATION_MODE != "behavioral"} {
+	if {[get_filesets "fgpu_sim"] ne "fgpu_sim"} {
+		create_fileset -simset fgpu_sim
+	} else {
+		add_files -fileset fgpu_sim  $postimp_sim_files
+		current_fileset -simset fgpu_sim
+		set_property top FGPU_tb [get_filesets fgpu_sim]
+		set_property top_file "${path_rtl}/FGPU_tb.vhd" [get_filesets fgpu_sim]
+		set_property file_type {VHDL 2008} [get_filesets fgpu_sim]
+	}}	else { 
+	current_fileset -simset sim_1
+	set_property top FGPU_tb [get_filesets sim_1]
+	set_property top_file "${path_rtl}/FGPU_tb.vhd" [get_filesets sim_1]
+	set_property file_type {VHDL 2008} [get_filesets sim_1]
+	}
 
 # Launching simulation
 puts "Starting simulation..."
-launch_simulation -mode behavioral -simset fgpu_sim -install_path ${path_modelsim}
+if {$SIMULATION_MODE != "behavioral"} {
+	launch_simulation -mode $SIMULATION_MODE -type timing -simset fgpu_sim -install_path ${path_modelsim}
+} else {
+	launch_simulation -mode $SIMULATION_MODE -simset sim_1 -install_path ${path_modelsim}
+}

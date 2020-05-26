@@ -18,9 +18,6 @@
 ##############################################################################
 
 
-
-
-
 ##############################################################################
 ########################## BEGIN DON'T TOUCH #################################
 ##############################################################################
@@ -42,16 +39,13 @@ set path_repository [file normalize "${path_tclscripts}/../../"]
 ##############################################################################
 
 
-
-
-
 ##############################################################################
 ########### Modify the variables below according to your setup ###############
 ##############################################################################
 
 # Choose one
-set OS "linux"
-#set OS "windows"
+#set OS "linux"
+set OS "windows"
 
 ################################################################################
 ######                  Do not edit the fgpu_ip name                       #####
@@ -67,22 +61,17 @@ if {${action} == "generate_IP"} {
 set path_project "${path_repository}/project_vivado/${name_project}"
 
 # PATH to the ModelSim installation. Will look like this in Windows:
-#set path_modelsim "C:/modeltech64_2020.1/win64"
+set path_modelsim "C:/modeltech64_2020.1/win64"
 # and like this in linux:
-set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
+#set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 # The number of threads with which to run simulation, synthesis and impl.
 set num_threads 8
 
-
-
-
 # Set the target board
 set target_board "ZC706"
 # The target frequency for implementation
-set FREQ        100
-
-
+set FREQ        50
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###
@@ -96,9 +85,6 @@ set ip_ps_ver "5.5"
 # For Vivado 2018.3
 set ip_clk_wiz_v "5.4"
 
-
-
-
 ##############################################################################
 ########### Variables below "should" not require modification ################
 ##############################################################################
@@ -111,7 +97,7 @@ set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/mod
 set path_rtl "${path_repository}/RTL"
 set path_fpu "${path_rtl}/floating_point"
 
-set files_vhdl [list \
+set sim_files [list \
 	${path_rtl}/FGPU_definitions.vhd \
 	${path_rtl}/lmem.vhd \
 	${path_rtl}/rd_cache_fifo.vhd \
@@ -140,11 +126,11 @@ set files_vhdl [list \
     ${path_rtl}/FGPU_v2_1.vhd \
     ${path_rtl}/FGPU_tb.vhd]
 
-set files_mif [list \
+set mif_files [list \
 	${path_rtl}/cram.mif \
 	${path_rtl}/krnl_ram.mif]
 
-set files_fpu [list \
+set fpu_files [list \
 	${path_fpu}/fadd_fsub.vhd \
 	${path_fpu}/fdiv.vhd \
 	${path_fpu}/fmul.vhd \
@@ -169,7 +155,7 @@ set files_fpu [list \
 	${path_fpu}/xbip_dsp48_multadd_v3_0_3/hdl/xbip_dsp48_multadd_v3_0.vhd \
 	${path_fpu}/floating_point_v7_1_4/hdl/floating_point_v7_1_vh_rfs.vhd]
 
-set vhdl_files [list \
+set imp_files [list \
     ${path_rtl}/FGPU_definitions.vhd \
 	${path_rtl}/lmem.vhd \
 	${path_rtl}/rd_cache_fifo.vhd \
@@ -202,6 +188,15 @@ set vhdl_files [list \
 	${path_rtl}/WG_dispatcher.vhd \
 	${path_rtl}/FGPU.vhd \
     ${path_rtl}/FGPU_v2_1.vhd]
+	
+set postimp_sim_files [list \
+	$path_rtl/FGPU_definitions.vhd \
+	$path_rtl/FGPU_simulation_pkg.vhd \
+    $path_rtl/global_mem.vhd \
+    $path_rtl/FGPU_tb.vhd \
+    $path_rtl/cram.mif \
+    $path_rtl/krnl_ram.mif]
+	
 ##############################################################################
 ############################ Commands ########################################
 ##############################################################################

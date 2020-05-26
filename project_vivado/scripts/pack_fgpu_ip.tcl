@@ -56,3 +56,7 @@ unset set_up_fgpu_environment
 #clean temporal project
 close_project -delete
 file delete -force "${path_repository}/project_vivado/fgpu_ip_temp/"
+
+puts "DONE!"
+puts "FGPU IP generated successfully!"
+puts "You can run now the implementation script!"
