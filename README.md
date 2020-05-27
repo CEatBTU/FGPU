@@ -24,29 +24,11 @@ The following figure illustrates the HW and SW flow for setting up the FGPU hard
 
 ## Setting up the FGPU LLVM-based compiler
 
-The compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in `compiler/README.md.`
+The compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in see the [compiler README](compiler/README.md).
 
 ## Setting up the Vivado SW/HW Development Environment
 
-First, you need to configure several parameters in the [project_vivado/scripts/setup_environment.tcl](project_vivado/scripts/setup_environment.tcl) file. In particular, **it is critical** to specify in this script:
-- the operating system (windows or linux - that will impact some filenames used by these scripts)
-- the *ModelSim* installation path, *if running the simulation flow*
-- the project name (your choice)
-- the project path (your choice)
 
-For path delimiters, use "/" both in Windows and in linux.
-
-Additionally, this same script also allows selecting:
-- the target board (currently only the [Zynq-7000 ZC706] board is supported. future supported will be included in the [project_vivado/scripts/targets](project_vivado/scripts/targets) folder)
-- the desired clock frequency
-
-## Implementing the design
-
-TODO
-
-## Running behavioral Simulation
-
-TODO
 
 
 # Limitations
@@ -57,7 +39,7 @@ TODO
 - The implementation was tested in Xilinx Vivado v2017.2
 - The simulation was tested in Mentor ModelSim 2020.1
 - The VHDL code uses some VHDL-2008 constructs, which may be unsupported in some tools.
-- Only the [Zynq-7000 SoC ZC706] board is currently supported.
+- Only the [Zynq-7000 ZC706] board is currently supported.
     - We are currently working on extending the support for other boards.
 - Only limited testing has been done with changing the the FGPU hardware parameters (size etc.). The current settings in `fgpu_definitions.vhd` have worked in the implementation and simulation flows.  
 
