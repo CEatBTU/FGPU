@@ -1,6 +1,6 @@
 FGPU is a soft GPU-like architecture for FPGAs. It is described in VHDL, fully customizable, and can be programmed using OpenCL.
 
-FGPU is currently being developed and maintained by the [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg], in Germany. It was originally developed by Muhammed Al Kadi from the [Ruhr University Bochum], in Germany.
+FGPU is currently being developed and maintained by the [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg], in Germany. It was [originally developed](https://github.com/malkadi/FGPU) by Muhammed Al Kadi from the [Ruhr University Bochum], in Germany.
 
 [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg]: https://www.b-tu.de/en/computer-engineering-group
 [Ruhr University Bochum]: https://www.ei.ruhr-uni-bochum.de/fakultaet/
