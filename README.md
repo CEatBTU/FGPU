@@ -18,6 +18,10 @@ This repository contains the following resources:
 
 # FGPU Quick Start
 
+The following figure illustrates the HW and SW flow for setting up the FGPU hardware and compiling applications.
+
+![Overview of the FGPU Framework.](FrameworkOverview.png)
+
 ## Setting up the FGPU LLVM-based compiler
 
 The compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in `compiler/README.md.`
