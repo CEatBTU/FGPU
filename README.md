@@ -8,13 +8,13 @@ FGPU is currently being developed and maintained by the [Chair of Computer Engin
 # Contents and Structure of the FGPU Repository
 
 This repository contains the following resources:
-- **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see the [RTL folder](rtl/).
-- **An LLVM-based FGPU compiler**. These are located in the `./compiler` folder.
-- **Files for running behavioral simulation in Mentor ModelSim** -- see `./project_modelsim` folder.
-- **Files for setting up simulation and implementation projects in Xilinx Vivado**. In the current version, only the [Zynq-7000 ZC706] board is supported -- see `./project_vivado` folder.
-- **Pre-generated bitstreams** to quickly test FGPU applications in the [Zynq-7000 ZC706], skipping the HW generation step -- see `./bitstreams` folder.
-- **Examples of OpenCL kernels** for execution in the FGPU -- see `./kernels` folder.
-- **Examples of complete benchmarks** for execution in an ARM+FGPU processing system configured using the Vivado SDK -- see `./benchmark` folder.
+- **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see the [RTL](rtl/) folder.
+- **An LLVM-based FGPU compiler** -- see the the [compiler](compiler/) folder.
+- **Files for running behavioral simulation in Mentor ModelSim** -- see the [project_modelsim](project_modelsim/) folder.
+- **Files for setting up simulation and implementation projects in Xilinx Vivado**. In the current version, only the [Zynq-7000 ZC706] board is supported -- see the [project_vivado](project_vivado/) folder.
+- **Pre-generated bitstreams** to quickly test FGPU applications in the [Zynq-7000 ZC706], skipping the HW generation step -- see the [bitstreams](bitstreams/) folder.
+- **Examples of OpenCL kernels** for execution in the FGPU -- see the [kernels](kernels/) folder.
+- **Examples of complete benchmarks** for execution in an ARM+FGPU processing system configured using the Vivado SDK -- see the [benchmark](benchmark/) folder.
 
 # FGPU Quick Start
 
@@ -24,14 +24,16 @@ The compiler will be used to generate, from an OpenCL kernel description, the bi
 
 ## Setting up the Vivado SW/HW Development Environment
 
-First, you need to configure several parameters in the `scripts/setup_environment.tcl` folder. In particular, **it is critical** that one specifies in this script:
-- the operating system (windows or linux - that will impact some filenames that are used by these scripts)
+First, you need to configure several parameters in the [project_vivado/scripts/setup_environment.tcl](project_vivado/scripts/setup_environment.tcl) file. In particular, **it is critical** to specify in this script:
+- the operating system (windows or linux - that will impact some filenames used by these scripts)
+- the *ModelSim* installation path, *if running the simulation flow*
 - the project name (your choice)
 - the project path (your choice)
-- the *ModelSim* installation path (use "/" as delimiter, both in Windows and in linux)
+
+For path delimiters, use "/" both in Windows and in linux.
 
 Additionally, this same script also allows selecting:
-- the target board (choose one from the available targets in the `scripts/targets` folder)
+- the target board (currently only the [Zynq-7000 ZC706] board is supported. future supported will be included in the [project_vivado/scripts/targets](project_vivado/scripts/targets) folder)
 - the desired clock frequency
 
 ## Implementing the design
