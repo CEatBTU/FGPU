@@ -8,7 +8,7 @@ FGPU is currently being developed and maintained by the [Chair of Computer Engin
 # Contents and Structure of the FGPU Repository
 
 This repository contains the following resources:
-- **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see `./RTL` folder.
+- **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see the [RTL folder](rtl/).
 - **An LLVM-based FGPU compiler**. These are located in the `./compiler` folder.
 - **Files for running behavioral simulation in Mentor ModelSim** -- see `./project_modelsim` folder.
 - **Files for setting up simulation and implementation projects in Xilinx Vivado**. In the current version, only the [Zynq-7000 ZC706] board is supported -- see `./project_vivado` folder.
