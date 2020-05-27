@@ -24,12 +24,11 @@ The following figure illustrates the HW and SW flow for setting up the FGPU hard
 
 ## Setting up the FGPU LLVM-based compiler
 
-The compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in see the [compiler README](compiler/README.md).
+The LLVM-based compiler will be used to generate, from an OpenCL kernel description, the binaries containing the FGPU instructions that implement the kernel. To ensure portability, the FGPU compiler is built inside a Docker container. See the instructions in see the [compiler README](compiler/README.md).
 
 ## Setting up the Vivado SW/HW Development Environment
 
-
-
+The Xilinx Vivado platform will be used to generate the hardware implementation from the set of RTL files, and also necessary libraries for communicating the main processing system (an ARM core, in case of the [Zynq-7000 ZC706] board). These libraries must be linked with the binaries generated in the compilation stage to enable the processing system to send commands and receive results from the FGPU. Detailed instructions for this process can be found in the [README for the Vivado flow](project_vivado/README.md).
 
 # Limitations
 
