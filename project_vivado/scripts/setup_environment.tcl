@@ -44,8 +44,8 @@ set path_repository [file normalize "${path_tclscripts}/../../"]
 ##############################################################################
 
 # Choose one
-set OS "linux"
-#set OS "windows"
+#set OS "linux"
+set OS "windows"
 
 ################################################################################
 ######                  Do not edit the fgpu_ip name                       #####
@@ -54,16 +54,16 @@ set OS "linux"
 if {${action} == "generate_IP"} {
     set name_project "fgpu_ip_temp"
 } else {
-    set name_project "fgpu"
+    set name_project "fgpu_sys"
 }
 
 
 set path_project "${path_repository}/project_vivado/${name_project}"
 
 # PATH to the ModelSim installation. Will look like this in Windows:
-#set path_modelsim "C:/modeltech64_2020.1/win64"
+set path_modelsim "C:/modeltech64_2020.1/win64"
 # and like this in linux:
-set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
+#set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 # The number of threads with which to run simulation, synthesis and impl.
 set num_threads 4
@@ -82,7 +82,7 @@ set ip_ps_ver "5.5"
 
 # For Vivado 2017.3
 # set ip_clk_wiz_ver "5.4"
-# For Vivado 2018.3
+# For Vivado 2018.3+
 set ip_clk_wiz_v "5.4"
 
 ##############################################################################
@@ -92,7 +92,7 @@ set ip_clk_wiz_v "5.4"
 set name_bd     "FGPU_bd"
 
 #set path_fgpu_ip       "${path_repository}/project_vivado/FGPU_2.1"
-set path_fgpu_ip       "${path_repository}/HW/sources/IPs/FGPU_2.1"
+set path_fgpu_ip       "${path_repository}/project_vivado/fgpu_ip/sources/IPs/FGPU_2.1"
 
 set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/modelsim"
 

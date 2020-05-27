@@ -18,7 +18,7 @@
 ##############################################################################
 
 #Copy FGPU_definitions from RTL folder to the FGPU IP hdl
-file copy -force ${path_project}/../../RTL/FGPU_definitions.vhd ${path_project}/../../HW/sources/IPs/FGPU_2.1/hdl/
+file copy -force ${path_project}/../../RTL/FGPU_definitions.vhd ${path_fgpu_ip}/hdl/
 
 # Guard clause to ensure everything is properly set up
 if (![info exists set_up_fgpu_environment]) {
