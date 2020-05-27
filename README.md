@@ -8,13 +8,13 @@ FGPU is currently being developed and maintained by the [Chair of Computer Engin
 # Contents and Structure of the FGPU Repository
 
 This repository contains the following resources:
-- The FGPU architecture, described in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation. These are located in the `RTL` folder.
-- The files for setting up and running an FGPU simulation project in Mentor ModelSim. These are located in the `project_modelsim` folder.
-- The files for setting up simulation and or implementation projects in Xilinx Vivado. In the current version, only the Xilinx Zynq-7000 SoC ZC706 board is supported. These files are located in the `project_vivado` folder.
-- The files for building the LLVM-based FGPU compiler. These are located in the `compiler` folder.
-- Pre-generated bitstreams that can be quickly loaded to the ZC706 board for testing new FGPU applications without worrying about the hardware generation step. These are located in the `bitstreams` folder.
-- Examples of OpenCL kernels for execution in FGPU the FGPU, located in the `kernels` folder.
-- Examples of complete benchmarks for execution in an ARM+FGPU system that can be configured using Vivado SDK. These are located in the `benchmark` folder.
+- **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see `./RTL` folder.
+- **An LLVM-based FGPU compiler**. These are located in the `./compiler` folder.
+- **Files for running behavioral simulation in Mentor ModelSim** -- see `./project_modelsim` folder.
+- **Files for setting up simulation and implementation projects in Xilinx Vivado**. In the current version, only the [Zynq-7000 ZC706] board is supported -- see `./project_vivado` folder.
+- **Pre-generated bitstreams** to quickly test FGPU applications in the [Zynq-7000 ZC706], skipping the HW generation step -- see `./bitstreams` folder.
+- **Examples of OpenCL kernels** for execution in the FGPU -- see `./kernels` folder.
+- **Examples of complete benchmarks** for execution in an ARM+FGPU processing system configured using the Vivado SDK -- see `./benchmark` folder.
 
 # FGPU Quick Start
 
@@ -34,10 +34,41 @@ Additionally, this same script also allows selecting:
 - the target board (choose one from the available targets in the `scripts/targets` folder)
 - the desired clock frequency
 
+## Implementing the design
+
+TODO
+
 ## Running behavioral Simulation
 
 TODO
 
-## Implementing the design
 
-TODO
+# Limitations
+
+## Supported Platforms / Tools
+
+- The current version of the repository has been tested in both Windows and Linux.
+- The implementation was tested in Xilinx Vivado v2017.2
+- The simulation was tested in Mentor ModelSim 2020.1
+- The VHDL code uses some VHDL-2008 constructs, which may be unsupported in some tools.
+- Only the [Zynq-7000 SoC ZC706] board is currently supported.
+    - We are currently working on extending the support for other boards.
+- Only limited testing has been done with changing the the FGPU hardware parameters (size etc.). The current settings in `fgpu_definitions.vhd` have worked in the implementation and simulation flows.  
+
+## Known Bugs
+
+### Hardware
+- Branch in a conditional procedure call is not working.  In other words, if a branch took place, then a function is called, whose code will branch, a problem will occurr. 
+    - Reason: A branch writes the current top entry of the diveergence stack(in CU schedulre) and will create a new entry on the top. But the overwritten entry is needed when the function returns.
+    - Solution: When a function is to be called, the wavefront active record (which referes to the top of divergence stack) needs to be incrmeneted. Have a look to the defined but commented PC_stack_dummy_entry in CU_scheduler.vhd.
+    - How to regenerate: Use the LUdecompose kernel. Make a soft floating point operation in some if. You need data without NaN of inf.
+- When the buswidth of read data from cache to CUs is smaller than the #CUs * 32bit, they may be some problems. The BRAM which stores read data from the cache in each CU may be overfilled and overwritten.
+- Using a 3 dimentional index space has never been tested.
+- Changing the address of atomic operation within the same kernel has never been tested. Application is needed.
+- Setting the number of cache banks equal or less to the number of the AXI interface banks (CACHE_N_BANKS_W &lt= GMEM_N_BANKS_W) may lead to a bottleneck
+
+### Software / Compiler
+- Using other sections rather that .text is not yet supported.
+    - How to generate: Define the coeffecients of a 5x5 image filter as a 2D array constant. This data will be stored into .rodata section.
+
+[Zynq-7000 ZC706]: https://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html
