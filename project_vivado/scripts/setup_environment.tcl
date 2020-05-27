@@ -66,7 +66,7 @@ set path_project "${path_repository}/project_vivado/${name_project}"
 set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 
 # The number of threads with which to run simulation, synthesis and impl.
-set num_threads 48
+set num_threads 4
 
 # Set the target board
 set target_board "ZC706"
