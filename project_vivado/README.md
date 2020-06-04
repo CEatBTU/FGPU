@@ -37,11 +37,13 @@ To do so, follow these steps:
 - Launch Vivado SDK and create a new blank C++ application project.
 - Copy all the files from a benchmark's source folder to the application project's directory. 
 - Verify that the heap size is at least '0x8000000'
-- If you want to run another application, you must compile your OpenCL application using the provided LLVM compiler.
+- If you want to run another application, you must compile your OpenCL application using the provided LLVM compiler. *
 - Follow any benchmark's directory structure and conventions for adapting your own application. Using a benchmark as a template is highly recommended.
 - Clean, build, and run.
 
 Examples of pre-generated applications (the output of this step) are provided in the [benchmarks folder](../benchmark).
+
+NOTE: * To compile openCL kernels, the user is encouraged to view the [FGPU_compiler](https://github.com/CEatBTU/FGPU_Compiler.git) repository which already has a docker instance to build / download an image which has already the LLVM compiler built and ready to use.
 
 ## Running behavioral Simulation
 
