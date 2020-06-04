@@ -94,6 +94,8 @@ set name_bd     "FGPU_bd"
 #set path_fgpu_ip       "${path_repository}/project_vivado/FGPU_2.1"
 set path_fgpu_ip       "${path_repository}/project_vivado/FGPU_IP/sources/IPs/FGPU_2.1"
 
+
+
 set path_modelsim_libs "${path_project}/${name_project}.cache/compile_simlib/modelsim"
 
 set path_rtl "${path_repository}/RTL"

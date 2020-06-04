@@ -5,8 +5,8 @@
 # *** NOTE: For the "implement" to work, "generate_IP" must be run before to have a version of the FGPU IP in the system. ***
 
 #set action "generate_IP"
-set action "implement"
-#set action "simulate"
+#set action "implement"
+set action "simulate"
 
 
 set path_thiscript [file normalize "[info script]/../"]
