@@ -9,7 +9,7 @@ First, you need to configure several parameters in the [project_vivado/scripts/
 For path delimiters, use "/" both in Windows and in linux.
 
 Additionally, this same script also allows selecting:
-- the target board (currently only the [Zynq-7000 ZC706] board is supported. future supported will be included in the [project_vivado/scripts/targets](project_vivado/scripts/targets) folder)
+- the target board (currently only the [Zynq-7000 ZC706 board] and [ZedBoard] are supported. future supported will be included in the [project_vivado/scripts/targets](project_vivado/scripts/targets) folder)
 - the desired clock frequency
 
 ## Implementing the design
@@ -18,7 +18,7 @@ Additionally, this same script also allows selecting:
 
 After setting up the environment, as described in the steps above, the first step consists of generating the bitstream and associated drivers that will configure the FPGA. We prove a set of scripts that already automate this flow. To run these, do the following:
 - Launch `vivado` in either TCL console or GUI mode
-- `source` the following script (if in TCL mode), or "Tools" -> "Run Tcl Script" (if in GUI mode) and select the following script: [main_implement.tcl](scripts/main_implement.tcl)
+- `source` the following script (if in TCL mode), or "Tools" -> "Run Tcl Script" (if in GUI mode) and select the following script: [main_implement.tcl](scripts/2017.2/main_implement.tcl)
 
 This script will generate a block diagram containing the FGPU along with the main processing system (ARM core) and accessory IPs. After that, synthesis and implementation will be run, and a bitstream will be generated.
 
