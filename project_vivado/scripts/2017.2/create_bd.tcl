@@ -115,12 +115,17 @@ if {[string first "FCLK_RESET0_N" [get_bd_nets]] || [string first "FCLK_CLK0" [g
 }
 
 #set memory address of the FGPU interfaces to be of 1GB
-
-set_property range 1G [get_bd_addr_segs {FGPU_0/m0/SEG_processing_system7_0_HP0_DDR_LOWOCM}]
-set_property range 1G [get_bd_addr_segs {FGPU_0/m1/SEG_processing_system7_0_HP1_DDR_LOWOCM}]
-set_property range 1G [get_bd_addr_segs {FGPU_0/m2/SEG_processing_system7_0_HP2_DDR_LOWOCM}]
-set_property range 1G [get_bd_addr_segs {FGPU_0/m3/SEG_processing_system7_0_HP3_DDR_LOWOCM}]
-
+if {${target_board} == "ZedBoard"} {
+    set_property range 512M [get_bd_addr_segs {FGPU_0/m0/SEG_processing_system7_0_HP0_DDR_LOWOCM}]
+    set_property range 512M [get_bd_addr_segs {FGPU_0/m1/SEG_processing_system7_0_HP1_DDR_LOWOCM}]
+    set_property range 512M [get_bd_addr_segs {FGPU_0/m2/SEG_processing_system7_0_HP2_DDR_LOWOCM}]
+    set_property range 512M [get_bd_addr_segs {FGPU_0/m3/SEG_processing_system7_0_HP3_DDR_LOWOCM}]
+} else {
+    set_property range 1G [get_bd_addr_segs {FGPU_0/m0/SEG_processing_system7_0_HP0_DDR_LOWOCM}]
+    set_property range 1G [get_bd_addr_segs {FGPU_0/m1/SEG_processing_system7_0_HP1_DDR_LOWOCM}]
+    set_property range 1G [get_bd_addr_segs {FGPU_0/m2/SEG_processing_system7_0_HP2_DDR_LOWOCM}]
+    set_property range 1G [get_bd_addr_segs {FGPU_0/m3/SEG_processing_system7_0_HP3_DDR_LOWOCM}]
+}
 save_bd_design
 
 update_compile_order -fileset sources_1

@@ -45,8 +45,8 @@ cd "${path_repository}/project_vivado"
 ##############################################################################
 
 # Choose one
-#set OS "linux"
-set OS "windows"
+set OS "linux"
+#set OS "windows"
 
 ################################################################################
 ######                  Do not edit the fgpu_ip name                       #####

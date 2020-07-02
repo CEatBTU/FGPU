@@ -61,7 +61,7 @@ package FGPU_definitions is
       -- bitwidth of # of PEs within a CV (only 3 was tested, i.e. 8 PEs/CU)
 
   -- Floating-point hardware support:
-  constant FLOAT_IMPLEMENT                : natural := 0;
+  constant FLOAT_IMPLEMENT                : natural := 1;
   constant FADD_IMPLEMENT                 : integer := 1;
   constant FMUL_IMPLEMENT                 : integer := 1;
   constant FDIV_IMPLEMENT                 : integer := 1;
