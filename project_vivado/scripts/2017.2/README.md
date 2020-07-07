@@ -23,7 +23,7 @@ Additionally, this same script also allows selecting:
 
 ### Step 2. Running the simulation and/or implementation flow
 
-Examples of typical *simulation* and *implementation* flows are provided in the `scripts/main.tcl` script. This script can be run by start Vivado in tcl mode by invoking `vivado -mode tcl` or simply using the *Tcl Console* inside Vivado.
+Examples of typical *simulation* and *implementation* flows are provided in the `scripts/main_implement.tcl` script. This script can be run by start Vivado in tcl mode by invoking `vivado -mode tcl` or simply using the *Tcl Console* inside Vivado.
 ## Regenerating the floating point IPs for a different vivado version or board part
 
 If a different verison of vivado is used and/or a different board from the ZC706 is used, one must manually regenerate the ip modules: fadd_fsub.vhd, fdiv.vhd, fmul.vhd, frsqrt.vhd, fslt.vhd, fsqrt.vhd, and uitofp.vhd. To do this follow the next instructions:
