@@ -43,7 +43,7 @@ To do so, follow these steps:
 
 Examples of pre-generated applications (the output of this step) are provided in the [benchmarks folder](../benchmark).
 
-* To compile openCL kernels, the user is encouraged to view the [FGPU_compiler](https://github.com/CEatBTU/FGPU_Compiler.git) repository which already has a docker instance to build / download an image which has already the LLVM compiler built and ready to use.
+NOTE: * To compile openCL kernels, the user is encouraged to view the [FGPU_compiler](https://github.com/CEatBTU/FGPU_Compiler.git) repository which already has a docker instance to build / download an image which has already the LLVM compiler built and ready to use.
 
 ## Running behavioral Simulation
 
