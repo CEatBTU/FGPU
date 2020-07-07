@@ -13,7 +13,7 @@ package FGPU_definitions is
   constant LMEM_ADDR_W                    : natural := 10;
       -- bitwidth of local memory address for a single PE
 
-  constant N_AXI_W                        : natural := 0;
+  constant N_AXI_W                        : natural := 0; 
     -- Bitwidth of # of AXI data ports
 
   constant SUB_INTEGER_IMPLEMENT          : natural := 0;

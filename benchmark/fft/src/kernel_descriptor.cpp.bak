@@ -32,7 +32,7 @@ void kernel<T>::download_code()
   volatile unsigned *cram_ptr = (unsigned *)(FGPU_BASEADDR+ 0x4000);
   unsigned int size = FFT_LEN;
   unsigned *code_ptr = code;
-  if (typeid(T) == typeid(float _Complex)) {
+  if (typeid(T) == typeid(float complex)) {
     if(use_hard_float) {
       start_addr = BUTTERFLY_HARD_FLOAT_POS;
       size = FFT_HARD_FLOAT_LEN;
@@ -147,10 +147,10 @@ void kernel<T>::initialize_memory()
   }
   Xil_DCacheFlush(); // flush data to global memory
 }
-void bitReverse(float _Complex *src, unsigned len, int nStages)
+void bitReverse(float complex *src, unsigned len, int nStages)
 {
   unsigned i;
-  float _Complex *dst = &src[len];
+  float complex *dst = &src[len];
   for(i = 0; i < len; i++)
   {
     unsigned j = i;
@@ -165,13 +165,13 @@ void bitReverse(float _Complex *src, unsigned len, int nStages)
   for(i = 0; i < len; i++)
     src[i] = dst[i];
 }
-void FFT(unsigned problemSize, float _Complex *array, float _Complex *twiddles)
+void FFT(unsigned problemSize, float complex *array, float complex *twiddles)
 {
   unsigned i, iter;
   unsigned nStages = log2_int(problemSize);
   unsigned pairDistance, blockWidth, nGroups, groupOffset;
   unsigned leftIndx, rightIndx;
-  float _Complex a, b, w;
+  float complex a, b, w;
   for(iter = 0; iter < nStages; iter++)
   {
     pairDistance = 1 << iter;
@@ -349,4 +349,4 @@ void kernel<T>::print_name()
     xil_printf(" (soft)\n\r" ANSI_COLOR_RESET);
 }
 
-template class kernel<float _Complex>;
+template class kernel<float complex>;

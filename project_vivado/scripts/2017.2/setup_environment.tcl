@@ -72,7 +72,7 @@ set num_threads 4
 # Set the target board
 set target_board "ZedBoard"
 # The target frequency for implementation
-set FREQ        50
+set FREQ        120
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###
