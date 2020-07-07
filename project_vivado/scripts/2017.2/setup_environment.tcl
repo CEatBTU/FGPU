@@ -45,8 +45,8 @@ cd "${path_repository}/project_vivado"
 ##############################################################################
 
 # Choose one
-set OS "linux"
-#set OS "windows"
+#set OS "linux"
+set OS "windows"
 
 ################################################################################
 ######                  Do not edit the fgpu_ip name                       #####
@@ -72,7 +72,7 @@ set num_threads 4
 # Set the target board
 set target_board "ZedBoard"
 # The target frequency for implementation
-set FREQ        120
+set FREQ        50
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###
