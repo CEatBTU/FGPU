@@ -1,8 +1,8 @@
-﻿# Setting up the Vivado SW/HW Development Environment
+# Setting up the Vivado SW/HW Development Environment
 
-First, you need to configure several parameters in the [project_vivado/scripts/setup_environment.tcl](project_vivado/scripts/setup_environment.tcl) file. In particular, **it is critical** to specify in this script:
+First, you need to configure several parameters in the [project_vivado/scripts/setup_environment.tcl](project_vivado/scripts/setup_environment.tcl) file. In particular, **it is critical** to specify in this script:
 - the operating system (windows or linux - that will impact some filenames used by these scripts)
-- the *ModelSim* installation path, *if running the simulation flow*
+- the *ModelSim* installation path, *if running the simulation flow*
 - the project name (your choice)
 - the project path (your choice)
 
@@ -26,7 +26,7 @@ Examples of pre-generated bitstreams (the output of this step) are provided in t
 
 #### Known Issues
 
-You may configure 'FGPU_definitions.vhd' according to your architecture needs. However, so far, the configurations that has proved to work with the given scripts are (from FGPU_definitions.vhd): atomic implementation set to '1' , sub_integer implementation either to '0' or to '1', Number of CUs equal to 1, and floating point implementation set to '0'.  The support team is working on making other configurations compatible with the scripts and flow.
+You may configure 'FGPU_definitions.vhd' according to your architecture needs. However, so far, for Vivado 2017.2 the configurations that has proved to work with the given scripts are (from FGPU_definitions.vhd): atomic implementation set to '1' , sub_integer implementation either to '0' or to '1', Width of number of CUs equal to 0, and floating point implementation set to either '0' or '1'. Vivado 2016.2 doesn't has had these problems and thus, it has proven to be more stable with different architectures. The support team is working on making other configurations compatible with the scripts and flow.
 
 ### Writing your own FPGU application
 
@@ -60,3 +60,4 @@ A quick start would be:
 For some of the benchmarks to run successfully like 'max_half_atomic' one must also change the configuration of the FGPU in 'FGPU_definitions.vhd' to implement the atomic operations.   The most common configurations to change when the benchmark is not working are: 'atomic_implement', floating point implement', 'sub_integer implement', and 'number of CUs'.
 
 For simulating a new application, we are currently developing a new tutorial.
+
