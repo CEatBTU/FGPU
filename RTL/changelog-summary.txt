@@ -1,0 +1,53 @@
+------------------------------------------------------------------------
+r6 | zulberti | 2021-03-11 09:59:51 +0100 (Thu, 11 Mar 2021) | 1 line
+
+Move FGPU_tb.vhd into tb/ directory
+------------------------------------------------------------------------
+r7 | zulberti | 2021-03-11 10:26:17 +0100 (Thu, 11 Mar 2021) | 1 line
+
+rtl/db: Remove floating_point directories
+------------------------------------------------------------------------
+r8 | zulberti | 2021-03-11 10:41:13 +0100 (Thu, 11 Mar 2021) | 1 line
+
+rtl: Move global_mem.vhd to tb/ directory
+------------------------------------------------------------------------
+r12 | zulberti | 2021-03-12 10:15:22 +0100 (Fri, 12 Mar 2021) | 1 line
+
+db/float_units.vhd: Fix VHDL syntax
+------------------------------------------------------------------------
+r21 | zulberti | 2021-03-26 15:06:59 +0100 (Fri, 26 Mar 2021) | 1 line
+
+rtl: Update FGPU sources in order to correctly compile on Questa2019
+------------------------------------------------------------------------
+r23 | zulberti | 2021-03-29 10:30:11 +0200 (Mon, 29 Mar 2021) | 1 line
+
+rtl: Rename files
+------------------------------------------------------------------------
+r25 | zulberti | 2021-04-14 11:54:26 +0200 (Wed, 14 Apr 2021) | 1 line
+
+rtl/db: Add synchronous reset to all processes; Remove signal initializations
+------------------------------------------------------------------------
+r26 | zulberti | 2021-04-14 12:05:20 +0200 (Wed, 14 Apr 2021) | 1 line
+
+rtl/db: Disable old top-level
+------------------------------------------------------------------------
+r27 | zulberti | 2021-04-14 12:14:41 +0200 (Wed, 14 Apr 2021) | 1 line
+
+rtl/db: Remove memory-init files
+------------------------------------------------------------------------
+r28 | zulberti | 2021-04-14 15:17:50 +0200 (Wed, 14 Apr 2021) | 1 line
+
+rtl: Move attributes to XDC constraint file
+------------------------------------------------------------------------
+r36 | zulberti | 2021-04-19 16:36:53 +0200 (Mon, 19 Apr 2021) | 1 line
+
+rtl/db: Move non-reset signals in a separated process
+------------------------------------------------------------------------
+r37 | zulberti | 2021-04-20 17:30:41 +0200 (Tue, 20 Apr 2021) | 1 line
+
+rtl/db: Fix FGPU for 1 CU
+------------------------------------------------------------------------
+r38 | zulberti | 2021-04-20 17:31:24 +0200 (Tue, 20 Apr 2021) | 1 line
+
+rtl/constr/fgpu.xdc: Disable max_fanout optimisations
+------------------------------------------------------------------------
