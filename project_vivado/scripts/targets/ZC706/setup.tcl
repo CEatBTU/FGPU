@@ -19,10 +19,4 @@
 ##############################################################################
 
 set project_part  xc7z045ffg900-2
-
-if { $ver == "2017.2" } {
-    set project_board xilinx.com:zc706:part0:1.4
-} else {
-    set project_board xilinx.com:zc706:part0:1.3
-}
-
+set project_board xilinx.com:zc706:part0:1.4

@@ -60,7 +60,16 @@ if {${action} == "simulate"} {
 }
 
 if {${action} == "generate_IP"} {
+    add_files -fileset constrs_1 -norecurse ${path_rtl}/../constr/fgpu.xdc
+    import_files -fileset constrs_1 ${path_rtl}/../constr/fgpu.xdc
+    update_compile_order -fileset sources_1
+
     read_vhdl -verbose  ${imp_files}
     read_mem  -verbose ${mif_files}
+    
+    set_property library fgpu [get_files ${path_rtl}/fgpu_definitions_pkg.vhd]
+    update_compile_order -fileset sources_1
+    set_property library fgpu [get_files  ${path_rtl}/fgpu_components_pkg.vhd]
+    update_compile_order -fileset sources_1
 }
 

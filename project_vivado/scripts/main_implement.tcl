@@ -15,5 +15,5 @@ unset set_up_fgpu_environment
 set action "implement"
 source "${path_thiscript}/setup_environment.tcl"
 source "${path_tclscripts}/setup_project.tcl"
-source "${path_tclscripts}/create_bd.tcl"
-source "${path_tclscripts}/implement_fgpu.tcl"
+#source "${path_tclscripts}/create_bd.tcl"
+#source "${path_tclscripts}/implement_fgpu.tcl"

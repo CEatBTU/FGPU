@@ -23,4 +23,6 @@ if (![info exists set_up_fgpu_environment]) {
 	return
 }
 
+update_compile_order -fileset sources_1
+validate_bd_design -force
 launch_runs impl_1 -to_step write_bitstream -jobs ${num_threads}
