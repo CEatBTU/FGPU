@@ -1,4 +1,4 @@
--- (c) Copyright 1995-2016 Xilinx, Inc. All rights reserved.
+-- (c) Copyright 1995-2021 Xilinx, Inc. All rights reserved.
 -- 
 -- This file contains confidential and proprietary information
 -- of Xilinx, Inc. and is protected under U.S. and
@@ -47,29 +47,33 @@
 -- DO NOT MODIFY THIS FILE.
 
 -- IP VLNV: xilinx.com:ip:floating_point:7.1
--- IP Revision: 2
+-- IP Revision: 9
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-LIBRARY floating_point_v7_1_4;
-USE floating_point_v7_1_4.floating_point_v7_1_4;
+LIBRARY floating_point_v7_1_11;
+USE floating_point_v7_1_11.floating_point_v7_1_11;
 
-ENTITY fsqrt IS
+ENTITY fadd_fsub IS
   PORT (
     aclk : IN STD_LOGIC;
     s_axis_a_tvalid : IN STD_LOGIC;
     s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axis_b_tvalid : IN STD_LOGIC;
+    s_axis_b_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axis_operation_tvalid : IN STD_LOGIC;
+    s_axis_operation_tdata : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
     m_axis_result_tvalid : OUT STD_LOGIC;
     m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
-END fsqrt;
+END fadd_fsub;
 
-ARCHITECTURE fsqrt_arch OF fsqrt IS
+ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
   ATTRIBUTE DowngradeIPIdentifiedWarnings : STRING;
-  ATTRIBUTE DowngradeIPIdentifiedWarnings OF fsqrt_arch: ARCHITECTURE IS "yes";
-  COMPONENT floating_point_v7_1_4 IS
+  ATTRIBUTE DowngradeIPIdentifiedWarnings OF fadd_fsub_arch: ARCHITECTURE IS "yes";
+  COMPONENT floating_point_v7_1_11 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
       C_HAS_ADD : INTEGER;
@@ -88,8 +92,14 @@ ARCHITECTURE fsqrt_arch OF fsqrt IS
       C_HAS_EXPONENTIAL : INTEGER;
       C_HAS_FMA : INTEGER;
       C_HAS_FMS : INTEGER;
+      C_HAS_UNFUSED_MULTIPLY_ADD : INTEGER;
+      C_HAS_UNFUSED_MULTIPLY_SUB : INTEGER;
+      C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_A : INTEGER;
+      C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_S : INTEGER;
       C_HAS_ACCUMULATOR_A : INTEGER;
       C_HAS_ACCUMULATOR_S : INTEGER;
+      C_HAS_ACCUMULATOR_PRIMITIVE_A : INTEGER;
+      C_HAS_ACCUMULATOR_PRIMITIVE_S : INTEGER;
       C_A_WIDTH : INTEGER;
       C_A_FRACTION_WIDTH : INTEGER;
       C_B_WIDTH : INTEGER;
@@ -172,22 +182,32 @@ ARCHITECTURE fsqrt_arch OF fsqrt IS
       m_axis_result_tuser : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
       m_axis_result_tlast : OUT STD_LOGIC
     );
-  END COMPONENT floating_point_v7_1_4;
+  END COMPONENT floating_point_v7_1_11;
   ATTRIBUTE X_INTERFACE_INFO : STRING;
-  ATTRIBUTE X_INTERFACE_INFO OF aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 aclk_intf CLK";
-  ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TVALID";
-  ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TDATA";
-  ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TVALID";
+  ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TDATA";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF m_axis_result_tvalid: SIGNAL IS "XIL_INTERFACENAME M_AXIS_RESULT, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TVALID";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_operation_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_OPERATION TDATA";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_operation_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_OPERATION, TDATA_NUM_BYTES 1, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_operation_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_OPERATION TVALID";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_b_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_B TDATA";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_b_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_B, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_b_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_B TVALID";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TDATA";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_a_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_A, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TVALID";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF aclk: SIGNAL IS "XIL_INTERFACENAME aclk_intf, ASSOCIATED_BUSIF S_AXIS_OPERATION:M_AXIS_RESULT:S_AXIS_C:S_AXIS_B:S_AXIS_A, ASSOCIATED_RESET aresetn, ASSOCIATED_CLKEN aclken, FREQ_HZ 10000000, PHASE 0.000, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 aclk_intf CLK";
 BEGIN
-  U0 : floating_point_v7_1_4
+  U0 : floating_point_v7_1_11
     GENERIC MAP (
       C_XDEVICEFAMILY => "zynq",
-      C_HAS_ADD => 0,
-      C_HAS_SUBTRACT => 0,
+      C_HAS_ADD => 1,
+      C_HAS_SUBTRACT => 1,
       C_HAS_MULTIPLY => 0,
       C_HAS_DIVIDE => 0,
-      C_HAS_SQRT => 1,
+      C_HAS_SQRT => 0,
       C_HAS_COMPARE => 0,
       C_HAS_FIX_TO_FLT => 0,
       C_HAS_FLT_TO_FIX => 0,
@@ -199,8 +219,14 @@ BEGIN
       C_HAS_EXPONENTIAL => 0,
       C_HAS_FMA => 0,
       C_HAS_FMS => 0,
+      C_HAS_UNFUSED_MULTIPLY_ADD => 0,
+      C_HAS_UNFUSED_MULTIPLY_SUB => 0,
+      C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_A => 0,
+      C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_S => 0,
       C_HAS_ACCUMULATOR_A => 0,
       C_HAS_ACCUMULATOR_S => 0,
+      C_HAS_ACCUMULATOR_PRIMITIVE_A => 0,
+      C_HAS_ACCUMULATOR_PRIMITIVE_S => 0,
       C_A_WIDTH => 32,
       C_A_FRACTION_WIDTH => 24,
       C_B_WIDTH => 32,
@@ -210,9 +236,9 @@ BEGIN
       C_RESULT_WIDTH => 32,
       C_RESULT_FRACTION_WIDTH => 24,
       C_COMPARE_OPERATION => 8,
-      C_LATENCY => 28,
+      C_LATENCY => 11,
       C_OPTIMIZATION => 1,
-      C_MULT_USAGE => 0,
+      C_MULT_USAGE => 2,
       C_BRAM_USAGE => 0,
       C_RATE => 1,
       C_ACCUM_INPUT_MSB => 32,
@@ -229,13 +255,13 @@ BEGIN
       C_THROTTLE_SCHEME => 3,
       C_HAS_A_TUSER => 0,
       C_HAS_A_TLAST => 0,
-      C_HAS_B => 0,
+      C_HAS_B => 1,
       C_HAS_B_TUSER => 0,
       C_HAS_B_TLAST => 0,
       C_HAS_C => 0,
       C_HAS_C_TUSER => 0,
       C_HAS_C_TLAST => 0,
-      C_HAS_OPERATION => 0,
+      C_HAS_OPERATION => 1,
       C_HAS_OPERATION_TUSER => 0,
       C_HAS_OPERATION_TLAST => 0,
       C_HAS_RESULT_TUSER => 0,
@@ -261,20 +287,20 @@ BEGIN
       s_axis_a_tdata => s_axis_a_tdata,
       s_axis_a_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_a_tlast => '0',
-      s_axis_b_tvalid => '0',
-      s_axis_b_tdata => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 32)),
+      s_axis_b_tvalid => s_axis_b_tvalid,
+      s_axis_b_tdata => s_axis_b_tdata,
       s_axis_b_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_b_tlast => '0',
       s_axis_c_tvalid => '0',
       s_axis_c_tdata => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 32)),
       s_axis_c_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_c_tlast => '0',
-      s_axis_operation_tvalid => '0',
-      s_axis_operation_tdata => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 8)),
+      s_axis_operation_tvalid => s_axis_operation_tvalid,
+      s_axis_operation_tdata => s_axis_operation_tdata,
       s_axis_operation_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_operation_tlast => '0',
       m_axis_result_tvalid => m_axis_result_tvalid,
       m_axis_result_tready => '0',
       m_axis_result_tdata => m_axis_result_tdata
     );
-END fsqrt_arch;
+END fadd_fsub_arch;

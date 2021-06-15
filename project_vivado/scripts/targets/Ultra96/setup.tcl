@@ -1,8 +1,9 @@
 ##############################################################################
 #
-# implement_fgpu.tcl
+# setup_target.tcl (ZedBoard ZC706)
 #
-# Description: Implements the FGPU until the bitstream generation phase.
+# Description: Sets variables for targeting the ZedBoard ZC706 in synthesis \
+#   and implementation.
 #
 # Author: Hector Gerardo Munoz Hernandez <hector.munozhernandez@b-tu.de>
 # Contributors:
@@ -13,16 +14,11 @@
 # Date Created: 07.04.2020
 #
 # Tested Under:
-#   - Vivado 2017.2
+#   - Vivado 2018.3
 #
 ##############################################################################
 
-# Guard clause to ensure everything is properly set up
-if (![info exists set_up_fgpu_environment]) {
-	puts "\[ERROR\] You must first source the setup_environment.tcl script."
-	return
-}
+set project_part  xczu3eg-sbva484-1-e
+set project_board em.avnet.com:ultra96v1:part0:1.2
 
-update_compile_order -fileset sources_1
-validate_bd_design -force
-launch_runs impl_1 -to_step write_bitstream -jobs ${num_threads}
+
