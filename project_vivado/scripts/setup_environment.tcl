@@ -73,7 +73,7 @@ set num_threads 4
 set target_board "ZC706"
 #set target_board "Ultra96"
 #set target_board "ZedBoard"
-# The target frequency for implementation
+# The target frequency (in MHz) for implementation
 set FREQ        100
 
 ##############################################################################
@@ -216,7 +216,7 @@ set imp_files [list \
 	${path_rtl}/loc_indcs_generator.vhd \
 	${path_rtl}/wg_dispatcher.vhd \
 	${path_rtl}/fgpu_top.vhd \
-    ${path_rtl}/fgpu_1m.vhd]
+    ${path_rtl}/fgpu_wrap.vhd]
 	
 set postimp_sim_files [list \
 	$path_rtl_old/FGPU_definitions.vhd \

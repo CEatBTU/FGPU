@@ -102,7 +102,7 @@ package definitions is
   constant GMEM_N_BANK_W                  : natural := 1;
     -- Bitwidth of the number of words of a single AXI data interface, i.e. the global memory bus
 
-  constant ID_WIDTH                       : natural := N_TAG_MANAGERS_W;
+  constant ID_WIDTH                       : natural := 6;
     -- Bitwidth of the read & write id channels of AXI4
     -- RENDERLO CONFIGURABILE DA TOP LEVEL, dipende dagli altri master collegati all'AXI
     -- O LASCIARLO AL MINIMO INDISPENSABILE E ADATTARE NEL SOC?
