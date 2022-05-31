@@ -162,16 +162,11 @@ save_bd_design
 
 update_compile_order -fileset sources_1
 
-#set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m0]
-#set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m1]
-#set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m2]
-#set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m3]
-#set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/s]
-set_property CONFIG.FREQ_HZ 249975000 [get_bd_intf_pins /FGPU_0/m0]
-set_property CONFIG.FREQ_HZ 249975000 [get_bd_intf_pins /FGPU_0/m1]
-set_property CONFIG.FREQ_HZ 249975000 [get_bd_intf_pins /FGPU_0/m2]
-set_property CONFIG.FREQ_HZ 249975000 [get_bd_intf_pins /FGPU_0/m3]
-set_property CONFIG.FREQ_HZ 249975000 [get_bd_intf_pins /FGPU_0/s]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m0]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m1]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m2]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m3]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/s]
 save_bd_design
 
 update_compile_order -fileset sources_1
