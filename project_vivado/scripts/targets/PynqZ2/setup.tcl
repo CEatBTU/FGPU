@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-set project_part  xczu3eg-sbva484-1-e
-set project_board em.avnet.com:ultra96v1:part0:1.2
+set project_part  xc7z020clg400-1
+set project_board tul.com.tw:pynq-z2:part0:1.0
 
 

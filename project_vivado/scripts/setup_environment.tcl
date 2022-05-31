@@ -71,7 +71,6 @@ set num_threads 4
 
 # Set the target board
 set target_board "ZC706"
-#set target_board "Ultra96"
 #set target_board "ZedBoard"
 # The target frequency (in MHz) for implementation
 set FREQ        100
