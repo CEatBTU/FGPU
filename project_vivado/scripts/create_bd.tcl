@@ -18,7 +18,7 @@
 ##############################################################################
 
 #Copy FGPU_definitions from RTL folder to the FGPU IP hdl
-file copy -force ${path_repository}/RTL/FGPU_definitions.vhd ${path_fgpu_ip}/hdl/
+file copy -force ${path_repository}/RTL/db/fgpu_definitions_pkg.vhd ${path_fgpu_ip}/hdl/
 
 # Guard clause to ensure everything is properly set up
 if (![info exists set_up_fgpu_environment]) {
@@ -97,10 +97,14 @@ Master "/FGPU_0/m3" Clk "/clk_wiz_0/clk_out1 ($FREQ MHz)" \
 } [get_bd_intf_pins processing_system7_0/S_AXI_HP3]
 save_bd_design
 
+connect_bd_net [get_bd_pins FGPU_0/axi_clk] [get_bd_pins clk_wiz_0/clk_out1]
+connect_bd_net [get_bd_pins FGPU_0/axi_aresetn] [get_bd_pins rst_clk_wiz_0_${FREQ}M/peripheral_aresetn]
+save_bd_design
+
 #apply block diagram automation (connect ports of the slave interface of FGPU)
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { \
 Master "/processing_system7_0/M_AXI_GP0" Clk "/clk_wiz_0/clk_out1 ($FREQ MHz)" \
-} [get_bd_intf_pins FGPU_0/S0]
+} [get_bd_intf_pins FGPU_0/s]
 
 # if not already connected
 if {[string first "FCLK_RESET0_N" [get_bd_nets]] || [string first "FCLK_CLK0" [get_bd_nets]]} {
@@ -129,7 +133,14 @@ if {${target_board} == "ZedBoard"} {
 save_bd_design
 
 update_compile_order -fileset sources_1
+#Set manually the frequency of s and m0 of the FGPU to the chosen Frequency (Explanation: As one design decision was to disconnect m0 and s 's clock from the main FGPU clk signal, the values are no longer automatically propagated. 
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m0]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m1]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m2]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/m3]
+set_property CONFIG.FREQ_HZ ${FREQ}000000 [get_bd_intf_pins /FGPU_0/s]
 
+update_compile_order -fileset sources_1
 #create wrapper
 make_wrapper -files [get_files ${path_project}/${name_project}.srcs/sources_1/bd/${name_bd}/${name_bd}.bd] -top
 add_files -norecurse ${path_project}/${name_project}.srcs/sources_1/bd/${name_bd}/hdl/${name_bd}_wrapper.vhd
