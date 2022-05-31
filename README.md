@@ -11,7 +11,7 @@ This repository contains the following resources:
 - **An RTL description of the FGPU architecture**, in VHDL, which can be used for behavioral simulation and FPGA-targeted implementation -- see the [RTL](rtl/) folder.
 - **An LLVM-based FGPU compiler** -- see the the [compiler](compiler/) folder.
 - **Files for running behavioral simulation in Mentor ModelSim** -- see the [project_modelsim](project_modelsim/) folder.
-- **Files for setting up simulation and implementation projects in Xilinx Vivado**. In the current version, only the [Zynq-7000 ZC706] board is supported -- see the [project_vivado](project_vivado/) folder.
+- **Files for setting up simulation and implementation projects in Xilinx Vivado**. 
 - **Pre-generated bitstreams** to quickly test FGPU applications in the [Zynq-7000 ZC706], skipping the HW generation step -- see the [bitstreams](bitstreams/) folder.
 - **Examples of OpenCL kernels** for execution in the FGPU -- see the [kernels](kernels/) folder.
 - **Examples of complete benchmarks** for execution in an ARM+FGPU processing system configured using the Vivado SDK -- see the [benchmark](benchmark/) folder.
@@ -35,12 +35,10 @@ The Xilinx Vivado platform will be used to generate the hardware implementation 
 ## Supported Platforms / Tools
 
 - The current version of the repository has been tested in both Windows and Linux.
-- The implementation was tested in Xilinx Vivado v2016.2 and v2017.2, but only a 1CU with atomic implementation version is working on the v2017.2
+- The implementation was tested in Xilinx Vivado v2017.2, v2019.2, and v2020.2.
 - The simulation was tested in Mentor ModelSim 2020.1
 - The VHDL code uses some VHDL-2008 constructs, which may be unsupported in some tools.
-- Only the [Zynq-7000 ZC706] and the [ZedBoard] boards are currently supported.
-    - We are currently working on extending the support for other boards.
-- Only limited testing has been done with changing the the FGPU hardware parameters (size etc.). The current settings in `fgpu_definitions.vhd` have worked in the implementation and simulation flows.  
+- Easily portable to ZYNQ devices. For Ultrascale+ architecture, check branch ultrascale.
 
 ## Known Bugs
 
