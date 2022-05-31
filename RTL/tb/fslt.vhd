@@ -74,6 +74,7 @@ ARCHITECTURE fslt_arch OF fslt IS
   COMPONENT floating_point_v7_1_11 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
+      C_PART : STRING;
       C_HAS_ADD : INTEGER;
       C_HAS_SUBTRACT : INTEGER;
       C_HAS_MULTIPLY : INTEGER;
@@ -197,7 +198,8 @@ ARCHITECTURE fslt_arch OF fslt IS
 BEGIN
   U0 : floating_point_v7_1_11
     GENERIC MAP (
-      C_XDEVICEFAMILY => "zynq",
+      C_XDEVICEFAMILY => "zynquplus",
+      C_PART => "xczu3eg-sbva484-1-e",
       C_HAS_ADD => 0,
       C_HAS_SUBTRACT => 0,
       C_HAS_MULTIPLY => 0,
@@ -230,7 +232,7 @@ BEGIN
       C_C_FRACTION_WIDTH => 24,
       C_RESULT_WIDTH => 1,
       C_RESULT_FRACTION_WIDTH => 0,
-      C_COMPARE_OPERATION => 1,
+      C_COMPARE_OPERATION => 8,
       C_LATENCY => 2,
       C_OPTIMIZATION => 1,
       C_MULT_USAGE => 0,
@@ -256,7 +258,7 @@ BEGIN
       C_HAS_C => 0,
       C_HAS_C_TUSER => 0,
       C_HAS_C_TLAST => 0,
-      C_HAS_OPERATION => 0,
+      C_HAS_OPERATION => 1,
       C_HAS_OPERATION_TUSER => 0,
       C_HAS_OPERATION_TLAST => 0,
       C_HAS_RESULT_TUSER => 0,

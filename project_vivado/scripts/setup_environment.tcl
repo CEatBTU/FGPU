@@ -70,10 +70,13 @@ set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 set num_threads 4
 
 # Set the target board
-set target_board "ZC706"
+#set target_board "ZC706"
+#set target_board "Ultra96"
+set target_board "ZCU102"
+#set target_board "ZCU104"
 #set target_board "ZedBoard"
-# The target frequency (in MHz) for implementation
-set FREQ        100
+# The target frequency for implementation
+set FREQ        250
 
 ##############################################################################
 ### These variables below will likely be impacted by the version of Vivado ###

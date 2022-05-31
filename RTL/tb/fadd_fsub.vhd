@@ -76,6 +76,7 @@ ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
   COMPONENT floating_point_v7_1_11 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
+      C_PART : STRING;
       C_HAS_ADD : INTEGER;
       C_HAS_SUBTRACT : INTEGER;
       C_HAS_MULTIPLY : INTEGER;
@@ -202,7 +203,8 @@ ARCHITECTURE fadd_fsub_arch OF fadd_fsub IS
 BEGIN
   U0 : floating_point_v7_1_11
     GENERIC MAP (
-      C_XDEVICEFAMILY => "zynq",
+      C_XDEVICEFAMILY => "zynquplus",
+      C_PART => "xczu3eg-sbva484-1-e",
       C_HAS_ADD => 1,
       C_HAS_SUBTRACT => 1,
       C_HAS_MULTIPLY => 0,

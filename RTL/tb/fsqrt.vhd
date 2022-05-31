@@ -72,6 +72,7 @@ ARCHITECTURE fsqrt_arch OF fsqrt IS
   COMPONENT floating_point_v7_1_11 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
+      C_PART : STRING;
       C_HAS_ADD : INTEGER;
       C_HAS_SUBTRACT : INTEGER;
       C_HAS_MULTIPLY : INTEGER;
@@ -192,7 +193,8 @@ ARCHITECTURE fsqrt_arch OF fsqrt IS
 BEGIN
   U0 : floating_point_v7_1_11
     GENERIC MAP (
-      C_XDEVICEFAMILY => "zynq",
+      C_XDEVICEFAMILY => "zynquplus",
+      C_PART => "xczu3eg-sbva484-1-e",
       C_HAS_ADD => 0,
       C_HAS_SUBTRACT => 0,
       C_HAS_MULTIPLY => 0,
