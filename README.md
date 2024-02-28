@@ -1,9 +1,7 @@
 FGPU is a soft GPU-like architecture for FPGAs. It is described in VHDL, fully customizable, and can be programmed using OpenCL.
 
-FGPU is currently being developed and maintained by the [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg], in Germany. It was [originally developed](https://github.com/malkadi/FGPU) by Muhammed Al Kadi from the [Ruhr University Bochum], in Germany.
+FGPU is currently being developed and maintained by the [Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg](https://www.b-tu.de/en/fg-technische-informatik/), in Germany. It was [originally developed](https://github.com/malkadi/FGPU) by Muhammed Al Kadi from the [Ruhr University Bochum](https://www.ei.ruhr-uni-bochum.de/fakultaet/), in Germany. Also, a key collaborator has been [University of Pisa](https://www.dii.unipi.it/en/).
 
-[Chair of Computer Engineering at the Brandenburg University of Technology Cottbus-Senftenberg]: https://www.b-tu.de/en/computer-engineering-group
-[Ruhr University Bochum]: https://www.ei.ruhr-uni-bochum.de/fakultaet/
 
 # Contents and Structure of the FGPU Repository
 
@@ -35,10 +33,10 @@ The Xilinx Vivado platform will be used to generate the hardware implementation 
 ## Supported Platforms / Tools
 
 - The current version of the repository has been tested in both Windows and Linux.
-- The implementation was tested in Xilinx Vivado v2017.2, v2019.2, and v2020.2.
+- The implementation was tested in Xilinx Vivado v2017.2, v2019.2, v2020.2, and v2021.1.
 - The simulation was tested in Mentor ModelSim 2020.1
 - The VHDL code uses some VHDL-2008 constructs, which may be unsupported in some tools.
-- Easily portable to ZYNQ devices. For Ultrascale+ architecture, check branch ultrascale.
+- Easily portable to other ZYNQ devices. For Ultrascale+ architecture, check branch ultrascale.
 
 ## Known Bugs
 
@@ -57,3 +55,7 @@ The Xilinx Vivado platform will be used to generate the hardware implementation 
 
 [Zynq-7000 ZC706]: https://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html
 [ZedBoard]: http://zedboard.org/product/zedboard
+
+## Collaborators
+
+Special thanks to the Department of Information Engineering, University of Pisa for collaborating in making the FGPU more robust. 
