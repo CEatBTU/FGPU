@@ -1,3 +1,8 @@
+-- Register file memory that is instantiated within the CV (more specifically, within the alu block).
+-- Each WI has 32 32-bit long registers.
+-- Each CV must be able to infer the register files of its 512 WIs on the FPGA logic and switch between them without any delay.
+-- Register files may be written by the result of fixed or floating-point operations, logical instructions or memory loads from scratchpads or global memory.
+
 -- libraries -------------------------------------------------------------------------------------------{{{
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -9,41 +14,66 @@ use fgpu.components.all;
 ---------------------------------------------------------------------------------------------------------}}}
 entity regFile is
 port(
-  rs_addr, rt_addr    : in unsigned(REG_FILE_BLOCK_W-1 downto 0); -- level 2.
+  rs_addr             : in unsigned(REG_FILE_BLOCK_W-1 downto 0); -- level 2.
+    -- rs operand read address
+  rt_addr             : in unsigned(REG_FILE_BLOCK_W-1 downto 0); -- level 2.
+    -- rt operand read address
   rd_addr             : in unsigned(REG_FILE_BLOCK_W-1 downto 0); -- level 2.
+    -- rd operand read address
   re                  : in std_logic; -- level 2.
+    -- read enable
 
   rs                  : out std_logic_vector(DATA_W-1 downto 0); -- level 7.
+    -- read rs
   rt                  : out std_logic_vector(DATA_W-1 downto 0); -- level 6.
+    -- read rt
   rd                  : out std_logic_vector(DATA_W-1 downto 0); -- level 8.
+    -- read rd
 
   we                  : in std_logic; -- level 18.
+    -- write-enable
   wrAddr              : in unsigned(REG_FILE_BLOCK_W-1 downto 0); -- level 18.
+    -- write address
   wrData              : in std_logic_vector(DATA_W-1 downto 0); -- level 18.
+    -- write data
 
   clk, nrst           : in std_logic
 );
 end entity;
 
 architecture Behavioral of regFile is
+
   -- signals definitions {{{
   signal regFile_rdAddr                   : unsigned(REG_FILE_BLOCK_W-1 downto 0);
+    -- registered version of register file read address
   signal regFile_rdAddr_n                 : unsigned(REG_FILE_BLOCK_W-1 downto 0);
+    -- register file read address
   signal regFile_outData                  : std_logic_vector(DATA_W-1 downto 0);
+    -- registered version of register file output data
   signal regFile_outData_n                : std_logic_vector(DATA_W-1 downto 0);
+    -- register file output data
   -- signal clk_stable_int                   : std_logic;
 
   signal regFile512 : SLV32_ARRAY(0 to REG_FILE_BLOCK_SIZE-1) := (others => (others => '0'));
 
   type read_state_type is (prepare_rt_addr, read_rs, read_rt, read_rd);
   signal state, state_n                   : read_state_type;
+    -- state of the register file read FSM
+
   type read_state_vec_type is array (natural range<>) of read_state_type;
   signal state_vec                        : read_state_vec_type(5 downto 0);
-  -- signal rs_n, rt_n, rd_n                 : std_logic_vector(DATA_W-1 downto 0);
+    -- state_vec(5 downto 0) <= state & state_vec(5 downto 1)
+
   signal we_d0                            : std_logic;
-  -- signal wrAddr_clk2x                     : unsigned(REG_FILE_BLOCK_W-1 downto 0);
+    -- registered write-enable
   signal wrData_d0                        : std_logic_vector(DATA_W-1 downto 0);
+    -- registered write data
   signal wrAddr_d0                        : unsigned(REG_FILE_BLOCK_W-1 downto 0);
+    -- registered write address
+
+  -- signal wrAddr_clk2x                     : unsigned(REG_FILE_BLOCK_W-1 downto 0);
+  -- signal rs_n, rt_n, rd_n                 : std_logic_vector(DATA_W-1 downto 0);
+
   -- }}}
 begin
 
