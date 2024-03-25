@@ -159,7 +159,7 @@ begin
         sra_sign_high_d1 <= sra_sign_high_d0; -- @ 13.
 
         if sra_sign_set_to_ones = '1' then -- level 13.
-          sra_sign_high_d2 <= (others => '1');
+          sra_sign_high_d2 <= (others => '1'); -- @ 14.
         else
           sra_sign_high_d2 <= sra_sign_high_d1; -- @ 14.
         end if;
@@ -186,8 +186,8 @@ begin
     end if;
   end process;
 
-  res_low_p0 <= res_low_i(DATA_W-1 downto 0); -- @ 15.
-  sltu_true_p0 <= res_low_i(DATA_W); -- @ 15.
+  res_low_p0 <= res_low_i(DATA_W-1 downto 0); -- level 15.
+  sltu_true_p0 <= res_low_i(DATA_W); -- level 15.
   ---------------------------------------------------------------------------------------------------------}}}
 
 end architecture;

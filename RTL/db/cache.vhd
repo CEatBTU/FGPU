@@ -1,3 +1,8 @@
+-- A cache line contains 2^N = CACHE_N_BANKS words, each of which belongs to a different cache bank.
+-- The number of cache lines necessary to store an AXI burst are given by 2^L, with L = BURST_WORDS_W-N.
+-- The number of AXI burst that can be stored in the cache is given by 2^M, with M = BRMEM_ADDR_W-L.
+-- The cache size can be computed as 2^(N+L+M).
+
 -- libraries -------------------------------------------------------------------------------------------{{{
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

@@ -1,3 +1,8 @@
+-- This block connects the cache to the global memory through multiple AXI4 interfaces.
+-- FIFO memories are used to temporarily store data exchanged with the globabl memory.
+-- The number of write FIFOs is equal to the number of TAG manages.
+-- The number of read FIFOs depends on the burst size of the AXI transfers.
+
 -- libraries -------------------------------------------------------------------------------------------{{{
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -672,4 +677,3 @@ begin
   ---------------------------------------------------------------------------------------------------------------}}}
 
 end architecture;
-

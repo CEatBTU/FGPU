@@ -128,7 +128,7 @@ begin
         if nrst = '0' then
           atomic_rdData <= (others => '0'); -- ONE OF THESE IS NEEDED
 
-          rcv_half_select   <= '0'; -- NOT NEEDED
+          rcv_half_select   <= '0'; -- NEEDED
           check_rqst        <= '0'; -- NOT NEEDED
           rcv_atomic_ack    <= (others => '0'); -- NOT NEEDED
           rcv_slctd_indx    <= 0; -- NOT NEEDED
@@ -178,6 +178,7 @@ begin
           amax_exec <= '0';
           if check_rqst_d0 = '1' then
             case rqst_type is
+
               when CODE_AADD(2 downto 0) =>
                 if aadd_addr_v = '0' or aadd_gmem_addr /= rqst_gmem_addr then
                   if rcv_is_reading = '0' then
@@ -188,6 +189,7 @@ begin
                   rcv_retire(rcv_slctd_indx_d0) <= '1';
                   aadd_exec <= '1';
                 end if;
+
               when CODE_AMAX(2 downto 0) =>
                 if amax_addr_v = '0' or amax_gmem_addr /= rqst_gmem_addr then
                   if rcv_is_reading = '0' then
@@ -198,8 +200,10 @@ begin
                   rcv_retire(rcv_slctd_indx_d0) <= '1';
                   amax_exec <= '1';
                 end if;
+
               when others =>
                 assert(false);
+
             end case;
           end if;
           rqst_val <= unsigned(rcv_gmem_data(rcv_slctd_indx_d0));
@@ -401,7 +405,7 @@ begin
 
     process(st_amax, check_rqst_d0, rqst_type, amax_gmem_addr, rqst_gmem_addr, gmem_rdData_v_p0, gmem_rdAddr_p0, amax_data, gmem_rdData_ltchd,
             amax_addr_v, amax_exec, rqst_val, finish)
-      variable word_indx  : integer range 0 to GMEM_N_BANK-1 := 0;
+      variable word_indx  : integer range 0 to CACHE_N_BANKS-1 := 0;
       -- variable n_amax_exec : integer := 0;
       -- variable written_vals : std_logic_vector(2047 downto 0) := (others => '0');
       -- variable written_index : integer range 0 to 2047 := 0;
@@ -489,7 +493,7 @@ begin
 
     process(st_aadd, check_rqst_d0, rqst_type, aadd_gmem_addr, rqst_gmem_addr, gmem_rdData_v_p0, gmem_rdAddr_p0, aadd_data, gmem_rdData_ltchd,
             aadd_addr_v, aadd_exec, rqst_val, finish)
-      variable word_indx  : integer range 0 to GMEM_N_BANK-1 := 0;
+      variable word_indx  : integer range 0 to CACHE_N_BANKS-1 := 0;
       -- variable n_aadd_exec : integer := 0;
       -- variable written_vals : std_logic_vector(2047 downto 0) := (others => '0');
       -- variable written_index : integer range 0 to 2047 := 0;
@@ -519,6 +523,8 @@ begin
 
         when select_word =>
           word_indx := to_integer(aadd_gmem_addr(N-1 downto 0));
+          -- Should be changed with: ???
+          -- --> word_indx := 1 when aadd_gmem_addr(0) else 0;
           aadd_data_n <= unsigned(gmem_rdData_ltchd(DATA_W*(word_indx+1)-1 downto DATA_W*word_indx));
           st_aadd_n <= functioning;
           aadd_addr_v_n <= '1';

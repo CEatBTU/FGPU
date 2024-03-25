@@ -60,6 +60,10 @@ port(
   write_pipe_active   : in std_logic_vector(4 downto 0);
   write_pipe_wrTag    : in tag_addr_array(4 downto 0);
 
+  -- debug
+  debug_cache_miss_counter  : out unsigned(DATA_W-1 downto 0);
+  debug_reset_all_counters  : in std_logic;
+
   clk, nrst           : in std_logic
 );
 end entity;  -- }}}
@@ -85,7 +89,7 @@ architecture basic of gmem_cntrl_tag is
     end loop;
     return res;
   end function;
-  constant c_rd_fifo_axi                : nat_array(N_TAG_MANAGERS-1 downto 0) := map_rd_fifo_to_axis(N_TAG_MANAGERS, N_AXI);
+  constant c_rd_fifo_axi                  : nat_array(N_TAG_MANAGERS-1 downto 0) := map_rd_fifo_to_axis(N_TAG_MANAGERS, N_AXI);
   -- }}}
 
   -- mem signals {{{
@@ -170,8 +174,8 @@ architecture basic of gmem_cntrl_tag is
     -- It helps to insure data consistency by using the B axi channel response to clear it (necessary if the kernel reads/writes the same address region)
   signal tmanager_tag_protect_n           : tag_addr_array(N_TAG_MANAGERS-1 downto 0);
   signal tmanager_gmem_addr_protected     : std_logic_vector(N_TAG_MANAGERS-1 downto 0);
-  constant RCV_SERVED_WIAT_LEN            : natural := 2**(WRITE_PHASE_W+1);
-  type tmanager_rcv_served_wait_vec_type is array(natural range<>) of std_logic_vector(RCV_SERVED_WIAT_LEN-1 downto 0);
+  constant RCV_SERVED_WAIT_LEN            : natural := 2**(WRITE_PHASE_W+1);
+  type tmanager_rcv_served_wait_vec_type is array(natural range<>) of std_logic_vector(RCV_SERVED_WAIT_LEN-1 downto 0);
   signal tmanager_rcv_served_wait_vec     : tmanager_rcv_served_wait_vec_type(N_TAG_MANAGERS-1 downto 0);
     -- helps a tag manager to wait for some time before issuing a receiver that its write requested has been executed
   signal tmanager_rcv_served_wait_vec_n   : std_logic_vector(N_TAG_MANAGERS-1 downto 0);
@@ -205,21 +209,21 @@ architecture basic of gmem_cntrl_tag is
   --}}}
 
   -- dirty signals {{{
-  signal dirty                    : std_logic_vector(2**M-1 downto 0);
-  signal we_dirty, we_dirty_n              : std_logic;
-  signal wrData_dirty, wrData_dirty_n          : std_logic;
-  signal wrAddr_dirty, wrAddr_dirty_n          : unsigned(M-1 downto 0);
-  signal rdAddr_dirty, rdAddr_dirty_n          : tag_addr_array(N_TAG_MANAGERS-1 downto 0);
-  signal rdData_dirty                  : std_logic_vector(N_TAG_MANAGERS-1 downto 0);
+  signal dirty                            : std_logic_vector(2**M-1 downto 0);
+  signal we_dirty, we_dirty_n             : std_logic;
+  signal wrData_dirty, wrData_dirty_n     : std_logic;
+  signal wrAddr_dirty, wrAddr_dirty_n     : unsigned(M-1 downto 0);
+  signal rdAddr_dirty, rdAddr_dirty_n     : tag_addr_array(N_TAG_MANAGERS-1 downto 0);
+  signal rdData_dirty                     : std_logic_vector(N_TAG_MANAGERS-1 downto 0);
   -- }}}
 
   -- axi signals {{{
   type axi_interface is (find_free_fifo, issue_order);
   type wr_fifo_indx_array is array (0 to N_TAG_MANAGERS-1) of natural range 0 to N_WR_FIFOS-1;
   type axi_wr_channel_indx is array (0 to N_TAG_MANAGERS-1) of natural range 0 to N_AXI-1;
-  signal st_axi_wr, st_axi_wr_n            : axi_interface;
-  signal axi_wrAddr_n                  : gmem_addr_array_no_bank(N_AXI-1 downto 0);
-  signal axi_wr_indx_tmanager, axi_wr_indx_tmanager_n  : axi_wr_channel_indx;
+  signal st_axi_wr, st_axi_wr_n                       : axi_interface;
+  signal axi_wrAddr_n                                 : gmem_addr_array_no_bank(N_AXI-1 downto 0);
+  signal axi_wr_indx_tmanager, axi_wr_indx_tmanager_n : axi_wr_channel_indx;
   --}}}
 
   -- final cache clean signals {{{
@@ -237,12 +241,12 @@ architecture basic of gmem_cntrl_tag is
   signal finish_exec_masked               : std_logic;
   signal finish_exec_masked_n             : std_logic;
   type finish_fifo_type is array(natural range <>) of unsigned(TAG_W+M-1 downto 0);
-  signal finish_fifo                     : finish_fifo_type(2**FINISH_FIFO_ADDR_W-1 downto 0);
-  signal finish_fifo_rdAddr              : unsigned(FINISH_FIFO_ADDR_W-1 downto 0);
-  signal finish_fifo_wrAddr              : unsigned(FINISH_FIFO_ADDR_W-1 downto 0);
-  signal finish_fifo_dout                : unsigned(TAG_W+M-1 downto 0);
-  signal finish_fifo_pop, finish_fifo_push_n      : std_logic;
-  signal finish_fifo_push                : std_logic_vector(1 downto 0);
+  signal finish_fifo                            : finish_fifo_type(2**FINISH_FIFO_ADDR_W-1 downto 0);
+  signal finish_fifo_rdAddr                     : unsigned(FINISH_FIFO_ADDR_W-1 downto 0);
+  signal finish_fifo_wrAddr                     : unsigned(FINISH_FIFO_ADDR_W-1 downto 0);
+  signal finish_fifo_dout                       : unsigned(TAG_W+M-1 downto 0);
+  signal finish_fifo_pop, finish_fifo_push_n    : std_logic;
+  signal finish_fifo_push                       : std_logic_vector(1 downto 0);
   type st_fill_finish_fifo_type is (idle1, idle2, pre_active, active, finish);
   signal st_fill_finish_fifo, st_fill_finish_fifo_n  : st_fill_finish_fifo_type;
   signal finish_fifo_n_rqsts, finish_fifo_n_rqsts_n  : integer range 0 to 2**FINISH_FIFO_ADDR_W;
@@ -264,12 +268,18 @@ architecture basic of gmem_cntrl_tag is
   signal wait_for_write_response_n        : std_logic_vector(N_TAG_MANAGERS-1 downto 0);
   ---------------------------------------------------------------------------------------------------------}}}
 
+  -- debug signals {{{
+  signal debug_cache_miss_counter_i, debug_cache_miss_counter_n     : unsigned(DATA_W-1 downto 0);
+    -- counts how many times the we_tag signal rises
+  -- }}}
+
 begin
 
   -- internal signals assignments -------------------------------------------------------------------------{{{
   axi_wrAddr <= axi_wrAddr_i;
   assert N_RD_FIFOS_TAG_MANAGER_W = 0 report "There must be a single rd fifo (from cache) for each tag manager. Otherwise b channel communcation fails!" severity failure;
   rdData_tag <= rdData_tag_i;
+  debug_cache_miss_counter <= debug_cache_miss_counter_i; -- debug
   ---------------------------------------------------------------------------------------------------------}}}
 
   -- error handling-------------------------------------------------------------------------------------------{{{
@@ -425,11 +435,11 @@ begin
         end if;
 
       when finish =>
-        finish_exec_masked_n <= '1';
+        finish_exec_masked_n  <= '1';
         if start_kernel = '1' then
-          st_fill_finish_fifo_n <= idle1;
-          finish_active_n <= '0';
           finish_exec_masked_n <= '0';
+          finish_active_n <= '0';
+          st_fill_finish_fifo_n <= idle1;
         end if;
 
     end case;
@@ -538,8 +548,8 @@ begin
       for i in 0 to N_TAG_MANAGERS-1 loop
         tmanager_tag_protect_vec(i)(TAG_PROTECT_LEN-2 downto 0) <= tmanager_tag_protect_vec(i)(TAG_PROTECT_LEN-1 downto 1);
         tmanager_tag_protect_vec(i)(TAG_PROTECT_LEN-1) <= tmanager_tag_protect_vec_n(i);
-        tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WIAT_LEN-2 downto 0) <= tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WIAT_LEN-1 downto 1);
-        tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WIAT_LEN-1) <= tmanager_rcv_served_wait_vec_n(i);
+        tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WAIT_LEN-2 downto 0) <= tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WAIT_LEN-1 downto 1);
+        tmanager_rcv_served_wait_vec(i)(RCV_SERVED_WAIT_LEN-1) <= tmanager_rcv_served_wait_vec_n(i);
       end loop;
 
       for i in N_TAG_MANAGERS-1 downto 0 loop
@@ -592,7 +602,7 @@ begin
         tmanager_tag_protect_v_n(i) <= tmanager_tag_protect_v(i);
       end if;
 
-      -- zulberti: default value
+
       tmanager_rcv_served_n(i) <= tmanager_rcv_served(i);
       --
 
@@ -633,7 +643,7 @@ begin
           end loop;
           -- }}}
 
-        when check_tag_being_processed => --check if the corresponding cache addr is being processed by another tmanager {{{
+        when check_tag_being_processed => -- check if the corresponding cache addr is being processed by another tmanager {{{
           -- if an address of the requested tag is already in the write pipeline; the FSM should go and try to pick up a new alloc request
           -- Otherwise it may  stay in this state, as long as no anther tmanager is processing the tag and the alloc request deasserted, e.g. another tmanager allocated the tag
           -- Processing a no more requested tag may lead to the following problem:
@@ -1065,8 +1075,11 @@ begin
     wrAddr_tag_v_n <= tmanager_gmem_addr(0)(M+L-1 downto L);
     if finish_active = '0' then
       if (alloc_tag and not clear_tag_tmanager) = (alloc_tag'reverse_range=>'0') then
+        -- no tmanager simultaneously has condition ( alloc_tag(i) = 1 and clear_tag_manager(i) = 0 ).
+        -- This condition indicates that a tmanager is allocating that particular tag.
+        -- Therefore, the condition above means: no other tmanager is simultaneously writing the corresponding tag_v.
         for i in 0 to N_TAG_MANAGERS-1 loop
-          if invalidate_tag(i) = '1' then
+          if invalidate_tag(i) = '1' then -- cleans up the corresponding value of tag_v
             invalidate_tag_ack(i) <= '1';
             we_tag_v_n <= '1';
             wrData_tag_v_n <= '0';
@@ -1075,10 +1088,13 @@ begin
           end if;
         end loop;
       else
+        -- there is at least one tmanager that simultaneously has the condition ( alloc_tag(i) = 1 and clear_tag_manager(i) = 0 )
         -- this write has priority and it happes at the same time a tag is written
         for i in 0 to N_TAG_MANAGERS-1 loop
           if alloc_tag(i) = '1' then
             if clear_tag_tmanager(i) = '0' then
+              -- executes the next 3 lines of code for precisely those tmanagers for which the condition ( alloc_tag(i) = 1 and clear_tag_manager(i) = 0 ) applies.
+              -- sets the corresponding  value of tag_v to 1
               we_tag_v_n <= '1';
               wrAddr_tag_v_n <= tmanager_gmem_addr(i)(M+L-1 downto L);
               wrData_tag_v_n <= '1';
@@ -1301,7 +1317,7 @@ begin
     wrData_page_v_n <= '0';
     wrAddr_page_v_n <= tmanager_gmem_addr(0)(M+L-1 downto L);
     for i in 0 to N_TAG_MANAGERS-1 loop
-      if invalidate_page(i) = '1' then
+      if invalidate_page(i) = '1' then  -- cleans up the corresponding value of page_v
         page_v_tmanager_ack(i) <= '1';
         we_page_v_n <= '1';
         wrData_page_v_n <= '0';
@@ -1381,5 +1397,41 @@ begin
     end loop;
   end process;
   ---------------------------------------------------------------------------------------------------------}}}
+
+  -- debug -----------------------------------------------------------------------------------{{{
+
+  DEBUG_GEN_FALSE: if DEBUG_IMPLEMENT = 0 generate
+    debug_cache_miss_counter_i <= (others => '0');
+    debug_cache_miss_counter_n <= (others => '0');
+  end generate;
+
+  DEBUG_GEN_TRUE: if DEBUG_IMPLEMENT /= 0 generate
+
+    process(clk)
+    begin
+      if rising_edge(clk) then
+        if nrst = '0' then
+          debug_cache_miss_counter_i <= (others => '0');
+        else
+          if (debug_reset_all_counters = '1') then
+            debug_cache_miss_counter_i <= (others => '0');
+          else
+            debug_cache_miss_counter_i <= debug_cache_miss_counter_n;
+          end if;
+        end if;
+      end if;
+    end process;
+
+    process(we_tag, debug_cache_miss_counter_i)
+    begin
+        if (we_tag = '1') then
+          debug_cache_miss_counter_n <= debug_cache_miss_counter_i + 1;
+        else
+          debug_cache_miss_counter_n <= debug_cache_miss_counter_i;
+        end if;
+    end process;
+
+  end generate;
+  -- }}}
 
 end architecture;

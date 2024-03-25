@@ -60,6 +60,11 @@ port(
   axi_bready          : out std_logic_vector(N_AXI-1 downto 0);
   axi_bid             : in id_array(N_AXI-1 downto 0);
   -- }}}
+
+  -- debug
+  debug_cache_miss_counter  : out unsigned(DATA_W-1 downto 0);
+  debug_reset_all_counters  : in std_logic;
+
   nrst                : in std_logic
 );
 end gmem_cntrl; --}}}
@@ -715,54 +720,57 @@ begin
 
   tags_controller: gmem_cntrl_tag
   port map(
-    clk               => clk,
-    wr_fifo_go        => wr_fifo_go,
-    axi_writer_go     => axi_writer_go,
-    axi_writer_ack    => axi_writer_ack,
-    axi_writer_id     => axi_writer_id,
-    wr_fifo_free      => wr_fifo_free,
-    axi_writer_free   => axi_writer_free,
-    axi_rd_fifo_filled=> rd_fifo_cache_ack,
-    axi_rdAddr        => axi_rdAddr,
-    axi_wrAddr        => axi_wrAddr,
-    wr_fifo_cache_ack => wr_fifo_cache_ack,
-    axi_wvalid        => axi_wvalid_i,
+    clk                       => clk,
+    wr_fifo_go                => wr_fifo_go,
+    axi_writer_go             => axi_writer_go,
+    axi_writer_ack            => axi_writer_ack,
+    axi_writer_id             => axi_writer_id,
+    wr_fifo_free              => wr_fifo_free,
+    axi_writer_free           => axi_writer_free,
+    axi_rd_fifo_filled        => rd_fifo_cache_ack,
+    axi_rdAddr                => axi_rdAddr,
+    axi_wrAddr                => axi_wrAddr,
+    wr_fifo_cache_ack         => wr_fifo_cache_ack,
+    axi_wvalid                => axi_wvalid_i,
 
     --receivers signals
-    rcv_alloc_tag     => rcv_alloc_tag,
-    rcv_rnw           => rcv_rnw,
-    rcv_gmem_addr     => rcv_gmem_addr,
+    rcv_alloc_tag             => rcv_alloc_tag,
+    rcv_rnw                   => rcv_rnw,
+    rcv_gmem_addr             => rcv_gmem_addr,
 
-    rcv_read_tag      => rcv_read_tag,
-    rcv_read_tag_ack  => rcv_read_tag_ack,
+    rcv_read_tag              => rcv_read_tag,
+    rcv_read_tag_ack          => rcv_read_tag_ack,
 
-    rdData_page_v     => rdData_page_v,
-    rdData_tag_v      => rdData_tag_v,
-    rdData_tag        => rdData_tag,
+    rdData_page_v             => rdData_page_v,
+    rdData_tag_v              => rdData_tag_v,
+    rdData_tag                => rdData_tag,
 
-    rcv_tag_written   => rcv_tag_written,
-    rcv_tag_updated   => rcv_tag_updated,
-    rcv_page_validated=> rcv_page_validated,  -- it is a one-cycle message
+    rcv_tag_written           => rcv_tag_written,
+    rcv_tag_updated           => rcv_tag_updated,
+    rcv_page_validated        => rcv_page_validated,  -- it is a one-cycle message
 
-    cache_we          => cache_we,
-    cache_addra       => cache_addra,
-    cache_wea         => cache_wea,
+    cache_we                  => cache_we,
+    cache_addra               => cache_addra,
+    cache_wea                 => cache_wea,
 
     --finish
-    WGsDispatched     => WGsDispatched,
-    CUs_gmem_idle     => CUs_gmem_idle,
-    rcv_all_idle      => rcv_all_idle,
-    rcv_idle          => rcv_idle,
-    finish_exec       => finish_exec_i,
-    start_kernel      => start_kernel,
-    clean_cache       => clean_cache,
-    atomic_can_finish => atomic_can_finish,
+    WGsDispatched             => WGsDispatched,
+    CUs_gmem_idle             => CUs_gmem_idle,
+    rcv_all_idle              => rcv_all_idle,
+    rcv_idle                  => rcv_idle,
+    finish_exec               => finish_exec_i,
+    start_kernel              => start_kernel,
+    clean_cache               => clean_cache,
+    atomic_can_finish         => atomic_can_finish,
 
     -- write pipeline
-    write_pipe_active => write_pipe_wrTag_valid,
-    write_pipe_wrTag  => write_pipe_wrTag,
+    write_pipe_active         => write_pipe_wrTag_valid,
+    write_pipe_wrTag          => write_pipe_wrTag,
 
-    nrst              => nrst
+    debug_cache_miss_counter  => debug_cache_miss_counter,
+    debug_reset_all_counters  => debug_reset_all_counters,
+
+    nrst                      => nrst
   );
   ---------------------------------------------------------------------------------------------------------}}}
 
@@ -997,7 +1005,7 @@ begin
               st_rcv_n(i) <= clean;
               rcv_alloc_tag_n(i) <= '1';
             else
-              if rcv_rnw(i) = '1' then
+              if rcv_rnw(i) = '1' then -- si può entrare davvero in questo if ???
                 st_rcv_n(i) <= read_cache;
                 rcv_perform_read_n(i) <= '1';
               else
@@ -1111,6 +1119,7 @@ begin
           if rcv_priority(i) /= (rcv_priority(i)'reverse_range=>'1') then
             rcv_priority_n(i) <= rcv_priority(i) + 1;
           end if; -- }}}
+
         when request_write_data => -- {{{
           if rcv_will_write(i) = '1' then
             st_rcv_n(i) <= write_cache;
