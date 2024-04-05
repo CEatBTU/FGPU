@@ -150,6 +150,18 @@ package components is
     );
   end component;
 
+  component div_unit
+    port(
+      clk, nrst        : in std_logic;
+
+      div_a, div_b     : in std_logic_vector(DATA_W-1 downto 0);
+      div_valid        : in std_logic;
+      code             : in std_logic_vector(CODE_W-1 downto 0);
+
+      res_div          : out std_logic_vector(DATA_W-1 downto 0)
+    );
+  end component;
+
   component float_units
     port(
       clk, nrst        : in std_logic;
@@ -188,97 +200,103 @@ package components is
 
   component gmem_cntrl_tag
     port(
-      clk, nrst           : in std_logic;
-      wr_fifo_free        : in std_logic_vector(N_WR_FIFOS-1 downto 0);
-      wr_fifo_go          : out std_logic_vector(N_WR_FIFOS-1 downto 0);
-      wr_fifo_cache_ack   : in std_logic_vector(N_WR_FIFOS-1 downto 0);
-      axi_rdAddr          : out gmem_addr_array_no_bank(N_WR_FIFOS-1 downto 0);
-      axi_writer_go       : out std_logic_vector(N_AXI-1 downto 0);
-      axi_wrAddr          : out gmem_addr_array_no_bank(N_AXI-1 downto 0);
-      axi_writer_free     : in std_logic_vector(N_AXI-1 downto 0);
-      axi_rd_fifo_filled  : in std_logic_vector(N_AXI-1 downto 0);
-      axi_wvalid          : in std_logic_vector(N_AXI-1 downto 0);
-      axi_writer_ack      : in std_logic_vector(N_TAG_MANAGERS-1 downto 0);
-      axi_writer_id       : out std_logic_vector(N_TAG_MANAGERS_W-1 downto 0);
-      rcv_alloc_tag       : in std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_gmem_addr       : in gmem_word_addr_array(N_RECEIVERS-1 downto 0);
-      rcv_rnw             : in std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_tag_written     : out std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_tag_updated     : out std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_page_validated  : out std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_read_tag        : in std_logic_vector(N_RECEIVERS-1 downto 0);
-      rcv_read_tag_ack    : out std_logic_vector(N_RECEIVERS-1 downto 0);
-      rdData_page_v       : out std_logic_vector(N_RD_PORTS-1 downto 0);
-      rdData_tag_v        : out std_logic_vector(N_RD_PORTS-1 downto 0);
-      rdData_tag          : out tag_array(N_RD_PORTS-1 downto 0);
-      cache_we            : in std_logic;
-      cache_addra         : in unsigned(M+L-1 downto 0);
-      cache_wea           : in std_logic_vector((2**N)*DATA_W/8-1 downto 0);
-      WGsDispatched       : in std_logic;
-      CUs_gmem_idle       : in std_logic;
-      rcv_all_idle        : in std_logic;
-      rcv_idle            : in std_logic_vector(N_RECEIVERS-1 downto 0);
-      finish_exec         : out std_logic;
-      start_kernel        : in std_logic;
-      clean_cache         : in std_logic;
-      atomic_can_finish   : in std_logic;
-      write_pipe_active   : in std_logic_vector(4 downto 0);
-      write_pipe_wrTag    : in tag_addr_array(4 downto 0)
+      clk, nrst                 : in std_logic;
+      wr_fifo_free              : in std_logic_vector(N_WR_FIFOS-1 downto 0);
+      wr_fifo_go                : out std_logic_vector(N_WR_FIFOS-1 downto 0);
+      wr_fifo_cache_ack         : in std_logic_vector(N_WR_FIFOS-1 downto 0);
+      axi_rdAddr                : out gmem_addr_array_no_bank(N_WR_FIFOS-1 downto 0);
+      axi_writer_go             : out std_logic_vector(N_AXI-1 downto 0);
+      axi_wrAddr                : out gmem_addr_array_no_bank(N_AXI-1 downto 0);
+      axi_writer_free           : in std_logic_vector(N_AXI-1 downto 0);
+      axi_rd_fifo_filled        : in std_logic_vector(N_AXI-1 downto 0);
+      axi_wvalid                : in std_logic_vector(N_AXI-1 downto 0);
+      axi_writer_ack            : in std_logic_vector(N_TAG_MANAGERS-1 downto 0);
+      axi_writer_id             : out std_logic_vector(N_TAG_MANAGERS_W-1 downto 0);
+      rcv_alloc_tag             : in std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_gmem_addr             : in gmem_word_addr_array(N_RECEIVERS-1 downto 0);
+      rcv_rnw                   : in std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_tag_written           : out std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_tag_updated           : out std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_page_validated        : out std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_read_tag              : in std_logic_vector(N_RECEIVERS-1 downto 0);
+      rcv_read_tag_ack          : out std_logic_vector(N_RECEIVERS-1 downto 0);
+      rdData_page_v             : out std_logic_vector(N_RD_PORTS-1 downto 0);
+      rdData_tag_v              : out std_logic_vector(N_RD_PORTS-1 downto 0);
+      rdData_tag                : out tag_array(N_RD_PORTS-1 downto 0);
+      cache_we                  : in std_logic;
+      cache_addra               : in unsigned(M+L-1 downto 0);
+      cache_wea                 : in std_logic_vector((2**N)*DATA_W/8-1 downto 0);
+      WGsDispatched             : in std_logic;
+      CUs_gmem_idle             : in std_logic;
+      rcv_all_idle              : in std_logic;
+      rcv_idle                  : in std_logic_vector(N_RECEIVERS-1 downto 0);
+      finish_exec               : out std_logic;
+      start_kernel              : in std_logic;
+      clean_cache               : in std_logic;
+      atomic_can_finish         : in std_logic;
+      write_pipe_active         : in std_logic_vector(4 downto 0);
+      write_pipe_wrTag          : in tag_addr_array(4 downto 0);
+      debug_cache_miss_counter  : out unsigned(DATA_W-1 downto 0);
+      debug_reset_all_counters  : in std_logic
     );
   end component;
 
   component gmem_cntrl
     port(
-      clk                 : in std_logic;
-      start_kernel        : in std_logic;
-      clean_cache         : in std_logic;
-      WGsDispatched       : in std_logic;
-      CUs_gmem_idle       : in std_logic;
-      finish_exec         : out std_logic;
+      clk                       : in std_logic;
+      start_kernel              : in std_logic;
+      clean_cache               : in std_logic;
+      WGsDispatched             : in std_logic;
+      CUs_gmem_idle             : in std_logic;
+      finish_exec               : out std_logic;
 
-      cu_valid            : in std_logic_vector(N_CU-1 downto 0);
-      cu_ready            : out std_logic_vector(N_CU-1 downto 0);
-      cu_we               : in be_array(N_CU-1 downto 0);
-      cu_rnw, cu_atomic   : in std_logic_vector(N_CU-1 downto 0);
-      cu_atomic_sgntr     : in atomic_sgntr_array(N_CU-1 downto 0);
-      cu_rqst_addr        : in GMEM_WORD_ADDR_ARRAY(N_CU-1 downto 0);
-      cu_wrData           : in SLV32_ARRAY(N_CU-1 downto 0);
+      cu_valid                  : in std_logic_vector(N_CU-1 downto 0);
+      cu_ready                  : out std_logic_vector(N_CU-1 downto 0);
+      cu_we                     : in be_array(N_CU-1 downto 0);
+      cu_rnw, cu_atomic         : in std_logic_vector(N_CU-1 downto 0);
+      cu_atomic_sgntr           : in atomic_sgntr_array(N_CU-1 downto 0);
+      cu_rqst_addr              : in GMEM_WORD_ADDR_ARRAY(N_CU-1 downto 0);
+      cu_wrData                 : in SLV32_ARRAY(N_CU-1 downto 0);
 
-      rdAck               : out std_logic_vector(N_CU-1 downto 0);
-      rdAddr              : out unsigned(GMEM_WORD_ADDR_W-1-CACHE_N_BANKS_W downto 0);
-      rdData              : out std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
-      atomic_rdData       : out std_logic_vector(DATA_W-1 downto 0);
-      atomic_rdData_v     : out std_logic_vector(N_CU-1 downto 0);
-      atomic_sgntr        : out std_logic_vector(N_CU_STATIONS_W-1 downto 0);
+      rdAck                     : out std_logic_vector(N_CU-1 downto 0);
+      rdAddr                    : out unsigned(GMEM_WORD_ADDR_W-1-CACHE_N_BANKS_W downto 0);
+      rdData                    : out std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
+      atomic_rdData             : out std_logic_vector(DATA_W-1 downto 0);
+      atomic_rdData_v           : out std_logic_vector(N_CU-1 downto 0);
+      atomic_sgntr              : out std_logic_vector(N_CU_STATIONS_W-1 downto 0);
 
 
-      axi_araddr          : out GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
-      axi_arvalid         : out std_logic_vector(N_AXI-1 downto 0);
-      axi_arready         : in std_logic_vector(N_AXI-1 downto 0);
-      axi_arid            : out id_array(N_AXI-1 downto 0);
+      axi_araddr                : out GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
+      axi_arvalid               : out std_logic_vector(N_AXI-1 downto 0);
+      axi_arready               : in std_logic_vector(N_AXI-1 downto 0);
+      axi_arid                  : out id_array(N_AXI-1 downto 0);
 
-      axi_rdata           : in gmem_word_array(N_AXI-1 downto 0);
-      axi_rlast           : in std_logic_vector(N_AXI-1 downto 0);
-      axi_rvalid          : in std_logic_vector(N_AXI-1 downto 0);
-      axi_rready          : out std_logic_vector(N_AXI-1 downto 0);
-      axi_rid             : in id_array(N_AXI-1 downto 0);
+      axi_rdata                 : in gmem_word_array(N_AXI-1 downto 0);
+      axi_rlast                 : in std_logic_vector(N_AXI-1 downto 0);
+      axi_rvalid                : in std_logic_vector(N_AXI-1 downto 0);
+      axi_rready                : out std_logic_vector(N_AXI-1 downto 0);
+      axi_rid                   : in id_array(N_AXI-1 downto 0);
 
-      axi_awaddr          : out GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
-      axi_awvalid         : out std_logic_vector(N_AXI-1 downto 0);
-      axi_awready         : in std_logic_vector(N_AXI-1 downto 0);
-      axi_awid            : out id_array(N_AXI-1 downto 0);
+      axi_awaddr                : out GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
+      axi_awvalid               : out std_logic_vector(N_AXI-1 downto 0);
+      axi_awready               : in std_logic_vector(N_AXI-1 downto 0);
+      axi_awid                  : out id_array(N_AXI-1 downto 0);
 
-      axi_wdata           : out gmem_word_array(N_AXI-1 downto 0);
-      axi_wstrb           : out gmem_be_array(N_AXI-1 downto 0);
-      axi_wlast           : out std_logic_vector(N_AXI-1 downto 0);
-      axi_wvalid          : out std_logic_vector(N_AXI-1 downto 0);
-      axi_wready          : in std_logic_vector(N_AXI-1 downto 0);
+      axi_wdata                 : out gmem_word_array(N_AXI-1 downto 0);
+      axi_wstrb                 : out gmem_be_array(N_AXI-1 downto 0);
+      axi_wlast                 : out std_logic_vector(N_AXI-1 downto 0);
+      axi_wvalid                : out std_logic_vector(N_AXI-1 downto 0);
+      axi_wready                : in std_logic_vector(N_AXI-1 downto 0);
 
-      axi_bvalid          : in std_logic_vector(N_AXI-1 downto 0);
-      axi_bready          : out std_logic_vector(N_AXI-1 downto 0);
-      axi_bid             : in id_array(N_AXI-1 downto 0);
+      axi_bvalid                : in std_logic_vector(N_AXI-1 downto 0);
+      axi_bready                : out std_logic_vector(N_AXI-1 downto 0);
+      axi_bid                   : in id_array(N_AXI-1 downto 0);
 
-      nrst                : in std_logic
+
+      debug_cache_miss_counter  : out unsigned(DATA_W-1 downto 0);
+      debug_reset_all_counters  : in std_logic;
+
+      nrst                      : in std_logic
     );
   end component;
 
@@ -397,6 +415,28 @@ package components is
     );
   end component;
 
+  component smem
+    port(
+      rqst                        : in std_logic; -- stage 0
+      we                          : in std_logic; -- stage 0
+      wrData                      : in SLV32_ARRAY(CV_SIZE - 1 downto 0);
+      rdData                      : out SLV32_ARRAY(CV_SIZE - 1 downto 0);
+      addr                        : in smem_addr_t(CV_SIZE-1 downto 0);
+      rd_addr                     : in unsigned(REG_FILE_W - 1 downto 0);
+      alu_en                      : in std_logic_vector(CV_SIZE - 1 downto 0);
+      rdData_rd_addr              : out unsigned(REG_FILE_W - 1 downto 0);
+      rdData_alu_en               : out std_logic_vector(CV_SIZE - 1 downto 0);
+      rdData_v                    : out std_logic;
+      num_wg_per_cu               : in unsigned(N_WF_CU_W downto 0);
+      wf_distribution_on_wg       : in wf_distribution_on_wg_type(N_WF_CU-1 downto 0);
+      smem_finish                 : out std_logic_vector(N_WF_CU-1 downto 0);
+      reading_smem                : out std_logic;
+      clk                         : in std_logic;
+      nrst                        : in std_logic
+    );
+  end component;
+
+
   component wg_dispatcher
     port(
       clk, nrst           : in std_logic;
@@ -434,6 +474,8 @@ package components is
       immediate           : in std_logic_vector(IMM_W-1 downto 0);
       rd_out              : out std_logic_vector(DATA_W-1 downto 0);
       reg_we_mov          : out std_logic;
+      div_a               : out std_logic_vector(DATA_W-1 downto 0);
+      div_b               : out std_logic_vector(DATA_W-1 downto 0);
       float_a             : out std_logic_vector(DATA_W-1 downto 0);
       float_b             : out std_logic_vector(DATA_W-1 downto 0);
       op_logical_v        : in std_logic;
@@ -514,27 +556,30 @@ package components is
     );
   end component;
 
-  component cu_instruction_dispatcher
+  component cu_instruction_dispatcher is
     port(
-      clk, nrst           : in std_logic;
-      cram_rqst           : out std_logic;
-      cram_rdAddr         : out unsigned(CRAM_ADDR_W-1 downto 0);
-      cram_rdAddr_conf    : in unsigned(CRAM_ADDR_W-1 downto 0);
-      cram_rdData         : in std_logic_vector(DATA_W-1 downto 0);
-      PC_indx             : in integer range 0 to N_WF_CU-1;
-      wf_active           : in std_logic_vector(N_WF_CU-1 downto 0);
-      pc_updated          : in std_logic_vector(N_WF_CU-1 downto 0);
-      PCs                 : in CRAM_ADDR_ARRAY(N_WF_CU-1 downto 0);
-      pc_rdy              : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr               : out std_logic_vector(DATA_W-1 downto 0);
-      instr_gmem_op       : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr_scratchpad_ld : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr_gmem_read     : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr_branch        : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr_jump          : out std_logic_vector(N_WF_CU-1 downto 0);
-      instr_fpu           : out std_logic_vector(N_WF_CU-1 downto 0);
-      branch_distance     : out branch_distance_vec(0 to N_WF_CU-1);
-      wf_retired          : out std_logic_vector(N_WF_CU-1 downto 0)
+      clk, nrst             : in std_logic;
+      cram_rqst             : out std_logic;
+      cram_rdAddr           : out unsigned(CRAM_ADDR_W-1 downto 0);
+      cram_rdAddr_conf      : in unsigned(CRAM_ADDR_W-1 downto 0);
+      cram_rdData           : in std_logic_vector(DATA_W-1 downto 0);
+      PC_indx               : in integer range 0 to N_WF_CU-1;
+      wf_active             : in std_logic_vector(N_WF_CU-1 downto 0);
+      pc_updated            : in std_logic_vector(N_WF_CU-1 downto 0);
+      PCs                   : in CRAM_ADDR_ARRAY(N_WF_CU-1 downto 0);
+      pc_rdy                : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr                 : out std_logic_vector(DATA_W-1 downto 0);
+      instr_gmem_op         : out std_logic_vector(N_WF_CU-1 downto 0);
+	    instr_gmem_read       : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_scratchpad_ld   : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_smem_op         : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_smem_read       : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_branch          : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_jump            : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_fpu             : out std_logic_vector(N_WF_CU-1 downto 0);
+      instr_sync            : out std_logic_vector(N_WF_CU-1 downto 0);
+      branch_distance       : out branch_distance_vec(0 to N_WF_CU-1);
+      wf_retired            : out std_logic_vector(N_WF_CU-1 downto 0)
     );
   end component;
 
@@ -548,6 +593,8 @@ package components is
       cv_gmem_atomic          : in std_logic;
       cv_lmem_rqst            : in std_logic;
       cv_lmem_we              : in std_logic;
+      cv_smem_rqst            : in std_logic;
+      cv_smem_we              : in std_logic;
       cv_op_type              : in std_logic_vector(2 downto 0);
       cv_alu_en               : in std_logic_vector(CV_SIZE-1 downto 0);
       cv_alu_en_pri_enc       : in integer range 0 to CV_SIZE-1;
@@ -556,6 +603,7 @@ package components is
       regFile_we              : out std_logic_vector(CV_SIZE-1 downto 0);
       regFile_wrData          : out SLV32_ARRAY(CV_SIZE-1 downto 0);
       regFile_we_lmem_p0      : out std_logic;
+      regFile_we_smem         : out std_logic_vector(CV_SIZE-1 downto 0);
       cache_rdAck             : in std_logic;
       cache_rdAddr            : in unsigned(GMEM_WORD_ADDR_W-CACHE_N_BANKS_W-1 downto 0);
       cache_rdData            : in std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
@@ -571,41 +619,56 @@ package components is
       gmem_ready              : in std_logic;
       gmem_rqst_addr          : out unsigned(GMEM_WORD_ADDR_W-1 downto 0);
       wf_finish               : out std_logic_vector(N_WF_CU-1 downto 0);
+	    smem_finish             : out std_logic_vector(N_WF_CU-1 downto 0);
       cntrl_idle              : out std_logic;
+      wf_distribution_on_wg   : in wf_distribution_on_wg_type(N_WF_CU-1 downto 0);
+      num_wg_per_cu           : in unsigned(N_WF_CU_W downto 0);
+
+      debug_gmem_read_counter_per_cu  : out unsigned(2*DATA_W-1 downto 0);
+      debug_gmem_write_counter_per_cu : out unsigned(2*DATA_W-1 downto 0);
+      debug_reset_all_counters        : in std_logic;
+
       nrst                    : in std_logic
     );
   end component;
 
   component cu_scheduler
     port(
-      clk, nrst           : in std_logic;
-      wf_active           : out std_logic_vector(N_WF_CU-1 downto 0);
-      sch_rqst            : in std_logic;
-      sch_ack             : out std_logic;
-      sch_rqst_n_wfs_m1   : in unsigned(N_WF_CU_W-1 downto 0);
-      wg_info             : in unsigned(DATA_W-1 downto 0);
-      cram_rdAddr         : out unsigned(CRAM_ADDR_W-1 downto 0);
-      cram_rdAddr_conf    : in unsigned(CRAM_ADDR_W-1 downto 0);
-      cram_rdData         : in std_logic_vector(DATA_W-1 downto 0);
-      cram_rqst           : out std_logic;
-      start_addr          : in unsigned(CRAM_ADDR_W-1 downto 0);
-      wf_is_branching     : in std_logic_vector(N_WF_CU-1 downto 0);
-      alu_branch          : in std_logic_vector(CV_SIZE-1 downto 0);
-      alu_en              : in std_logic_vector(CV_SIZE-1 downto 0);
-      rtm_wrAddr_cv       : out unsigned(N_WF_CU_W+2-1 downto 0);
-      rtm_wrData_cv       : out unsigned(DATA_W-1 downto 0);
-      rtm_we_cv           : out std_logic;
-      gmem_finish         : in std_logic_vector(N_WF_CU-1 downto 0);
-      instr               : out std_logic_vector(DATA_W-1 downto 0);
-      wf_indx_in_wg       : out natural range 0 to N_WF_CU-1;
-      wf_indx_in_CU       : out natural range 0 to N_WF_CU-1;
-      alu_en_divStack     : out std_logic_vector(CV_SIZE-1 downto 0);
-      phase               : out unsigned(PHASE_W-1 downto 0)
+      clk, nrst              : in std_logic;
+      wf_active              : out std_logic_vector(N_WF_CU-1 downto 0);
+      sch_rqst               : in std_logic;
+      sch_ack                : out std_logic;
+      sch_rqst_n_wfs_m1      : in unsigned(N_WF_CU_W-1 downto 0);
+      wg_info                : in unsigned(DATA_W-1 downto 0);
+      cram_rdAddr            : out unsigned(CRAM_ADDR_W-1 downto 0);
+      cram_rdAddr_conf       : in unsigned(CRAM_ADDR_W-1 downto 0);
+      cram_rdData            : in std_logic_vector(DATA_W-1 downto 0);
+      cram_rqst              : out std_logic;
+      start_addr             : in unsigned(CRAM_ADDR_W-1 downto 0);
+      wf_is_branching        : in std_logic_vector(N_WF_CU-1 downto 0);
+      alu_branch             : in std_logic_vector(CV_SIZE-1 downto 0);
+      alu_en                 : in std_logic_vector(CV_SIZE-1 downto 0);
+      rtm_wrAddr_cv          : out unsigned(N_WF_CU_W+2-1 downto 0);
+      rtm_wrData_cv          : out unsigned(DATA_W-1 downto 0);
+      rtm_we_cv              : out std_logic;
+      gmem_finish            : in std_logic_vector(N_WF_CU-1 downto 0);
+	    smem_finish            : in std_logic_vector(N_WF_CU-1 downto 0);
+      instr                  : out std_logic_vector(DATA_W-1 downto 0);
+      wf_indx_in_wg          : out natural range 0 to N_WF_CU-1;
+      wf_indx_in_CU          : out natural range 0 to N_WF_CU-1;
+      alu_en_divStack        : out std_logic_vector(CV_SIZE-1 downto 0);
+      phase                  : out unsigned(PHASE_W-1 downto 0);
+      finish_exec            : in std_logic;
+      finish_exec_d0         : in std_logic;
+      num_wg_per_cu          : out unsigned(N_WF_CU_W downto 0);
+      wf_distribution_on_wg  : out wf_distribution_on_wg_type(N_WF_CU-1 downto 0);
+      wf_sync_retired        : in std_logic_vector(N_WF_CU-1 downto 0);
+      wi_barrier_reached     : in std_logic_vector(N_WF_CU-1 downto 0);
+      cu_is_working          : out std_logic
     );
   end component;
 
   component cu
-
     port(
       clk                 : in std_logic;
       cram_rdAddr         : out unsigned(CRAM_ADDR_W-1 downto 0);
@@ -640,37 +703,54 @@ package components is
       gmem_rqst_addr      : out unsigned(GMEM_WORD_ADDR_W-1 downto 0);
       gmem_ready          : in std_logic;
       gmem_cntrl_idle     : out std_logic;
+
+
+      finish_exec         : in std_logic;
+      finish_exec_d0      : in std_logic;
+
+      debug_gmem_read_counter_per_cu  : out unsigned(2*DATA_W-1 downto 0);
+      debug_gmem_write_counter_per_cu : out unsigned(2*DATA_W-1 downto 0);
+      debug_op_counter_per_cu         : out unsigned(2*DATA_W-1 downto 0);
+      debug_reset_all_counters        : in std_logic;
+
       nrst                : in std_logic
     );
   end component;
 
   component cu_vector
     port(
-      instr                   : in std_logic_vector(DATA_W-1 downto 0);
-      wf_indx, wf_indx_in_wg  : in natural range 0 to N_WF_CU-1;
-      phase                   : in unsigned(PHASE_W-1 downto 0);
-      alu_en_divStack         : in std_logic_vector(CV_SIZE-1 downto 0);
-      rdAddr_alu_en           : out unsigned(N_WF_CU_W+PHASE_W-1 downto 0);
-      rdData_alu_en           : in std_logic_vector(CV_SIZE-1 downto 0);
-      rtm_rdAddr              : out unsigned(RTM_ADDR_W-1 downto 0);
-      rtm_rdData              : in unsigned(RTM_DATA_W-1 downto 0);
-      gmem_re, gmem_we        : out std_logic;
-      mem_op_type             : out std_logic_vector(2 downto 0);
-      mem_addr                : out GMEM_ADDR_ARRAY(CV_SIZE-1 downto 0);
-      mem_rd_addr             : out unsigned(REG_FILE_W-1 downto 0);
-      mem_wrData              : out SLV32_ARRAY(CV_SIZE-1 downto 0);
-      alu_en                  : out std_logic_vector(CV_SIZE-1 downto 0);
-      alu_en_pri_enc          : out integer range 0 to CV_SIZE-1;
-      lmem_rqst, lmem_we      : out std_logic;
-      gmem_atomic             : out std_logic;
-      wf_is_branching         : out std_logic_vector(N_WF_CU-1 downto 0);
-      alu_branch              : out std_logic_vector(CV_SIZE-1 downto 0);
-      mem_regFile_wrAddr      : in unsigned(REG_FILE_W-1 downto 0);
-      mem_regFile_we          : in std_logic_vector(CV_SIZE-1 downto 0);
-      mem_regFile_wrData      : in SLV32_ARRAY(CV_SIZE-1 downto 0);
-      lmem_regFile_we_p0      : in std_logic;
-      clk                     : in std_logic;
-      nrst                    : in std_logic
+      instr                           : in std_logic_vector(DATA_W-1 downto 0);
+      wf_indx, wf_indx_in_wg          : in natural range 0 to N_WF_CU-1;
+      phase                           : in unsigned(PHASE_W-1 downto 0);
+      alu_en_divStack                 : in std_logic_vector(CV_SIZE-1 downto 0);
+      rdAddr_alu_en                   : out unsigned(N_WF_CU_W+PHASE_W-1 downto 0);
+      rdData_alu_en                   : in std_logic_vector(CV_SIZE-1 downto 0);
+      rtm_rdAddr                      : out unsigned(RTM_ADDR_W-1 downto 0);
+      rtm_rdData                      : in unsigned(RTM_DATA_W-1 downto 0);
+      gmem_re, gmem_we                : out std_logic;
+      mem_op_type                     : out std_logic_vector(2 downto 0);
+      mem_addr                        : out GMEM_ADDR_ARRAY(CV_SIZE-1 downto 0);
+      mem_rd_addr                     : out unsigned(REG_FILE_W-1 downto 0);
+      mem_wrData                      : out SLV32_ARRAY(CV_SIZE-1 downto 0);
+      alu_en                          : out std_logic_vector(CV_SIZE-1 downto 0);
+      alu_en_pri_enc                  : out integer range 0 to CV_SIZE-1;
+      lmem_rqst, lmem_we              : out std_logic;
+      smem_rqst, smem_we              : out std_logic;
+      gmem_atomic                     : out std_logic;
+      wf_is_branching                 : out std_logic_vector(N_WF_CU-1 downto 0);
+      alu_branch                      : out std_logic_vector(CV_SIZE-1 downto 0);
+      mem_regFile_wrAddr              : in unsigned(REG_FILE_W-1 downto 0);
+      mem_regFile_we                  : in std_logic_vector(CV_SIZE-1 downto 0);
+      mem_regFile_wrData              : in SLV32_ARRAY(CV_SIZE-1 downto 0);
+      lmem_regFile_we_p0              : in std_logic;
+      smem_regFile_we                 : in std_logic_vector(CV_SIZE-1 downto 0);
+      wf_sync_retired                 : out std_logic_vector(N_WF_CU-1 downto 0);
+      wi_barrier_reached              : out std_logic_vector(N_WF_CU-1 downto 0);
+      debug_op_counter_per_cu         : out unsigned(2*DATA_W-1 downto 0);
+      debug_reset_all_counters        : in std_logic;
+      cu_is_working                   : in std_logic;
+      clk                             : in std_logic;
+      nrst                            : in std_logic
     );
   end component;
 
@@ -768,6 +848,30 @@ package components is
       s_axis_a_tdata : in std_logic_vector(31 downto 0);
       m_axis_result_tvalid : out std_logic;
       m_axis_result_tdata : out std_logic_vector(31 downto 0)
+    );
+  end component;
+
+  component sdiv is
+    port (
+      aclk : in std_logic;
+      s_axis_divisor_tvalid : in std_logic;
+      s_axis_divisor_tdata : in std_logic_vector ( 31 downto 0 );
+      s_axis_dividend_tvalid : in std_logic;
+      s_axis_dividend_tdata : in std_logic_vector ( 31 downto 0 );
+      m_axis_dout_tvalid : out std_logic;
+      m_axis_dout_tdata : out std_logic_vector ( 63 downto 0 )
+    );
+  end component;
+
+  component udiv is
+    port (
+      aclk : in std_logic;
+      s_axis_divisor_tvalid : in std_logic;
+      s_axis_divisor_tdata : in std_logic_vector ( 31 downto 0 );
+      s_axis_dividend_tvalid : in std_logic;
+      s_axis_dividend_tdata : in std_logic_vector ( 31 downto 0 );
+      m_axis_dout_tvalid : out std_logic;
+      m_axis_dout_tdata : out std_logic_vector ( 63 downto 0 )
     );
   end component;
 

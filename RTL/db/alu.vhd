@@ -22,9 +22,11 @@ port(
   rd_out              : out std_logic_vector(DATA_W-1 downto 0); -- level 10.
   reg_we_mov          : out std_logic; -- level 10.
 
+  div_a               : out std_logic_vector(DATA_W-1 downto 0); -- level 8.
+  div_b               : out std_logic_vector(DATA_W-1 downto 0); -- level 8.
+
   float_a             : out std_logic_vector(DATA_W-1 downto 0); -- level 9.
   float_b             : out std_logic_vector(DATA_W-1 downto 0); -- level 9.
-
 
   op_logical_v        : in std_logic; -- level 14.
   res_low             : out std_logic_vector(DATA_W-1 downto 0); -- level 16.
@@ -77,13 +79,13 @@ begin
   reg_blocks: for i in 0 to N_REG_BLOCKS-1 generate
   begin
     reg_file: regFile port map (
-      rs_addr => rs_addr_vec(rs_addr_vec'high-i), -- level i+2.
       rt_addr  => rt_addr_vec(rt_addr_vec'high-i), -- level i+2.
+      rs_addr  => rs_addr_vec(rs_addr_vec'high-i), -- level i+2.
       rd_addr  => rd_addr_vec(rd_addr_vec'high-i), -- level i+2.
       re => regBlock_re_vec(regBlock_re_vec'high)(i), -- level i+2.
 
-      rs => rs_vec(i), -- level i+7.
       rt => rt_vec(i), -- level i+6.
+      rs => rs_vec(i), -- level i+7.
       rd => rd_vec(i), -- level i+8.
 
       we => reg_we(i), -- level 18.
@@ -173,6 +175,8 @@ begin
         rs                 <= (others => '0'); -- NOT NEEDED
         rd                 <= (others => '0'); -- NOT NEEDED
         shift              <= (others => '0'); -- NOT NEEDED
+        div_a              <= (others => '0');
+        div_b              <= (others => '0');
         float_a            <= (others => '0'); -- NOT NEEDED
         float_b            <= (others => '0'); -- NOT NEEDED
         rt_d0              <= (others => '0'); -- NOT NEEDED
@@ -200,24 +204,39 @@ begin
         -- }}}
 
         -- @ 8 {{{
-        rt <= rt_p0; -- @ 8.
         rs <= rs_vec(0); -- @ 8.
+        rt <= rt_p0; -- @ 8.
+
+        div_a <= rs_vec(0); -- @ 8.
+        div_b <= rt_p0; -- @ 8.
+
         for i in 1 to N_REG_BLOCKS-1 loop
           if regBlock_re_vec(1)(i) = '1' then -- level 7.
             rs <= rs_vec(i);  -- @ i+8.
+            div_a <= rs_vec(i);  -- @ i+8.
           end if;
         end loop;
-        if code_vec(code_vec'high)(CODE_W-1) = '0' then -- level 7.
+        if code_vec(code_vec'high)(CODE_W-1) = '0' then -- sll, slli -- level 7.
           shift(5) <= '0'; -- @ 8.
+          -- the maximum shift value is 32 (dimension of a register)
           if code_vec(code_vec'high)(0) = '0' then -- level 7.
-            shift(4 downto 0) <= rt_p0(4 downto 0); -- sll @8.
+            if (to_integer(unsigned(rt_p0)) < 32) then
+              shift(4 downto 0) <= rt_p0(4 downto 0); -- sll @ 8.
+            else
+              shift(5 downto 0) <= "100000"; -- sll saturated @ 8.
+            end if;
           else
-            shift(4 downto 0) <= immediate_vec(immediate_vec'high)(4 downto 0); --slli -- @ 8.
+            shift(4 downto 0) <= immediate_vec(immediate_vec'high)(4 downto 0); -- slli -- @ 8.
           end if;
         else
-          if code_vec(code_vec'high)(0) = '0' then -- shift right -- level 7
+          if code_vec(code_vec'high)(0) = '0' then -- shift right, can be logical or arithmetical -- level 7
             -- the width of port b of the mutiplier needs to be extended to 33, or the high part to 17 to enable a shift right logical with zero
-            shift(5 downto 0) <= std_logic_vector("100000" - resize(unsigned(rt_p0(4 downto 0)), 6)); --srl & sra -- @ 8.
+            if (to_integer(unsigned(rt_p0)) < 32) then
+              shift(5 downto 0) <= std_logic_vector("100000" - resize(unsigned(rt_p0(4 downto 0)), 6)); -- srl & sra -- @ 8.
+              -- subtracting rt_p0 from "100000" guarantees a shift value ranging from 0 to 32 (33 bits)
+            else
+              shift(5 downto 0) <= "100000"; -- srl & sra saturated -- @ 8.
+            end if;
           else
             shift(5 downto 0) <= std_logic_vector("100000" - resize(unsigned(immediate_vec(immediate_vec'high)(4 downto 0)), 6)); -- srli & srai -- @ 8.
           end if;
@@ -259,14 +278,14 @@ begin
         case op_arith_shift_vec(0) is -- level 9.
           when op_shift =>
             if code_vec(code_vec'high-2)(CODE_W-1) = '1' and code_vec(code_vec'high-2)(CODE_W-2) = '1' and a_p0(DATA_W-1) = '1' then  -- level 9.
-                  -- CODE_W-1 for right shift & CODE_W-2 for arithmetic & a_p0(DATA_W-1) for negative
+                  -- CODE_W-1 for right shift & CODE_W-2 for arithmetic & a_p0(DATA_W-1) for negative --> SRA or SRAI of a negative number
               sra_sign <= b_shifted; -- @ 10.
               sra_sign_v <= '1';    -- @ 10.
-            else
+            else -- SRA or SRAI of a positive number, SLL, SLLI, SRL, SRLI
               sra_sign <= (others => '0'); -- @ 10.
               sra_sign_v <= '0'; -- @ 10.
             end if;
-          when others =>
+          when others => -- when op_add, op_mult, op_lw, op_lmem, op_smem, op_ato, op_bra, op_slt, op_mov
             sra_sign <= (others => '0'); -- @ 10.
             sra_sign_v <= '0'; -- @ 10.
         end case;
@@ -276,12 +295,15 @@ begin
           when op_lw =>
             b(DATA_W downto 3) <= (others => '0');
             b(2 downto 0) <= code_vec(code_vec'high-2)(2 downto 0); -- @ 10.
+          when op_smem =>
+            b(DATA_W downto 3) <= (others => '0');
+            b(2 downto 0) <= "001"; -- @ 10   -- smem is word addressable so it uses the same shift of instruction lb
           when op_mult =>
             b(DATA_W) <= '0';
             b(rt_d0'range) <= rt_d0; -- @ 10.
           when op_shift =>
             b <= b_shifted; -- @ 10.
-          when others =>
+          when others => -- when op_add, op_lmem, op_ato, op_bra, op_slt, op_mov
             b <= (0 => '1', others => '0'); -- @ 10.
         end case;
         -- }}}
@@ -299,7 +321,7 @@ begin
               c(DATA_W-1 downto DATA_W-IMM_W) <= immediate_vec(immediate_vec'high-2)(IMM_W-1 downto 0); -- @ 10.
               c(DATA_W-IMM_W-1 downto 0) <= rd(DATA_W-IMM_W-1 downto 0); -- @ 10.
             end if;
-          when op_lw | op_ato =>
+          when op_lw | op_ato | op_smem =>
             c <= rt_d0; -- @ 10.
           when op_lmem =>
               c <= std_logic_vector(resize(signed(immediate_vec(immediate_vec'high-2)(IMM_ARITH_W-1 downto 0)), DATA_W)); -- @ 10.
@@ -334,7 +356,7 @@ begin
         case op_arith_shift_vec(0) is -- level 9.
           when op_add | op_bra | op_slt =>
             sub_op <= code_vec(code_vec'high-2)(1); -- @ 10.
-          when op_lmem | op_lw | op_mult | op_shift | op_mov | op_ato=>
+          when op_lmem | op_lw | op_mult | op_shift | op_mov | op_ato | op_smem =>
         end case;
         -- }}}
       end if;

@@ -1,3 +1,5 @@
+-- The local indices generator is responsible for writing into the RTM memory the local indices of the WG along the three directions.
+
 -- libraries -------------------------------------------------------------------------------------------{{{
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -11,60 +13,94 @@ entity loc_indcs_generator is
   -- ports {{{
 port(
   start               : in std_logic;
+    -- start signal
   finish              : out std_logic;                         --state signal
+    -- finish signal
   clear_finish        : in std_logic;
+    -- input signal to clear finish flag
   n_wf_wg_m1          : in unsigned(N_WF_CU_W-1 downto 0);
+    -- number of WFs in the WG to be scheduled
   wg_size_d0          : in integer range 0 to WG_MAX_SIZE;
+    -- WG size in D0
   wg_size_d1          : in integer range 0 to WG_MAX_SIZE;
+    -- WG size in D1
   wg_size_d2          : in integer range 0 to WG_MAX_SIZE;
+    -- WG size in D2
   wrAddr              : out unsigned(RTM_ADDR_W-2 downto 0);  --additional -1 is to exclude the MSB about local_indcs or wg_offset
+    -- RTM write address for local indices
   we                  : out std_logic;
+    -- RTM write enable for local indices
   wrData              : out unsigned(RTM_DATA_W-1 downto 0);
+    -- local indices to be written in RTM
 
   clk, nrst           : in std_logic
 );
 -- }}}
 end loc_indcs_generator;
 architecture Behavioral of loc_indcs_generator is
-  -- internal signals {{{{
-  signal finish_i              : std_logic;
-  -- }}}
-  -- signal definitions {{{
+
   type state_type is (idle, start_d0_gen, start_d1_gen, start_d2_gen, store_inc_d0, store_inc_d1, store_inc_d2, check);
-  signal state, nstate: state_type;
   type state_dx_type is (idle, inc, empty_wg_size);
+
+  signal state, nstate: state_type;
+    -- state of the overall FSM
+
   signal state_d0, nstate_d0              : state_dx_type;
+    -- state of d0 FSM
   signal state_d1, nstate_d1              : state_dx_type;
+    -- state of d1 FSM
   signal state_d2, nstate_d2              : state_dx_type;
+    -- state of d2 FSM
+
+  signal count, count_n                   : unsigned(RTM_ADDR_W-2-1 downto 0);  -- the (-2) is to exclude the 2 bits about the dimension
+    -- signal used to generate the RTM write address
+  signal d0, d1, d2, d0_n, d1_n, d2_n     : unsigned(RTM_DATA_W-1 downto 0);
+    -- RTM write data
+  signal d0_count_1, d0_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d1_count_1, d1_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d2_count_1, d2_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d0_count_2, d0_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d1_count_2, d1_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d2_count_2, d2_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d0_count_1_ov, d1_count_1_ov_n   : std_logic;
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d0_count_2_ov, d1_count_2_ov_n   : std_logic;
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d1_count_1_ov, d0_count_1_ov_n   : std_logic;
+    -- ..                                                                                                                                   ------------------------------- Add comment
+  signal d1_count_2_ov, d0_count_2_ov_n   : std_logic;
+    -- ..                                                                                                                                   ------------------------------- Add comment
+
+  signal start_d0, start_d1, start_d2     : std_logic;
+    -- signals used to start the d0, d1, d2 FSM
+  signal stop_d0, stop_d1, stop_d2        : std_logic;
+    -- signals used to stop the d0, d1, d2 FSM
+  signal wrAddr_sel_dim                   : unsigned(1 downto 0);
+    -- signal to select the memory address space of the d0, d1 or d3 local indices
+  signal wg_size_m1_d0                    : unsigned(WG_SIZE_W downto 0);
+    -- WG size in D0
+  signal wg_size_m1_d1                    : unsigned(WG_SIZE_W downto 0);
+    -- WG size in D1
+  signal wg_size_m1_d2                    : unsigned(WG_SIZE_W downto 0);
+    -- WG size in D2
 
   -- signal we_d0, we_d1, we_d2              : std_logic_vector(CV_SIZE/2-1 downto 0);
   signal we_d0, we_d1, we_d2              : std_logic_vector(3 downto 0);
-  signal count, count_n                   : unsigned(RTM_ADDR_W-2-1 downto 0);  -- the (-2) is to exclude the 2 bits about the dimension
-  signal d0, d1, d2, d0_n, d1_n, d2_n     : unsigned(RTM_DATA_W-1 downto 0);
-  signal d0_count_1, d0_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d1_count_1, d1_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d2_count_1, d2_count_1_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d0_count_2, d0_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d1_count_2, d1_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d2_count_2, d2_count_2_n         : unsigned(WG_SIZE_W-1 downto 0);
-  signal d0_count_1_ov, d1_count_1_ov_n   : std_logic;
-  signal d0_count_2_ov, d1_count_2_ov_n   : std_logic;
-  signal d1_count_1_ov, d0_count_1_ov_n   : std_logic;
-  signal d1_count_2_ov, d0_count_2_ov_n   : std_logic;
-
-  signal start_d0, start_d1, start_d2     : std_logic;
-  signal stop_d0, stop_d1, stop_d2        : std_logic;
-  signal wrAddr_sel_dim                   : unsigned(1 downto 0);
-
-  signal wg_size_m1_d0                    : unsigned(WG_SIZE_W downto 0);
-  signal wg_size_m1_d1                    : unsigned(WG_SIZE_W downto 0);
-  signal wg_size_m1_d2                    : unsigned(WG_SIZE_W downto 0);
-
-  -- next signals
+    -- register version of we_d0_n, we_d1_n, we_d2_n
   -- signal we_d0_n, we_d1_n, we_d2_n        : std_logic_vector(CV_SIZE/2-1 downto 0);
   signal we_d0_n, we_d1_n, we_d2_n        : std_logic_vector(3 downto 0);
+    -- write enable to write the local indices within d0, d1 or d2 registers
   signal finish_n                         : std_logic;
-  -- }}}
+    -- finish signal
+  signal finish_i                         : std_logic;
+    -- internal finish_i signal
+
 begin
 
   -- fixed assignments & internal signals ------------------------------------------------------------------{{{
@@ -89,6 +125,7 @@ begin
 
       when idle =>
         if start_d2 = '1' then
+          d2_n <= (others => '0');
           nstate_d2 <= inc;
           we_d2_n <= (0 => '1', others => '0');
           d2_count_1_n <= (others => '0');
@@ -150,6 +187,7 @@ begin
 
       when idle =>
         if start_d1 = '1' then
+          d1_n <= (others => '0');
           nstate_d1 <= inc;
           we_d1_n <= (0 => '1', others => '0');
           d1_count_1_n <= (others => '0');
@@ -241,6 +279,7 @@ begin
 
       when idle =>
         if start_d0 = '1' and wg_size_m1_d0 /= (wg_size_m1_d0'reverse_range=>'0')then
+          d0_n <= (others => '0');
           nstate_d0 <= inc;
           we_d0_n <= (0 => '1', others => '0');
           d0_count_1_n <= (others => '0');
@@ -249,6 +288,7 @@ begin
           end if;
         end if;
         if start_d0 = '1' and wg_size_m1_d0 = (wg_size_m1_d0'reverse_range=>'0')then
+          d0_n <= (others => '0');
           nstate_d0 <= empty_wg_size;
           d0_count_1_ov_n <= '1';
           if CV_SIZE = 8 then
@@ -431,4 +471,3 @@ begin
   -------------------------------------------------------------------------------------------------}}}
 
 end Behavioral;
-

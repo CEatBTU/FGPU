@@ -9,6 +9,9 @@ use fgpu.components.all;
 ------------------------------------------------------------------------------------------------- }}}
 entity fgpu_top is
 -- Generics & ports {{{
+generic (
+  DEBUG_MODE : boolean := false
+);
 port(
   clk  : in  std_logic;
   nrst : in  std_logic;
@@ -47,7 +50,7 @@ port(
   m0_arvalid          : out std_logic;
   m0_arready          : in std_logic;
   m0_arid             : out std_logic_vector(ID_WIDTH-1 downto 0);
--- r channel
+  -- r channel
   m0_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
   m0_rresp            : in std_logic_vector(1 downto 0);
   m0_rlast            : in std_logic;
@@ -181,144 +184,298 @@ port(
   m3_bready           : out std_logic;
   m3_bid              : in std_logic_vector(ID_WIDTH-1 downto 0)
   -- }}}}
-);
+  );
 -- ports }}}
 end entity;
 
 architecture Behavioral of fgpu_top is
-  -- internal signals definitions {{{
-  signal s_awready_i, s_bvalid_i            : std_logic;
-  signal s_wready_i, s_arready_i            : std_logic;
-  -- }}}
+
   -- slave axi interface {{{
-  signal mainProc_we                  : std_logic;
-  signal mainProc_wrAddr                : unsigned(INTERFCE_W_ADDR_W-1 downto 0);
-  signal mainProc_rdAddr                : unsigned(INTERFCE_W_ADDR_W-1 downto 0);
-  signal s_rvalid_vec                  : std_logic_vector(3 downto 0);
-  signal s_wdata_d0                    : std_logic_vector(DATA_W-1 downto 0);
+  signal mainProc_we                      : std_logic;
+    -- LRAM/CRAM/Reg files write enable
+  signal mainProc_wrAddr                  : unsigned(INTERFCE_W_ADDR_W-1 downto 0);
+    -- LRAM/CRAM/Reg files write address
+  signal mainProc_rdAddr                  : unsigned(INTERFCE_W_ADDR_W-1 downto 0);
+    -- LRAM/CRAM/Reg files read address
+  signal s_rvalid_vec                     : std_logic_vector(3 downto 0);
+    -- signal used to add latency on r channel (wait 2 cycles after ar channel completes)
+  signal s_wdata_d0                       : std_logic_vector(DATA_W-1 downto 0);
+    -- registered s_wdata
+  signal s_awready_i                      : std_logic;
+    -- AXI slave port write address ready
+  signal s_bvalid_i                       : std_logic;
+    -- AXI slave port bvalid
+  signal s_wready_i                       : std_logic;
+    -- AXI slave port write ready
+  signal s_arready_i                      : std_logic;
+    -- AXI slave port read address ready
   -- }}}
-  -- general signals definitions {{{
-  -- signal KRNL_SCHEDULER_RAM               : KRNL_SCHEDULER_RAM_type := init_krnl_ram("krnl_ram.mif");
-  -- signal cram_b1                          : CRAM_type := init_CRAM("cram.mif", 3000);
-  signal KRNL_SCHEDULER_RAM               : KRNL_SCHEDULER_RAM_type := (others => (others => '0'));
-  signal cram_b1                          : CRAM_type := (others => (others => '0'));
 
-  signal KRNL_SCH_we                      : std_logic;
-  signal krnl_sch_rdData                  : std_logic_vector(DATA_W-1 downto 0);
+  -- Link RAM {{{
+  -- signal KRNL_SCHEDULER_RAM              : KRNL_SCHEDULER_RAM_type := init_krnl_ram("krnl_ram.mif");
+  signal krnl_scheduler_ram               : krnl_scheduler_ram_type := (others => (others => '0'));
+    -- Link RAM memory
+  signal krnl_sch_we                      : std_logic;
+    -- LRAM write enable
   signal krnl_sch_rdData_n                : std_logic_vector(DATA_W-1 downto 0);
+    -- LRAM read data
+  signal krnl_sch_rdData                  : std_logic_vector(DATA_W-1 downto 0);
+    -- registered krnl_sch_rdData_n
   signal krnl_sch_rdAddr                  : unsigned(KRNL_SCH_ADDR_W-1 downto 0);
+    -- LRAM read address
   signal krnl_sch_rdAddr_WGD              : std_logic_vector(KRNL_SCH_ADDR_W-1 downto 0);
+  -- }}}
 
-  signal CRAM_we                          : std_logic;
+  -- Code RAM {{{
+  -- signal cram_b1                          : CRAM_type := init_CRAM("cram.mif", 3000);
+  signal cram_b1                          : cram_type := (others => (others => '0'));
+    -- Code RAM memory
+  signal cram_we                          : std_logic;
   -- signal cram_rdData, cram_rdData_n       : SLV32_ARRAY(CRAM_BLOCKS-1 downto 0);
   -- signal cram_rdAddr, cram_rdAddr_d0      : CRAM_ADDR_ARRAY(CRAM_BLOCKS-1 downto 0);
   signal cram_rdData, cram_rdData_n       : std_logic_vector(DATA_W-1 downto 0);
+    -- CRAM read data
   signal cram_rdData_vec                  : slv32_array(max(N_CU-1, 0) downto 0);
+    -- cram_rdData_vec(N_CU-1 downto 0) <= cram_rdData & cram_rdData_vec(N_CU-1 downto 1)
   signal cram_rdAddr, cram_rdAddr_d0      : unsigned(CRAM_ADDR_W-1 downto 0);
+    -- CRAM read address
   signal cram_rdAddr_d0_vec               : cram_addr_array(max(N_CU-1, 0) downto 0);
+	-- cram_rdAddr_d0_vec(N_CU-1 downto 0) <= cram_rdAddr_d0 & cram_rdAddr_d0_vec(N_CU-1 downto 1)
+  -- }}}
 
+  -- Register File {{{
   signal regFile_we                       : std_logic;
-  -- signal regFile_we_d0                 : std_logic;
+    -- register file write enable
   signal Rstat                            : std_logic_vector(NEW_KRNL_MAX_INDX-1 downto 0);
+    -- Rstat register
   signal Rstart                           : std_logic_vector(NEW_KRNL_MAX_INDX-1 downto 0);
+    -- Rstart register
   signal RcleanCache                      : std_logic_vector(NEW_KRNL_MAX_INDX-1 downto 0);
+    -- RcleanCache register
   signal RInitiate                        : std_logic_vector(NEW_KRNL_MAX_INDX-1 downto 0);
+    -- RInitiate register
+  -- signal regFile_we_d0                 : std_logic;
+  -- }}}
+
+  -- WG dispatcher FSM {{{
 
   type WG_dispatcher_state_type is (idle, st1_dispatch);
-  signal st_wg_disp, st_wg_disp_n         : WG_dispatcher_state_type;
+  type wg_req_vec_type is array(natural range <>) of std_logic_vector(N_CU-1 downto 0);
+  type sch_rqst_n_WFs_m1_vec_type is array (natural range <>) of unsigned(N_WF_CU_W-1 downto 0);
+  type rtm_addr_vec_type is array (natural range<>) of unsigned(RTM_ADDR_W-1 downto 0);
 
+  signal st_wg_disp, st_wg_disp_n         : WG_dispatcher_state_type;
+    -- state of the WG dispatcher
 
   signal new_krnl_indx                    : integer range 0 to NEW_KRNL_MAX_INDX-1;
+    -- index of the new kernel to be executed (extracted from the Rstart control register)
 
-  signal start_kernel, clean_cache        : std_logic;
-  signal start_CUs, initialize_d0         : std_logic;   -- informs all CUs to start working after initialization phase of the wg_dispatcher is finished
+  signal start_kernel                     : std_logic;
+    -- signal set to '1' when the WG Dispatcher FSM leaves the "idle" state
+  signal clean_cache                      : std_logic;
+    -- signal set to '1' to flush the cache into the global memory when starting a new kernel
+  signal start_CUs                        : std_logic;
+    -- signal set to '1' when entering the WG dispatcher scheduling phase
+  signal initialize_d0                    : std_logic;
+    -- initialize flag for the new kernel to be executed extracted from the Rinitiate control register
   signal start_CUs_vec                    : std_logic_vector(max(N_CU-1, 0) downto 0); -- to improve timing
-  signal finish_exec                      : std_logic;   -- high when execution of a kernel is done
-  signal WGsDispatched                    : std_logic;   -- high when WG_Dispatcher has schedules all WGs
-  signal finish_exec_d0                   : std_logic;
+	-- start_CUs_vec(N_CU-1 downto 0) <= start_CUs & start_CUs_vec(N_CU-1 downto 1)
+  signal finish_exec, finish_exec_d0      : std_logic;
+    -- signal high when execution of a kernel is done
+  signal WGsDispatched                    : std_logic;
+    -- signal high when WG Dispatcher has scheduled all WGs
   signal finish_krnl_indx                 : integer range 0 to NEW_KRNL_MAX_INDX-1;
+    -- i-th set to '1' when the i-th kernel has been processed (provided by the WG Dispatcher)
   signal wg_req                           : std_logic_vector(N_CU-1 downto 0);
+    -- request signal to allocate WGs on CUs
   signal wg_ack                           : std_logic_vector(N_CU-1 downto 0);
-  type wg_req_vec_type is array(natural range <>) of std_logic_vector(N_CU-1 downto 0);
+    -- signal from CUs to acknowledge the scheduling request
   signal wg_req_vec                       : wg_req_vec_type(max(N_CU-1, 0) downto 0);
+    -- wg_req_vec(N_CU-1 downto 0) <= wg_req & wg_req_vec(N_CU-1 downto 1)
   signal wg_ack_vec                       : wg_req_vec_type(max(N_CU-1, 0) downto 0);
+    -- ..                                                                                                                ---------------------------------- Unused signal
   signal CU_cram_rqst                     : std_logic_vector(N_CU-1 downto 0);
+    -- CU request signal to read CRAM
   signal sch_rqst_n_WFs_m1                : unsigned(N_WF_CU_W-1 downto 0);
-  type sch_rqst_n_WFs_m1_vec_type is array (natural range <>) of unsigned(N_WF_CU_W-1 downto 0);
+    -- number of WFs in the WG to be scheduled
   signal sch_rqst_n_WFs_m1_vec            : sch_rqst_n_WFs_m1_vec_type(max(N_CU-1, 0) downto 0);
-  signal cram_served_CUs                  : std_logic; -- one-bit-toggle to serve different CUs when fetching instructions
+	-- sch_rqst_n_WFs_m1_vec(N_CU-1 downto 0) <= sch_rqst_n_WFs_m1 & sch_rqst_n_WFs_m1_vec(N_CU-1 downto 1)
+  signal cram_served_CUs                  : std_logic;
+    -- one-bit-toggle to serve different CUs when fetching instructions
 
-  signal CU_cram_rdAddr                   : CRAM_ADDR_ARRay(N_CU-1 downto 0);
-  signal start_addr                       : unsigned(CRAM_ADDR_W-1 downto 0);  -- the address of the first instruction to be fetched
+  signal CU_cram_rdAddr                   : cram_addr_array(N_CU-1 downto 0);
+    -- CRAM read address vector provided by the CUs
+  signal start_addr                       : unsigned(CRAM_ADDR_W-1 downto 0);
+    -- the address of the first instruction to be fetched, provided by the WG dispatcher
   signal start_addr_vec                   : cram_addr_array(max(N_CU-1, 0) downto 0); -- just to improve timing
+	-- start_addr_vec(N_CU-1 downto 0) <= start_addr & start_addr_vec(N_CU-1 downto 1)
 
 
   signal rdData_alu_en                    : alu_en_vec_type(N_CU-1 downto 0);
+    -- read data alu enable
   signal rdAddr_alu_en                    : alu_en_rdAddr_type(N_CU-1 downto 0);
+    -- read address alu enable
 
   signal rtm_wrAddr_wg                    : unsigned(RTM_ADDR_W-1 downto 0);
-  type rtm_addr_vec_type is array (natural range<>) of unsigned(RTM_ADDR_W-1 downto 0);
+    -- RTM wg write address
   signal rtm_wrAddr_wg_vec                : rtm_addr_vec_type(max(N_CU-1, 0) downto 0);
+	-- rtm_wrAddr_wg_vec(N_CU-1 downto 0) <= rtm_wrAddr_wg & rtm_wrAddr_wg_vec(N_CU-1 downto 1)
   signal rtm_wrData_wg                    : unsigned(RTM_DATA_W-1 downto 0);
+    -- RTM wg write data
   signal rtm_wrData_wg_vec                : rtm_ram_type(max(N_CU-1, 0) downto 0);
+    -- rtm_wrData_wg_vec(N_CU-1 downto 0) <= rtm_wrData_wg & rtm_wrData_wg_vec(N_CU-1 downto 0)
   signal rtm_we_wg                        : std_logic;
+    -- RTM write enable
   signal rtm_we_wg_vec                    : std_logic_vector(max(N_CU-1, 0) downto 0) := (others => '0');
+    -- rtm_we_wg_vec(N_CU-1 downto 0) <= rtm_we_wg & rtm_we_wg_vec(N_CU-1 downto 1)
   signal wg_info                          : unsigned(DATA_W-1 downto 0);
+    -- offset of the dispatched WG along D0/D1/D2 direction
   signal wg_info_vec                      : slv32_array(max(N_CU-1, 0) downto 0);
+    -- wg_info_vec(N_CU-1 downto 0) <= wg_info & wg_info_vec(N_CU-1 downto 1)
   -- }}}
+
+  -- debug {{{
+  signal debug_cache_miss_counter           : unsigned(DATA_W-1 downto 0);
+  signal debug_gmem_read_counter_per_cu     : debug_counter(N_CU-1 downto 0);
+  signal debug_gmem_write_counter_per_cu    : debug_counter(N_CU-1 downto 0);
+  signal debug_op_counter_per_cu            : debug_counter(N_CU-1 downto 0);
+
+  signal debug_gmem_read_counter     : unsigned(2*DATA_W-1 downto 0);
+  signal debug_gmem_write_counter    : unsigned(2*DATA_W-1 downto 0);
+
+  signal debug_op_counter            : unsigned(2*DATA_W-1 downto 0);
+
+  signal debug_reset_all_counters    : std_logic;
+  -- }}}
+
   -- global memory ---------------------------------------------------- {{{
+
+  type rdData_v_vec_type is array(natural range <>) of std_logic_vector(N_CU-1 downto 0);
+  type atomic_sgntr_vec_type is array(natural range <>) of std_logic_vector(N_CU_STATIONS_W-1 downto 0);
+  type cache_rdData_vec_type is array(natural range <>) of std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
+
   -- cache signals
   function distribute_cache_rd_ports_on_CUs (n_cus: integer) return nat_array is -- {{{
     variable res: nat_array(n_cus-1 downto 0);
-    -- res(0) will have the maximum distance to the global memory controller
+  -- res(0) will have the maximum distance to the global memory controller
   begin
     for i in 0 to n_cus-1 loop
       res(i) := n_cus/2*(i mod 2) + (i/2);
+	  -- e.g.: n_cus = 8
+	  -- res(0) = 0
+	  -- res(1) = 4
+	  -- res(2) = 1
+	  -- res(3) = 5
+	  -- res(4) = 2
+	  -- res(5) = 6
+	  -- res(6) = 3
+	  -- res(7) = 7
     end loop;
     return res;
   end; -- }}}
+
   constant cache_rd_port_to_CU            : nat_array(N_CU-1 downto 0) := distribute_cache_rd_ports_on_CUs(N_CU);
-  type cache_rdData_vec_type is array(natural range <>) of std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
-  signal cache_rdData_vec                 : cache_rdData_vec_type(N_CU downto 0);
-  signal atomic_rdData_vec                : slv32_array(N_CU downto 0);
-  type rdData_v_vec_type is array(natural range <>) of std_logic_vector(N_CU-1 downto 0);
-  signal atomic_rdData_v_vec              : rdData_v_vec_type(N_CU downto 0);
-  type atomic_sgntr_vec_type is array(natural range <>) of std_logic_vector(N_CU_STATIONS_W-1 downto 0);
-  signal atomic_sgntr_vec                 : atomic_sgntr_vec_type(N_CU downto 0);
-  signal cache_rdAddr_vec                 : GMEM_ADDR_ARRAY_NO_BANK(N_CU downto 0);
-  signal cache_rdAck_vec                  : rdData_v_vec_type(N_CU downto 0);
+    -- constant used to distribute cache signals on the CUs
+
   signal cache_rdData_out                 : std_logic_vector(DATA_W*CACHE_N_BANKS-1 downto 0);
+    -- cache read data
   signal cache_rdAddr_out                 : unsigned(GMEM_WORD_ADDR_W-CACHE_N_BANKS_W-1 downto 0);
+    -- cache read address (line)
   signal cache_rdAck_out                  : std_logic_vector(N_CU-1 downto 0);
+    -- cache read acknowledge for the CUs
+  signal cache_rdData_vec                 : cache_rdData_vec_type(N_CU downto 0);
+	-- cache_rdData_vec(N_CU downto 0) <= cache_rdData & cache_rdData_vec(N_CU downto 1), each clock cycle the elements are shifted to the right
+  signal cache_rdAddr_vec                 : GMEM_ADDR_ARRAY_NO_BANK(N_CU downto 0);
+	-- cache_rdAddr_vec(N_CU downto 0) <= cache_rdAddr_out & cache_rdAddr_vec(N_CU downto 1), each clock cycle the elements are shifted to the right
+  signal cache_rdAck_vec                  : rdData_v_vec_type(N_CU downto 0);
+	-- cache_rdAck_vec(N_CU downto 0) <= cache_rdAck_out & cache_rdAck_vec(N_CU downto 1), each clock cycle the elements are shifted to the right
 
   signal atomic_rdData                    : std_logic_vector(DATA_W-1 downto 0);
+    -- atomic units read data
+  signal atomic_rdData_vec                : slv32_array(N_CU downto 0);
+    -- atomic_rdData_vec(N_CU downto 0) <= atomic_rdData & atomic_rdData_vec(N_CU downto 1)
   signal atomic_rdData_v                  : std_logic_vector(N_CU-1 downto 0);
+    -- atomic units read data valid
+  signal atomic_rdData_v_vec              : rdData_v_vec_type(N_CU downto 0);
+    --
   signal atomic_sgntr                     : std_logic_vector(N_CU_STATIONS_W-1 downto 0);
+    -- signal used to identify the CU that requested the atomic operation                                                ---------------------------------- Check comment
+  signal atomic_sgntr_vec                 : atomic_sgntr_vec_type(N_CU downto 0);
+    -- atomic_sgntr_vec(N_CU downto 0) <= atomic_sgntr & atomic_sgntr_vec(N_CU downto 1)
 
-  signal cu_gmem_valid, cu_gmem_ready     : std_logic_vector(N_CU-1 downto 0);
+  signal cu_gmem_valid                    : std_logic_vector(N_CU-1 downto 0);
+    -- CUs valid signal to global memory
+  signal cu_gmem_ready                    : std_logic_vector(N_CU-1 downto 0);
+    -- CUs ready signal to global memory
   signal cu_gmem_we                       : be_array(N_CU-1 downto 0);
-  signal cu_gmem_rnw, cu_gmem_atomic      : std_logic_vector(N_CU-1 downto 0);
+    -- CUs byte write-enable array
+  signal cu_gmem_rnw                      : std_logic_vector(N_CU-1 downto 0);
+    -- bit coming from the fifo within the CU memory controller                                                          ---------------------------------- Add comment
+  signal cu_gmem_atomic      			  : std_logic_vector(N_CU-1 downto 0);
+    -- bit coming from the fifo within the CU memory controller                                                          ---------------------------------- Add comment
   signal cu_gmem_atomic_sgntr             : atomic_sgntr_array(N_CU-1 downto 0);
+    -- atomic signatur coming from the fifo within the CU memory controller                                              ---------------------------------- Add comment
   signal cu_rqst_addr                     : GMEM_WORD_ADDR_ARRAY(N_CU-1 downto 0);
+    -- address of the global memory requests performed by the CUs
   signal cu_gmem_wrData                   : SLV32_ARRAY(N_CU-1 downto 0);
+    -- data to be written in the global memory by the CUs
   signal wf_active                        : wf_active_array(N_CU-1 downto 0);
+    -- wf_active(i)(j) is set to '1' by the CU if the j-th WF of the i-th CU is active
   signal CU_gmem_idle                     : std_logic_vector(N_CU-1 downto 0);
+    -- signal set to '1' by the CU when there is no operation towards the global memory to be served
   signal CUs_gmem_idle                    : std_logic;
+    -- signal set to '1' when all the CUs have no operation towards the global memory to be served
+
   signal axi_araddr                       : GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
-  signal axi_arvalid, axi_arready         : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports read address
+  signal axi_arvalid                      : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports read address valid
+  signal axi_arready                      : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports read address valid
   signal axi_rdata                        : gmem_word_array(N_AXI-1 downto 0);
+    -- AXI master ports read data
   signal axi_rlast                        : std_logic_vector(N_AXI-1 downto 0);
-  signal axi_rvalid, axi_rready           : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports rlast signal
+  signal axi_rvalid                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports read valid
+  signal axi_rready                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports read ready
   signal axi_awaddr                       : GMEM_ADDR_ARRAY(N_AXI-1 downto 0);
-  signal axi_awvalid, axi_awready         : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports write address
+  signal axi_awvalid                      : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports write address valid
+  signal axi_awready                      : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports write address ready
   signal axi_wdata                        : gmem_word_array(N_AXI-1 downto 0);
+    -- AXI master ports write data
   signal axi_wstrb                        : gmem_be_array(N_AXI-1 downto 0);
+    -- AXI master ports wstrb
   signal axi_wlast                        : std_logic_vector(N_AXI-1 downto 0);
-  signal axi_wvalid, axi_wready           : std_logic_vector(N_AXI-1 downto 0);
-  signal axi_bvalid, axi_bready           : std_logic_vector(N_AXI-1 downto 0);
-  signal axi_arid, axi_rid                : id_array(N_AXI-1 downto 0);
-  signal axi_awid, axi_bid                : id_array(N_AXI-1 downto 0);
-  --}}}
+    -- AXI master ports wlast
+  signal axi_wvalid                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports write valid
+  signal axi_wready                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports write ready
+  signal axi_bvalid                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports bvalid
+  signal axi_bready                       : std_logic_vector(N_AXI-1 downto 0);
+    -- AXI master ports bready
+  signal axi_arid                         : id_array(N_AXI-1 downto 0);
+    -- AXI master ports read address ID
+  signal axi_rid                          : id_array(N_AXI-1 downto 0);
+    -- AXI master ports read ID tag
+  signal axi_awid                         : id_array(N_AXI-1 downto 0);
+    -- AXI master ports write address ID
+  signal axi_bid                          : id_array(N_AXI-1 downto 0);
+    -- AXI response ID tag
+  -- }}}
+
+  attribute mark_debug : string;
+  attribute mark_debug of Rstart : signal is "true";
+  attribute mark_debug of RInitiate : signal is "true";
+  attribute mark_debug of RcleanCache : signal is "true";
+  attribute mark_debug of Rstat: signal is "true";
+
 begin
   -- asserts -------------------------------------------------------------------------------------------{{{
   assert KRNL_SCH_ADDR_W <= CRAM_ADDR_W severity failure; --Code RAM is the biggest block
@@ -352,6 +509,8 @@ begin
         mainProc_we     <= '0';
         mainProc_wrAddr <= (others => '0');
       else
+        -- from AXI4Lite standard, there is no guarantee that the transaction
+        -- on w and on aw must occur simultaneously. They can be in any order (TBC)
         if s_awready_i = '0' and s_awvalid = '1' and s_wvalid = '1' then
           s_awready_i <= '1';
           mainProc_wrAddr <= unsigned(s_awaddr);
@@ -421,6 +580,7 @@ begin
     end if;
   end process;
 
+  --to add latency on r channel, wait 2 cycles after ar channel completes
   process(clk)
   begin
     if rising_edge(clk) then
@@ -438,6 +598,7 @@ begin
     end if;
   end process;
 
+  --to assign s_rdata, this is the reason for the 2 cycles of delay
   process(clk)
   begin
     if rising_edge(clk) then
@@ -448,8 +609,8 @@ begin
           s_rdata <= krnl_sch_rdData;
         elsif mainProc_rdAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "01" then -- Code_ram
           s_rdata <= cram_rdData;
-          -- s_rdata <= cram_rdData(0);
-        else -- "10", register file
+        -- s_rdata <= cram_rdData(0);
+        elsif mainProc_rdAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "10" then -- Control Registers
           case mainProc_rdAddr(1 downto 0) is
             when "00" =>
               s_rdata(NEW_KRNL_MAX_INDX-1 downto 0)  <= Rstat(NEW_KRNL_MAX_INDX-1 downto 0);
@@ -459,6 +620,25 @@ begin
               s_rdata(NEW_KRNL_MAX_INDX-1 downto 0)  <= RInitiate(NEW_KRNL_MAX_INDX-1 downto 0);
           end case;
           s_rdata(DATA_W-1 downto NEW_KRNL_MAX_INDX) <= (others => '0');
+        elsif mainProc_rdAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "11" and DEBUG_IMPLEMENT /= 0 then -- Debug Registers
+          case mainProc_rdAddr(2 downto 0) is
+            when "000" =>    -- miss_counter
+              s_rdata <= std_logic_vector(debug_cache_miss_counter);
+            when "001" =>    -- gmem_read_counter[31:0]
+              s_rdata <= std_logic_vector(debug_gmem_read_counter(DATA_W-1 downto 0));
+            when "010" =>    -- gmem_read_counter[63:32]
+              s_rdata <= std_logic_vector(debug_gmem_read_counter(2*DATA_W-1 downto DATA_W));
+            when "011" =>    -- gmem_write_counter[31:0]
+              s_rdata <= std_logic_vector(debug_gmem_write_counter(DATA_W-1 downto 0));
+            when "100" =>    -- gmem_write_counter[63:32]
+              s_rdata <= std_logic_vector(debug_gmem_write_counter(2*DATA_W-1 downto DATA_W));
+            when "101" =>    -- op_counter[31:0]
+              s_rdata <= std_logic_vector(debug_op_counter(DATA_W-1 downto 0));
+            when "110" =>    -- op_counter[63:32]
+              s_rdata <= std_logic_vector(debug_op_counter(2*DATA_W-1 downto DATA_W));
+            when others =>
+              s_rdata <= (others => '0');
+          end case;
         end if;
       end if;
     end if;
@@ -478,10 +658,10 @@ begin
         krnl_sch_rdData_n <= (others => '0'); -- NOT NEEDED
         krnl_sch_rdData   <= (others => '0'); -- NOT NEEDED
       else
-        krnl_sch_rdData_n <= KRNL_SCHEDULER_RAM(to_integer(krnl_sch_rdAddr));
+        krnl_sch_rdData_n <= krnl_scheduler_ram(to_integer(krnl_sch_rdAddr));
         krnl_sch_rdData   <= krnl_sch_rdData_n;
-        if KRNL_SCH_we = '1' then
-          KRNL_SCHEDULER_RAM(to_integer(mainProc_wrAddr(KRNL_SCH_ADDR_W-1 downto 0))) <= s_wdata_d0;
+        if krnl_sch_we = '1' then
+          krnl_scheduler_ram(to_integer(mainProc_wrAddr(KRNL_SCH_ADDR_W-1 downto 0))) <= s_wdata_d0;
         end if;
       end if;
     end if;
@@ -489,7 +669,7 @@ begin
 
   krnl_sch_rdAddr <= mainProc_rdAddr(KRNL_SCH_ADDR_W-1 downto 0) when st_wg_disp = idle else unsigned(krnl_sch_rdAddr_WGD);
 
-  KRNL_SCH_we  <= '1' when mainProc_wrAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "00" and mainProc_we = '1' else '0';
+  krnl_sch_we  <= '1' when mainProc_wrAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "00" and mainProc_we = '1' else '0';
   ------------------------------------------------------------------------------------------------- }}}
 
   -- Code RAM -------------------------------------------------------------------------------------- {{{
@@ -503,7 +683,7 @@ begin
         cram_rdData_n <= cram_b1(to_integer(cram_rdAddr));
         -- cram_rdData_n <= cram_b1(to_integer(cram_rdAddr(0)));
         -- cram_rdData_n(0) <= cram_b1(to_integer(cram_rdAddr(0)));
-        if CRAM_we = '1' then
+        if cram_we = '1' then
           cram_b1(to_integer(mainProc_wrAddr(CRAM_ADDR_W-1 downto 0))) <= s_wdata_d0;
         end if;
 
@@ -519,7 +699,7 @@ begin
     end if;
   end process;
 
-  CRAM_we <= '1' when mainProc_wrAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "01" and mainProc_we = '1' else '0';
+  cram_we <= '1' when mainProc_wrAddr(INTERFCE_W_ADDR_W-1 downto INTERFCE_W_ADDR_W-2) = "01" and mainProc_we = '1' else '0';
 
   process(clk)
   begin
@@ -537,14 +717,14 @@ begin
           for i in 0 to max(N_CU/2-1,0) loop
             if CU_cram_rqst(i) = '1' then
               cram_rdAddr <= CU_cram_rdAddr(i);
-              -- cram_rdAddr(i mod CRAM_BLOCKS) <= CU_cram_rdAddr(i);
+            -- cram_rdAddr(i mod CRAM_BLOCKS) <= CU_cram_rdAddr(i);
             end if;
           end loop;
         else
           for i in N_CU/2 to N_CU-1 loop
             if CU_cram_rqst(i) = '1' then
               cram_rdAddr <= CU_cram_rdAddr(i);
-              -- cram_rdAddr(i mod CRAM_BLOCKS) <= CU_cram_rdAddr(i);
+            -- cram_rdAddr(i mod CRAM_BLOCKS) <= CU_cram_rdAddr(i);
             end if;
           end loop;
         end if;
@@ -582,57 +762,67 @@ begin
 
       clk                   => clk,
       nrst                  => nrst
-  );
+      );
   ------------------------------------------------------------------------------------------------- }}}
 
   -- compute units  -------------------------------------------------------------------------------------- {{{
   cus_i: for i in 0 to N_CU-1 generate
   begin
     cu_inst: cu
-    port map(
-      clk                   => clk,
-      wf_active             => wf_active(i),
-      WGsDispatched         => WGsDispatched,
-      nrst                  => nrst,
-      cram_rdAddr           => CU_cram_rdAddr(i),
-      cram_rdData           => cram_rdData_vec(i),
-      -- cram_rdData           => cram_rdData(i mod CRAM_BLOCKS),
-      cram_rqst             => CU_cram_rqst(i),
-      cram_rdAddr_conf      => cram_rdAddr_d0_vec(i),
-      -- cram_rdAddr_conf      => cram_rdAddr_d0(i mod CRAM_BLOCKS),
-      start_addr            => start_addr_vec(i),
+      port map(
+        clk                   => clk,
+        wf_active             => wf_active(i),
+        WGsDispatched         => WGsDispatched,
+        nrst                  => nrst,
+        cram_rdAddr           => CU_cram_rdAddr(i),
+        cram_rdData           => cram_rdData_vec(i),
+        -- cram_rdData           => cram_rdData(i mod CRAM_BLOCKS),
+        cram_rqst             => CU_cram_rqst(i),
+        cram_rdAddr_conf      => cram_rdAddr_d0_vec(i),
+        -- cram_rdAddr_conf      => cram_rdAddr_d0(i mod CRAM_BLOCKS),
+        start_addr            => start_addr_vec(i),
 
-      start_CUs             => start_CUs_vec(i),
-      sch_rqst_n_wfs_m1     => sch_rqst_n_WFs_m1_vec(i),
-      sch_rqst              => wg_req_vec(i)(i),
-      sch_ack               => wg_ack(i),
-      wg_info               => unsigned(wg_info_vec(i)),
-      rtm_wrAddr_wg         => rtm_wrAddr_wg_vec(i),
-      rtm_wrData_wg         => rtm_wrData_wg_vec(i),
-      rtm_we_wg             => rtm_we_wg_vec(i),
-      rdData_alu_en         => rdData_alu_en(i),
-      rdAddr_alu_en         => rdAddr_alu_en(i),
+        start_CUs             => start_CUs_vec(i),
+        sch_rqst_n_wfs_m1     => sch_rqst_n_WFs_m1_vec(i),
+        sch_rqst              => wg_req_vec(i)(i),
+        sch_ack               => wg_ack(i),
+        wg_info               => unsigned(wg_info_vec(i)),
+        rtm_wrAddr_wg         => rtm_wrAddr_wg_vec(i),
+        rtm_wrData_wg         => rtm_wrData_wg_vec(i),
+        rtm_we_wg             => rtm_we_wg_vec(i),
+        rdData_alu_en         => rdData_alu_en(i),
+        rdAddr_alu_en         => rdAddr_alu_en(i),
 
-      gmem_valid            => cu_gmem_valid(i),
-      gmem_we               => cu_gmem_we(i),
-      gmem_rnw              => cu_gmem_rnw(i),
-      gmem_atomic           => cu_gmem_atomic(i),
-      gmem_atomic_sgntr     => cu_gmem_atomic_sgntr(i),
-      gmem_rqst_addr        => cu_rqst_addr(i),
-      gmem_ready            => cu_gmem_ready(i),
-      gmem_wrData           => cu_gmem_wrData(i),
-      --cache read data
-      cache_rdAddr          => cache_rdAddr_vec(cache_rd_port_to_CU(i)),
-      cache_rdAck           => cache_rdAck_vec(cache_rd_port_to_CU(i))(i),
-      cache_rdData          => cache_rdData_vec(cache_rd_port_to_CU(i)),
-      atomic_rdData         => atomic_rdData_vec(cache_rd_port_to_CU(i)),
-      atomic_rdData_v       => atomic_rdData_v_vec(cache_rd_port_to_CU(i))(i),
-      atomic_sgntr          => atomic_sgntr_vec(cache_rd_port_to_CU(i)),
+        gmem_valid            => cu_gmem_valid(i),
+        gmem_we               => cu_gmem_we(i),
+        gmem_rnw              => cu_gmem_rnw(i),
+        gmem_atomic           => cu_gmem_atomic(i),
+        gmem_atomic_sgntr     => cu_gmem_atomic_sgntr(i),
+        gmem_rqst_addr        => cu_rqst_addr(i),
+        gmem_ready            => cu_gmem_ready(i),
+        gmem_wrData           => cu_gmem_wrData(i),
+        --cache read data
+        cache_rdAddr          => cache_rdAddr_vec(cache_rd_port_to_CU(i)),
+        cache_rdAck           => cache_rdAck_vec(cache_rd_port_to_CU(i))(i),
+        cache_rdData          => cache_rdData_vec(cache_rd_port_to_CU(i)),
+        atomic_rdData         => atomic_rdData_vec(cache_rd_port_to_CU(i)),
+        atomic_rdData_v       => atomic_rdData_v_vec(cache_rd_port_to_CU(i))(i),
+        atomic_sgntr          => atomic_sgntr_vec(cache_rd_port_to_CU(i)),
 
-      gmem_cntrl_idle       => CU_gmem_idle(i)
+        gmem_cntrl_idle       => CU_gmem_idle(i),
 
-      -- loc_mem_rdAddr_dummy => loc_mem_rdAddr_dummy(DATA_W*(i+1)-1 downto i*DATA_W)
-      );
+
+        finish_exec           => finish_exec,
+        finish_exec_d0        => finish_exec_d0,
+
+        -- debug
+        debug_gmem_read_counter_per_cu  => debug_gmem_read_counter_per_cu(i),
+        debug_gmem_write_counter_per_cu => debug_gmem_write_counter_per_cu(i),
+        debug_op_counter_per_cu         => debug_op_counter_per_cu(i),
+        debug_reset_all_counters        => debug_reset_all_counters
+
+       -- loc_mem_rdAddr_dummy => loc_mem_rdAddr_dummy(DATA_W*(i+1)-1 downto i*DATA_W)
+        );
   end generate;
 
   process(clk)
@@ -700,60 +890,64 @@ begin
 
   -- global memory controller----------------------------------------------------------------------------------- {{{
   gmem_controller_inst: gmem_cntrl
-  port map(
-    clk               => clk,
-    cu_valid          => cu_gmem_valid,
-    cu_ready          => cu_gmem_ready,
-    cu_we             => cu_gmem_we,
-    cu_rnw            => cu_gmem_rnw,
-    cu_atomic         => cu_gmem_atomic,
-    cu_atomic_sgntr   => cu_gmem_atomic_sgntr,
-    cu_rqst_addr      => cu_rqst_addr,
-    cu_wrData         => cu_gmem_wrData,
-    WGsDispatched     => WGsDispatched,
-    finish_exec       => finish_exec,
-    start_kernel      => start_kernel,
-    clean_cache       => clean_cache,
-    CUs_gmem_idle     => CUs_gmem_idle,
+    port map(
+      clk               => clk,
+      cu_valid          => cu_gmem_valid,
+      cu_ready          => cu_gmem_ready,
+      cu_we             => cu_gmem_we,
+      cu_rnw            => cu_gmem_rnw,
+      cu_atomic         => cu_gmem_atomic,
+      cu_atomic_sgntr   => cu_gmem_atomic_sgntr,
+      cu_rqst_addr      => cu_rqst_addr,
+      cu_wrData         => cu_gmem_wrData,
+      WGsDispatched     => WGsDispatched,
+      finish_exec       => finish_exec,
+      start_kernel      => start_kernel,
+      clean_cache       => clean_cache,
+      CUs_gmem_idle     => CUs_gmem_idle,
 
-    -- read data from cache
-    rdAck             => cache_rdAck_out,
-    rdAddr            => cache_rdAddr_out,
-    rdData            => cache_rdData_out,
+      -- read data from cache
+      rdAck             => cache_rdAck_out,
+      rdAddr            => cache_rdAddr_out,
+      rdData            => cache_rdData_out,
 
-    atomic_rdData     => atomic_rdData,
-    atomic_rdData_v   => atomic_rdData_v,
-    atomic_sgntr      => atomic_sgntr,
-    -- read axi bus {{{
-    --    ar channel
-    axi_araddr        => axi_araddr,
-    axi_arvalid       => axi_arvalid,
-    axi_arready       => axi_arready,
-    axi_arid          => axi_arid,
-    --    r channel
-    axi_rdata         => axi_rdata,
-    axi_rlast         => axi_rlast,
-    axi_rvalid        => axi_rvalid,
-    axi_rready        => axi_rready,
-    axi_rid           => axi_rid,
-    --    aw channel
-    axi_awaddr        => axi_awaddr,
-    axi_awvalid       => axi_awvalid,
-    axi_awready       => axi_awready,
-    axi_awid          => axi_awid,
-    --    w channel
-    axi_wdata         => axi_wdata,
-    axi_wstrb         => axi_wstrb,
-    axi_wlast         => axi_wlast,
-    axi_wvalid        => axi_wvalid,
-    axi_wready        => axi_wready,
-    -- b channel
-    axi_bvalid        => axi_bvalid,
-    axi_bready        => axi_bready,
-    axi_bid           => axi_bid,
-    --}}}
-    nrst              => nrst
-  );
+      atomic_rdData     => atomic_rdData,
+      atomic_rdData_v   => atomic_rdData_v,
+      atomic_sgntr      => atomic_sgntr,
+      -- read axi bus {{{
+      --    ar channel
+      axi_araddr        => axi_araddr,
+      axi_arvalid       => axi_arvalid,
+      axi_arready       => axi_arready,
+      axi_arid          => axi_arid,
+      --    r channel
+      axi_rdata         => axi_rdata,
+      axi_rlast         => axi_rlast,
+      axi_rvalid        => axi_rvalid,
+      axi_rready        => axi_rready,
+      axi_rid           => axi_rid,
+      --    aw channel
+      axi_awaddr        => axi_awaddr,
+      axi_awvalid       => axi_awvalid,
+      axi_awready       => axi_awready,
+      axi_awid          => axi_awid,
+      --    w channel
+      axi_wdata         => axi_wdata,
+      axi_wstrb         => axi_wstrb,
+      axi_wlast         => axi_wlast,
+      axi_wvalid        => axi_wvalid,
+      axi_wready        => axi_wready,
+      -- b channel
+      axi_bvalid        => axi_bvalid,
+      axi_bready        => axi_bready,
+      axi_bid           => axi_bid,
+      --}}}
+
+      debug_cache_miss_counter => debug_cache_miss_counter,
+      debug_reset_all_counters => debug_reset_all_counters,
+
+      nrst              => nrst
+      );
 
   -- fixed signals assignments {{{
   m0_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m0_arlen'length));
@@ -938,7 +1132,7 @@ begin
         s_wdata_d0    <= (others => '0'); -- NOT NEEDED
         finish_exec_d0 <= '0'; -- NOT NEEDED
       else
-        s_wdata_d0    <= s_wdata;
+        s_wdata_d0    <= s_wdata; --to be moved to aw, w process
         finish_exec_d0 <= finish_exec;
         -- regFile_we_d0 <= regFile_we;
 
@@ -952,7 +1146,9 @@ begin
         if start_kernel = '1' then
           Rstart(new_krnl_indx) <= '0';
         elsif regFile_we = '1' and to_integer(mainProc_wrAddr(N_REG_W-1 downto 0)) = Rstart_regFile_addr then
-          Rstart <= s_wdata_d0(NEW_KRNL_MAX_INDX-1 downto 0);
+          Rstart <= s_wdata_d0(NEW_KRNL_MAX_INDX-1 downto 0); --written
+                                                              --directly, is
+                                                              --this safe?
         end if;
 
         if regFile_we = '1' and to_integer(mainProc_wrAddr(N_REG_W-1 downto 0)) = RcleanCache_regFile_addr then
@@ -983,6 +1179,7 @@ begin
 
   start_kernel <= '1' when st_wg_disp_n = st1_dispatch and st_wg_disp = idle else '0';
 
+  --combinatorial part of the state machine (computes the next state)
   process(st_wg_disp, finish_exec, Rstart)
   begin
     st_wg_disp_n <= st_wg_disp;
@@ -997,6 +1194,71 @@ begin
         end if;
     end case;
   end process;
-  ------------------------------------------------------------------------------------------------- }}}
+------------------------------------------------------------------------------------------------- }}}
+
+
+-- debug -----------------------------------------------------------------------------------{{{
+
+DEBUG_GEN_FALSE: if DEBUG_IMPLEMENT = 0 generate
+  debug_gmem_read_counter    <= (others => '0');
+  debug_gmem_write_counter   <= (others => '0');
+  debug_op_counter           <= (others => '0');
+  debug_reset_all_counters   <= '0';
+end generate;
+
+DEBUG_GEN_TRUE: if DEBUG_IMPLEMENT /= 0 generate
+
+  -- combinatorial process that creates the debug_reset_all_counters flag
+  process(Rstart)
+  begin
+    for i in 0 to NEW_KRNL_MAX_INDX-1 loop
+      if (Rstart(i) = '1') then
+        debug_reset_all_counters <= '1';
+        exit;
+      else
+        debug_reset_all_counters <= '0';
+      end if;
+    end loop;
+  end process;
+
+  -- sequential process that gathers the counters of read/write operations on gmem from the CUs and sum them together
+  process(clk)
+    variable read_acc  : unsigned(2*DATA_W-1 downto 0) := (others => '0');
+    variable write_acc : unsigned(2*DATA_W-1 downto 0) := (others => '0');
+    variable op_acc    : unsigned(2*DATA_W-1 downto 0) := (others => '0');
+  begin
+    if rising_edge(clk) then
+      if nrst = '0' then
+        debug_gmem_read_counter <= (others => '0');
+        debug_gmem_write_counter <= (others => '0');
+        debug_op_counter <= (others => '0');
+        read_acc := (others => '0');
+        write_acc := (others => '0');
+        op_acc := (others => '0');
+      else
+        if (debug_reset_all_counters = '1') then
+          debug_gmem_read_counter <= (others => '0');
+          debug_gmem_write_counter <= (others => '0');
+          debug_op_counter <= (others => '0');
+          read_acc := (others => '0');
+          write_acc := (others => '0');
+          op_acc := (others => '0');
+        elsif finish_exec = '1' and finish_exec_d0 = '0' then
+          for i in 0 to N_CU-1 loop
+            read_acc := read_acc + to_integer(debug_gmem_read_counter_per_cu(i));
+            write_acc := write_acc + to_integer(debug_gmem_write_counter_per_cu(i));
+            op_acc := op_acc + to_integer(debug_op_counter_per_cu(i));
+          end loop;
+          debug_gmem_read_counter <= read_acc;
+          debug_gmem_write_counter <= write_acc;
+          debug_op_counter <= op_acc;
+        end if;
+      end if;
+    end if;
+  end process;
+
+
+end generate;
+--------------------------------------------------------------------------------------------}}}
 
 end Behavioral;

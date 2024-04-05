@@ -23,7 +23,7 @@ architecture Behavioral of float_units is
 
   -- signals definitions {{{
 
-  -- zulberti
+
   signal ce : std_logic;
 
   signal fadd_res                         : SLV32_ARRAY(CV_SIZE-1 downto 0);
@@ -42,9 +42,9 @@ architecture Behavioral of float_units is
   signal code_vec                         : code_vec_type(MAX_FPU_DELAY-8 downto 0);
 
   -- XDC: attribute max_fanout of code_vec        : signal is 32;
-  signal fmul_valid                       : std_logic_vector(CV_SIZE-1 downto 0);
-  signal fdiv_valid                       : std_logic_vector(CV_SIZE-1 downto 0);
-  signal fsqrt_valid                      : std_logic_vector(CV_SIZE-1 downto 0);
+  --signal fmul_valid                       : std_logic_vector(CV_SIZE-1 downto 0);
+  --signal fdiv_valid                       : std_logic_vector(CV_SIZE-1 downto 0);
+  --signal fsqrt_valid                      : std_logic_vector(CV_SIZE-1 downto 0);
 
   -- Operation slave channel signals
   signal operation_tdata                  : std_logic_vector(7 downto 0);
@@ -58,7 +58,7 @@ begin
     fslt_res_vec(fslt_res_vec'high)(i) <= fslt_res(i)(0); -- level 11.
   end generate;
 
-  -- zulberti
+
   process(clk)
   begin
     if rising_edge(clk) then
@@ -153,7 +153,7 @@ begin
         s_axis_a_tvalid         => ce,
         s_axis_a_tdata          => float_a(i), -- level 9.
         -- AXI4-Stream master channel for output result
-        m_axis_result_tvalid    => fsqrt_valid(i),
+        m_axis_result_tvalid    => open,
         m_axis_result_tdata     => fsqrt_res(i) -- level 9+28=37.
         );
     end generate; -- }}}
@@ -184,7 +184,7 @@ begin
         s_axis_b_tvalid         => ce,
         s_axis_b_tdata          => float_b(i), -- level 9.
         -- AXI4-Stream master channel for output result
-        m_axis_result_tvalid    => fdiv_valid(i),
+        m_axis_result_tvalid    => open,
         m_axis_result_tdata     => fdiv_res(i) -- level 9+28=37.
         );
     end generate; -- }}}
@@ -201,7 +201,7 @@ begin
         s_axis_b_tvalid         => ce,
         s_axis_b_tdata          => float_b(i), -- level 9.
         -- AXI4-Stream master channel for output result
-        m_axis_result_tvalid    => fmul_valid(i),
+        m_axis_result_tvalid    => open,
         m_axis_result_tdata     => fmul_res(i) -- level 9+8=17.
         );
     end generate; -- }}}
@@ -242,7 +242,7 @@ begin
         m_axis_result_tvalid    => open,
         m_axis_result_tdata     => fslt_res(i)(7 downto 0) -- level 9+2=11.
         );
-        -- zulberti
+
         fslt_res(i)(31 downto 8) <= (others => '0');
     end generate; -- }}}
 

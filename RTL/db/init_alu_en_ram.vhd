@@ -1,3 +1,9 @@
+-- The init_alu_en_ram is a memory that contains ...
+-- The memory has 2**(PHASE_W+N_WF_CU_W) words, each one of CV_size bits (64x8).
+-- When the start signal is high, the memory is initialized according to the WG size and number of WFs.
+-- In the initializtion phase, the first (#WFs-1) words are initialized with all bits set to '1'.
+-- For the last WF, if the WI are less than the size of a WF, the words are initialized with zeros.
+
 -- libraries -------------------------------------------------------------------------------------------{{{
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -10,31 +16,50 @@ use fgpu.components.all;
 entity init_alu_en_ram is -- {{{
 generic(
   N_RD_PORTS          : natural := 4
+    -- number of CU
 );
 port(
   start               : in std_logic;
+    -- start signal
   finish              : out std_logic;
+    -- finish signal
   clear_finish        : in std_logic;
+    -- input signal to clear finish flag
   wg_size             : in unsigned(N_WF_CU_W+WF_SIZE_W downto 0);
+    -- WG size
   sch_rqst_n_WFs_m1   : in unsigned(N_WF_CU_W-1 downto 0);
+    -- number of WFs in the WG to be scheduled
   rdData_alu_en       : out alu_en_vec_type(N_RD_PORTS-1 downto 0); -- level 3
+    -- alu enable read data for each CU
   rdAddr_alu_en       : in alu_en_rdAddr_type(N_RD_PORTS-1 downto 0); -- level 1
+    -- alu enable read address for each CU
   clk, nrst           : in std_logic
 );
 end entity; --}}}
 architecture behavioural of init_alu_en_ram is
+
   -- signal definitions -----------------------------------------------------------------------------------{{{
   type st_alu_en_type is (idle, set_till_last_wf, check_last_wf);
+
   signal st_alu_en, st_alu_en_n           : st_alu_en_type;
+    -- state of alu enable FSM
   signal alu_en_ram                       : alu_en_vec_type(2**(PHASE_W+N_WF_CU_W)-1 downto 0) := (others => (others => '0'));
+    -- alu enable ram memory: 2**(PHASE_W+N_WF_CU_W) words of CV size bits
   signal wrData_alu_en, wrData_alu_en_n   : std_logic_vector(CV_SIZE-1 downto 0);
+    -- alu enable ram write data
   signal wrAddr_alu_en, wrAddr_alu_en_n   : unsigned(PHASE_W+N_WF_CU_W downto 0);
+    -- alu enable ram write address
   signal we_alu_en, we_alu_en_n           : std_logic;
+    -- alu enable ram write enable
   signal alu_count, alu_count_n           : unsigned(WF_SIZE_W-1 downto 0);
+    -- counter of number of WIs within a WF
   signal finish_n, finish_i               : std_logic;
   signal n_complete_wfs, n_complete_wfs_n : integer range 0 to 2**N_WF_CU_W;
+    -- signal used to extract the number of WF within the WG
   signal rdData_alu_en_n                  : alu_en_vec_type(N_RD_PORTS-1 downto 0);
+    -- alu enable read data
   ---------------------------------------------------------------------------------------------------------}}}
+
 begin
   finish <= finish_i;
 
