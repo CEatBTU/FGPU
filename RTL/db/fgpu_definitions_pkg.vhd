@@ -9,7 +9,7 @@ package definitions is
   -- Begin of Configurable FGPU Parameters ----------------------------------------------------------------{{{
 
   -------- CU
-  constant N_CU_W                         : natural range 0 to 3 := 3; -- Range: [0,3]
+  constant N_CU_W                         : natural range 0 to 3 := 0; -- Range: [0,3]
     -- Bitwidth of # of CUs
   constant INSTR_READ_SLICE               : boolean := true;
     -- If true, insert a barrier of registers between WF Scheduler and CV
@@ -77,7 +77,7 @@ package definitions is
 
 
   -------- Atomic operations
-  constant ATOMIC_IMPLEMENT               : natural := 1;
+  constant ATOMIC_IMPLEMENT               : natural := 0;
     -- Implement global atomic operations
   constant AADD_ATOMIC                    : natural := 0;
     -- Implement atomic Add
@@ -93,21 +93,21 @@ package definitions is
 
 
   -------- Floating-point hardware support
-  constant FLOAT_IMPLEMENT                : natural := 0;
+  constant FLOAT_IMPLEMENT                : natural := 1;
     -- Implement floating-point hardware
-  constant FADD_IMPLEMENT                 : integer := 0;
+  constant FADD_IMPLEMENT                 : integer := 1;
     -- Implement floating add
-  constant FMUL_IMPLEMENT                 : integer := 0;
+  constant FMUL_IMPLEMENT                 : integer := 1;
     -- Implement floating multiply
-  constant FDIV_IMPLEMENT                 : integer := 0;
+  constant FDIV_IMPLEMENT                 : integer := 1;
     -- Implement floating divide
-  constant FSQRT_IMPLEMENT                : integer := 0;
+  constant FSQRT_IMPLEMENT                : integer := 1;
     -- Implement floating SQRT
-  constant UITOFP_IMPLEMENT               : integer := 0;
+  constant UITOFP_IMPLEMENT               : integer := 1;
     -- Implement unsigned integer to floating-point
-  constant FSLT_IMPLEMENT                 : integer := 0;
+  constant FSLT_IMPLEMENT                 : integer := 1;
     -- Implement Floating Set Less Then
-  constant FRSQRT_IMPLEMENT               : integer := 0;
+  constant FRSQRT_IMPLEMENT               : integer := 1;
     -- Implement floating RSQRT
   constant FADD_DELAY                     : integer := 11;
     -- Floating Add delay

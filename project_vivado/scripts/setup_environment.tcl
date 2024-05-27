@@ -187,6 +187,7 @@ set imp_files [list \
     ${path_rtl}/fgpu_definitions_pkg.vhd \
     ${path_rtl}/fgpu_components_pkg.vhd \
 	${path_rtl}/lmem.vhd \
+	${path_rtl}/smem.vhd \
 	${path_rtl}/rd_cache_fifo.vhd \
 	${path_rtl}/cu_mem_cntrl.vhd \
 	${path_rtl}/dsp.vhd \
@@ -215,7 +216,7 @@ set imp_files [list \
 	${path_rtl}/loc_indcs_generator.vhd \
 	${path_rtl}/wg_dispatcher.vhd \
 	${path_rtl}/fgpu_top.vhd \
-    ${path_rtl}/fgpu_wrap.vhd]
+    ${path_rtl}/fgpu_wrapper.vhd]
 	
 set postimp_sim_files [list \
 	$path_rtl_old/FGPU_definitions.vhd \

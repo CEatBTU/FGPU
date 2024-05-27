@@ -53,8 +53,8 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-LIBRARY floating_point_v7_1_11;
-USE floating_point_v7_1_11.floating_point_v7_1_11;
+LIBRARY floating_point_v7_1_15;
+USE floating_point_v7_1_15.floating_point_v7_1_15;
 
 ENTITY uitofp IS
   PORT (
@@ -69,7 +69,7 @@ END uitofp;
 ARCHITECTURE uitofp_arch OF uitofp IS
   ATTRIBUTE DowngradeIPIdentifiedWarnings : STRING;
   ATTRIBUTE DowngradeIPIdentifiedWarnings OF uitofp_arch: ARCHITECTURE IS "yes";
-  COMPONENT floating_point_v7_1_11 IS
+  COMPONENT floating_point_v7_1_15 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
       C_HAS_ADD : INTEGER;
@@ -178,7 +178,7 @@ ARCHITECTURE uitofp_arch OF uitofp IS
       m_axis_result_tuser : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
       m_axis_result_tlast : OUT STD_LOGIC
     );
-  END COMPONENT floating_point_v7_1_11;
+  END COMPONENT floating_point_v7_1_15;
   ATTRIBUTE X_INTERFACE_INFO : STRING;
   ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TDATA";
@@ -190,7 +190,7 @@ ARCHITECTURE uitofp_arch OF uitofp IS
   ATTRIBUTE X_INTERFACE_PARAMETER OF aclk: SIGNAL IS "XIL_INTERFACENAME aclk_intf, ASSOCIATED_BUSIF S_AXIS_OPERATION:M_AXIS_RESULT:S_AXIS_C:S_AXIS_B:S_AXIS_A, ASSOCIATED_RESET aresetn, ASSOCIATED_CLKEN aclken, FREQ_HZ 10000000, PHASE 0.000, INSERT_VIP 0";
   ATTRIBUTE X_INTERFACE_INFO OF aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 aclk_intf CLK";
 BEGIN
-  U0 : floating_point_v7_1_11
+  U0 : floating_point_v7_1_15
     GENERIC MAP (
       C_XDEVICEFAMILY => "zynq",
       C_HAS_ADD => 0,

@@ -34,6 +34,22 @@ ipx::unload_core ${path_fgpu_ip}/component.xml
 #set a temporary project for the IP packing and pack automatically
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory ${path_fgpu_ip} ${path_fgpu_ip}/component.xml
 
+#make number of master_axi interfaces customizable
+update_compile_order -fileset sources_1
+ipx::add_user_parameter num_master_intf [ipx::current_core]
+set_property value_resolve_type user [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+ipgui::add_param -name {num_master_intf} -component [ipx::current_core]
+set_property display_name {Number of Master Interfaces} [ipgui::get_guiparamspec -name "num_master_intf" -component [ipx::current_core] ]
+set_property widget {radioGroup} [ipgui::get_guiparamspec -name "num_master_intf" -component [ipx::current_core] ]
+set_property layout {vertical} [ipgui::get_guiparamspec -name "num_master_intf" -component [ipx::current_core] ]
+set_property value 4 [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+set_property value_format long [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+set_property value_validation_type list [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+set_property value_validation_list {1 2 4} [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) > 2} [ipx::get_bus_interfaces m1 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 4} [ipx::get_bus_interfaces m2 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 4} [ipx::get_bus_interfaces m3 -of_objects [ipx::current_core]]
+
 #set the revision and be ready to pack
 set_property NAME ${FGPU_IP_NAME} [ipx::current_core]
 set_property DISPLAY_NAME ${FGPU_IP_DISPLAY_NAME} [ipx::current_core]
