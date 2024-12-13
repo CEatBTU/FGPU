@@ -40,150 +40,470 @@ port(
   s_rvalid           : out std_logic;
   s_rready           : in std_logic;
   -- }}}
+  m00_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m00_arlen   : out std_logic_vector(7 downto 0);
+  m00_arsize  : out std_logic_vector(2 downto 0);
+  m00_arburst : out std_logic_vector(1 downto 0);
+  m00_arvalid : out std_logic;
+  m00_arready : in std_logic;
+  m00_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m00_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m00_rresp   : in std_logic_vector(1 downto 0);
+  m00_rlast   : in std_logic;
+  m00_rvalid  : in std_logic;
+  m00_rready  : out std_logic;
+  m00_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m00_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m00_awvalid : out std_logic;
+  m00_awready : in std_logic;
+  m00_awlen   : out std_logic_vector(7 downto 0);
+  m00_awsize  : out std_logic_vector(2 downto 0);
+  m00_awburst : out std_logic_vector(1 downto 0);
+  m00_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m00_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m00_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m00_wlast   : out std_logic;
+  m00_wvalid  : out std_logic;
+  m00_wready  : in std_logic;
+  m00_bvalid  : in std_logic;
+  m00_bready  : out std_logic;
+  m00_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-  -- AXI MASTER 0 {{{
-  -- ar channel
-  m0_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m0_arlen            : out std_logic_vector(7 downto 0);
-  m0_arsize           : out std_logic_vector(2 downto 0);
-  m0_arburst          : out std_logic_vector(1 downto 0);
-  m0_arvalid          : out std_logic;
-  m0_arready          : in std_logic;
-  m0_arid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- r channel
-  m0_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-  m0_rresp            : in std_logic_vector(1 downto 0);
-  m0_rlast            : in std_logic;
-  m0_rvalid           : in std_logic;
-  m0_rready           : out std_logic;
-  m0_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- aw channel
-  m0_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m0_awvalid          : out std_logic;
-  m0_awready          : in std_logic;
-  m0_awlen            : out std_logic_vector(7 downto 0);
-  m0_awsize           : out std_logic_vector(2 downto 0);
-  m0_awburst          : out std_logic_vector(1 downto 0);
-  m0_awid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- w channel
-  m0_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-  m0_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-  m0_wlast            : out std_logic;
-  m0_wvalid           : out std_logic;
-  m0_wready           : in std_logic;
-  -- b channel
-  m0_bvalid           : in std_logic;
-  m0_bready           : out std_logic;
-  m0_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- }}}}
+  m01_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m01_arlen   : out std_logic_vector(7 downto 0);
+  m01_arsize  : out std_logic_vector(2 downto 0);
+  m01_arburst : out std_logic_vector(1 downto 0);
+  m01_arvalid : out std_logic;
+  m01_arready : in std_logic;
+  m01_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m01_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m01_rresp   : in std_logic_vector(1 downto 0);
+  m01_rlast   : in std_logic;
+  m01_rvalid  : in std_logic;
+  m01_rready  : out std_logic;
+  m01_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m01_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m01_awvalid : out std_logic;
+  m01_awready : in std_logic;
+  m01_awlen   : out std_logic_vector(7 downto 0);
+  m01_awsize  : out std_logic_vector(2 downto 0);
+  m01_awburst : out std_logic_vector(1 downto 0);
+  m01_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m01_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m01_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m01_wlast   : out std_logic;
+  m01_wvalid  : out std_logic;
+  m01_wready  : in std_logic;
+  m01_bvalid  : in std_logic;
+  m01_bready  : out std_logic;
+  m01_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-  -- AXI MASTER 1 {{{
-  -- ar channel
-  m1_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m1_arlen            : out std_logic_vector(7 downto 0);
-  m1_arsize           : out std_logic_vector(2 downto 0);
-  m1_arburst          : out std_logic_vector(1 downto 0);
-  m1_arvalid          : out std_logic;
-  m1_arready          : in std_logic;
-  m1_arid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- r channel
-  m1_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-  m1_rresp            : in std_logic_vector(1 downto 0);
-  m1_rlast            : in std_logic;
-  m1_rvalid           : in std_logic;
-  m1_rready           : out std_logic;
-  m1_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- -- aw channel
-  m1_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m1_awvalid          : out std_logic;
-  m1_awready          : in std_logic;
-  m1_awlen            : out std_logic_vector(7 downto 0);
-  m1_awsize           : out std_logic_vector(2 downto 0);
-  m1_awburst          : out std_logic_vector(1 downto 0);
-  m1_awid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- w channel
-  m1_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-  m1_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-  m1_wlast            : out std_logic;
-  m1_wvalid           : out std_logic;
-  m1_wready           : in std_logic;
-  -- b channel
-  m1_bvalid           : in std_logic;
-  m1_bready           : out std_logic;
-  m1_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- }}}}
+  m02_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m02_arlen   : out std_logic_vector(7 downto 0);
+  m02_arsize  : out std_logic_vector(2 downto 0);
+  m02_arburst : out std_logic_vector(1 downto 0);
+  m02_arvalid : out std_logic;
+  m02_arready : in std_logic;
+  m02_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m02_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m02_rresp   : in std_logic_vector(1 downto 0);
+  m02_rlast   : in std_logic;
+  m02_rvalid  : in std_logic;
+  m02_rready  : out std_logic;
+  m02_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m02_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m02_awvalid : out std_logic;
+  m02_awready : in std_logic;
+  m02_awlen   : out std_logic_vector(7 downto 0);
+  m02_awsize  : out std_logic_vector(2 downto 0);
+  m02_awburst : out std_logic_vector(1 downto 0);
+  m02_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m02_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m02_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m02_wlast   : out std_logic;
+  m02_wvalid  : out std_logic;
+  m02_wready  : in std_logic;
+  m02_bvalid  : in std_logic;
+  m02_bready  : out std_logic;
+  m02_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-  -- AXI MASTER 2 {{{
-  -- ar channel
-  m2_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m2_arlen            : out std_logic_vector(7 downto 0);
-  m2_arsize           : out std_logic_vector(2 downto 0);
-  m2_arburst          : out std_logic_vector(1 downto 0);
-  m2_arvalid          : out std_logic;
-  m2_arready          : in std_logic;
-  m2_arid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- r channel
-  m2_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-  m2_rresp            : in std_logic_vector(1 downto 0);
-  m2_rlast            : in std_logic;
-  m2_rvalid           : in std_logic;
-  m2_rready           : out std_logic;
-  m2_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- -- aw channel
-  m2_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m2_awvalid          : out std_logic;
-  m2_awready          : in std_logic;
-  m2_awlen            : out std_logic_vector(7 downto 0);
-  m2_awsize           : out std_logic_vector(2 downto 0);
-  m2_awburst          : out std_logic_vector(1 downto 0);
-  m2_awid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- w channel
-  m2_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-  m2_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-  m2_wlast            : out std_logic;
-  m2_wvalid           : out std_logic;
-  m2_wready           : in std_logic;
-  -- b channel
-  m2_bvalid           : in std_logic;
-  m2_bready           : out std_logic;
-  m2_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- }}}}
+  m03_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m03_arlen   : out std_logic_vector(7 downto 0);
+  m03_arsize  : out std_logic_vector(2 downto 0);
+  m03_arburst : out std_logic_vector(1 downto 0);
+  m03_arvalid : out std_logic;
+  m03_arready : in std_logic;
+  m03_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m03_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m03_rresp   : in std_logic_vector(1 downto 0);
+  m03_rlast   : in std_logic;
+  m03_rvalid  : in std_logic;
+  m03_rready  : out std_logic;
+  m03_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m03_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m03_awvalid : out std_logic;
+  m03_awready : in std_logic;
+  m03_awlen   : out std_logic_vector(7 downto 0);
+  m03_awsize  : out std_logic_vector(2 downto 0);
+  m03_awburst : out std_logic_vector(1 downto 0);
+  m03_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+  m03_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m03_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m03_wlast   : out std_logic;
+  m03_wvalid  : out std_logic;
+  m03_wready  : in std_logic;
+  m03_bvalid  : in std_logic;
+  m03_bready  : out std_logic;
+  m03_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-  -- AXI MASTER 3 {{{
-  -- ar channel
-  m3_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m3_arlen            : out std_logic_vector(7 downto 0);
-  m3_arsize           : out std_logic_vector(2 downto 0);
-  m3_arburst          : out std_logic_vector(1 downto 0);
-  m3_arvalid          : out std_logic;
-  m3_arready          : in std_logic;
-  m3_arid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- r channel
-  m3_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-  m3_rresp            : in std_logic_vector(1 downto 0);
-  m3_rlast            : in std_logic;
-  m3_rvalid           : in std_logic;
-  m3_rready           : out std_logic;
-  m3_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
-  -- -- aw channel
-  m3_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-  m3_awvalid          : out std_logic;
-  m3_awready          : in std_logic;
-  m3_awlen            : out std_logic_vector(7 downto 0);
-  m3_awsize           : out std_logic_vector(2 downto 0);
-  m3_awburst          : out std_logic_vector(1 downto 0);
-  m3_awid             : out std_logic_vector(ID_WIDTH-1 downto 0);
-  -- w channel
-  m3_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-  m3_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-  m3_wlast            : out std_logic;
-  m3_wvalid           : out std_logic;
-  m3_wready           : in std_logic;
-  -- b channel
-  m3_bvalid           : in std_logic;
-  m3_bready           : out std_logic;
-  m3_bid              : in std_logic_vector(ID_WIDTH-1 downto 0)
-  -- }}}}
+  m04_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m04_arlen            : out std_logic_vector(7 downto 0);
+  m04_arsize           : out std_logic_vector(2 downto 0);
+  m04_arburst          : out std_logic_vector(1 downto 0);
+  m04_arvalid          : out std_logic;
+  m04_arready          : in std_logic;
+  m04_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m04_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m04_rresp            : in std_logic_vector(1 downto 0);
+  m04_rlast            : in std_logic;
+  m04_rvalid           : in std_logic;
+  m04_rready           : out std_logic;
+  m04_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m04_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m04_awvalid          : out std_logic;
+  m04_awready          : in std_logic;
+  m04_awlen            : out std_logic_vector(7 downto 0);
+  m04_awsize           : out std_logic_vector(2 downto 0);
+  m04_awburst          : out std_logic_vector(1 downto 0);
+  m04_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m04_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m04_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m04_wlast            : out std_logic;
+  m04_wvalid           : out std_logic;
+  m04_wready           : in std_logic;
+  m04_bvalid           : in std_logic;
+  m04_bready           : out std_logic;
+  m04_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m05_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m05_arlen            : out std_logic_vector(7 downto 0);
+  m05_arsize           : out std_logic_vector(2 downto 0);
+  m05_arburst          : out std_logic_vector(1 downto 0);
+  m05_arvalid          : out std_logic;
+  m05_arready          : in std_logic;
+  m05_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m05_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m05_rresp            : in std_logic_vector(1 downto 0);
+  m05_rlast            : in std_logic;
+  m05_rvalid           : in std_logic;
+  m05_rready           : out std_logic;
+  m05_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m05_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m05_awvalid          : out std_logic;
+  m05_awready          : in std_logic;
+  m05_awlen            : out std_logic_vector(7 downto 0);
+  m05_awsize           : out std_logic_vector(2 downto 0);
+  m05_awburst          : out std_logic_vector(1 downto 0);
+  m05_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m05_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m05_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m05_wlast            : out std_logic;
+  m05_wvalid           : out std_logic;
+  m05_wready           : in std_logic;
+  m05_bvalid           : in std_logic;
+  m05_bready           : out std_logic;
+  m05_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m06_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m06_arlen            : out std_logic_vector(7 downto 0);
+  m06_arsize           : out std_logic_vector(2 downto 0);
+  m06_arburst          : out std_logic_vector(1 downto 0);
+  m06_arvalid          : out std_logic;
+  m06_arready          : in std_logic;
+  m06_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m06_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m06_rresp            : in std_logic_vector(1 downto 0);
+  m06_rlast            : in std_logic;
+  m06_rvalid           : in std_logic;
+  m06_rready           : out std_logic;
+  m06_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m06_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m06_awvalid          : out std_logic;
+  m06_awready          : in std_logic;
+  m06_awlen            : out std_logic_vector(7 downto 0);
+  m06_awsize           : out std_logic_vector(2 downto 0);
+  m06_awburst          : out std_logic_vector(1 downto 0);
+  m06_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m06_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m06_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m06_wlast            : out std_logic;
+  m06_wvalid           : out std_logic;
+  m06_wready           : in std_logic;
+  m06_bvalid           : in std_logic;
+  m06_bready           : out std_logic;
+  m06_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m07_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m07_arlen            : out std_logic_vector(7 downto 0);
+  m07_arsize           : out std_logic_vector(2 downto 0);
+  m07_arburst          : out std_logic_vector(1 downto 0);
+  m07_arvalid          : out std_logic;
+  m07_arready          : in std_logic;
+  m07_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m07_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m07_rresp            : in std_logic_vector(1 downto 0);
+  m07_rlast            : in std_logic;
+  m07_rvalid           : in std_logic;
+  m07_rready           : out std_logic;
+  m07_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m07_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m07_awvalid          : out std_logic;
+  m07_awready          : in std_logic;
+  m07_awlen            : out std_logic_vector(7 downto 0);
+  m07_awsize           : out std_logic_vector(2 downto 0);
+  m07_awburst          : out std_logic_vector(1 downto 0);
+  m07_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m07_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m07_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m07_wlast            : out std_logic;
+  m07_wvalid           : out std_logic;
+  m07_wready           : in std_logic;
+  m07_bvalid           : in std_logic;
+  m07_bready           : out std_logic;
+  m07_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m08_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m08_arlen            : out std_logic_vector(7 downto 0);
+  m08_arsize           : out std_logic_vector(2 downto 0);
+  m08_arburst          : out std_logic_vector(1 downto 0);
+  m08_arvalid          : out std_logic;
+  m08_arready          : in std_logic;
+  m08_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m08_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m08_rresp            : in std_logic_vector(1 downto 0);
+  m08_rlast            : in std_logic;
+  m08_rvalid           : in std_logic;
+  m08_rready           : out std_logic;
+  m08_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m08_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m08_awvalid          : out std_logic;
+  m08_awready          : in std_logic;
+  m08_awlen            : out std_logic_vector(7 downto 0);
+  m08_awsize           : out std_logic_vector(2 downto 0);
+  m08_awburst          : out std_logic_vector(1 downto 0);
+  m08_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m08_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m08_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m08_wlast            : out std_logic;
+  m08_wvalid           : out std_logic;
+  m08_wready           : in std_logic;
+  m08_bvalid           : in std_logic;
+  m08_bready           : out std_logic;
+  m08_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m09_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m09_arlen            : out std_logic_vector(7 downto 0);
+  m09_arsize           : out std_logic_vector(2 downto 0);
+  m09_arburst          : out std_logic_vector(1 downto 0);
+  m09_arvalid          : out std_logic;
+  m09_arready          : in std_logic;
+  m09_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m09_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m09_rresp            : in std_logic_vector(1 downto 0);
+  m09_rlast            : in std_logic;
+  m09_rvalid           : in std_logic;
+  m09_rready           : out std_logic;
+  m09_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m09_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m09_awvalid          : out std_logic;
+  m09_awready          : in std_logic;
+  m09_awlen            : out std_logic_vector(7 downto 0);
+  m09_awsize           : out std_logic_vector(2 downto 0);
+  m09_awburst          : out std_logic_vector(1 downto 0);
+  m09_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m09_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m09_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m09_wlast            : out std_logic;
+  m09_wvalid           : out std_logic;
+  m09_wready           : in std_logic;
+  m09_bvalid           : in std_logic;
+  m09_bready           : out std_logic;
+  m09_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m10_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m10_arlen            : out std_logic_vector(7 downto 0);
+  m10_arsize           : out std_logic_vector(2 downto 0);
+  m10_arburst          : out std_logic_vector(1 downto 0);
+  m10_arvalid          : out std_logic;
+  m10_arready          : in std_logic;
+  m10_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m10_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m10_rresp            : in std_logic_vector(1 downto 0);
+  m10_rlast            : in std_logic;
+  m10_rvalid           : in std_logic;
+  m10_rready           : out std_logic;
+  m10_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m10_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m10_awvalid          : out std_logic;
+  m10_awready          : in std_logic;
+  m10_awlen            : out std_logic_vector(7 downto 0);
+  m10_awsize           : out std_logic_vector(2 downto 0);
+  m10_awburst          : out std_logic_vector(1 downto 0);
+  m10_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m10_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m10_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m10_wlast            : out std_logic;
+  m10_wvalid           : out std_logic;
+  m10_wready           : in std_logic;
+  m10_bvalid           : in std_logic;
+  m10_bready           : out std_logic;
+  m10_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m11_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m11_arlen            : out std_logic_vector(7 downto 0);
+  m11_arsize           : out std_logic_vector(2 downto 0);
+  m11_arburst          : out std_logic_vector(1 downto 0);
+  m11_arvalid          : out std_logic;
+  m11_arready          : in std_logic;
+  m11_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m11_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m11_rresp            : in std_logic_vector(1 downto 0);
+  m11_rlast            : in std_logic;
+  m11_rvalid           : in std_logic;
+  m11_rready           : out std_logic;
+  m11_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m11_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m11_awvalid          : out std_logic;
+  m11_awready          : in std_logic;
+  m11_awlen            : out std_logic_vector(7 downto 0);
+  m11_awsize           : out std_logic_vector(2 downto 0);
+  m11_awburst          : out std_logic_vector(1 downto 0);
+  m11_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m11_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m11_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m11_wlast            : out std_logic;
+  m11_wvalid           : out std_logic;
+  m11_wready           : in std_logic;
+  m11_bvalid           : in std_logic;
+  m11_bready           : out std_logic;
+  m11_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m12_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m12_arlen            : out std_logic_vector(7 downto 0);
+  m12_arsize           : out std_logic_vector(2 downto 0);
+  m12_arburst          : out std_logic_vector(1 downto 0);
+  m12_arvalid          : out std_logic;
+  m12_arready          : in std_logic;
+  m12_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m12_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m12_rresp            : in std_logic_vector(1 downto 0);
+  m12_rlast            : in std_logic;
+  m12_rvalid           : in std_logic;
+  m12_rready           : out std_logic;
+  m12_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m12_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m12_awvalid          : out std_logic;
+  m12_awready          : in std_logic;
+  m12_awlen            : out std_logic_vector(7 downto 0);
+  m12_awsize           : out std_logic_vector(2 downto 0);
+  m12_awburst          : out std_logic_vector(1 downto 0);
+  m12_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m12_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m12_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m12_wlast            : out std_logic;
+  m12_wvalid           : out std_logic;
+  m12_wready           : in std_logic;
+  m12_bvalid           : in std_logic;
+  m12_bready           : out std_logic;
+  m12_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m13_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m13_arlen            : out std_logic_vector(7 downto 0);
+  m13_arsize           : out std_logic_vector(2 downto 0);
+  m13_arburst          : out std_logic_vector(1 downto 0);
+  m13_arvalid          : out std_logic;
+  m13_arready          : in std_logic;
+  m13_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m13_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m13_rresp            : in std_logic_vector(1 downto 0);
+  m13_rlast            : in std_logic;
+  m13_rvalid           : in std_logic;
+  m13_rready           : out std_logic;
+  m13_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m13_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m13_awvalid          : out std_logic;
+  m13_awready          : in std_logic;
+  m13_awlen            : out std_logic_vector(7 downto 0);
+  m13_awsize           : out std_logic_vector(2 downto 0);
+  m13_awburst          : out std_logic_vector(1 downto 0);
+  m13_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m13_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m13_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m13_wlast            : out std_logic;
+  m13_wvalid           : out std_logic;
+  m13_wready           : in std_logic;
+  m13_bvalid           : in std_logic;
+  m13_bready           : out std_logic;
+  m13_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m14_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m14_arlen            : out std_logic_vector(7 downto 0);
+  m14_arsize           : out std_logic_vector(2 downto 0);
+  m14_arburst          : out std_logic_vector(1 downto 0);
+  m14_arvalid          : out std_logic;
+  m14_arready          : in std_logic;
+  m14_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m14_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m14_rresp            : in std_logic_vector(1 downto 0);
+  m14_rlast            : in std_logic;
+  m14_rvalid           : in std_logic;
+  m14_rready           : out std_logic;
+  m14_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m14_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m14_awvalid          : out std_logic;
+  m14_awready          : in std_logic;
+  m14_awlen            : out std_logic_vector(7 downto 0);
+  m14_awsize           : out std_logic_vector(2 downto 0);
+  m14_awburst          : out std_logic_vector(1 downto 0);
+  m14_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m14_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m14_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m14_wlast            : out std_logic;
+  m14_wvalid           : out std_logic;
+  m14_wready           : in std_logic;
+  m14_bvalid           : in std_logic;
+  m14_bready           : out std_logic;
+  m14_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+  m15_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+  m15_arlen            : out std_logic_vector(7 downto 0);
+  m15_arsize           : out std_logic_vector(2 downto 0);
+  m15_arburst          : out std_logic_vector(1 downto 0);
+  m15_arvalid          : out std_logic;
+  m15_arready          : in std_logic;
+  m15_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+
+  m15_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+  m15_rresp            : in std_logic_vector(1 downto 0);
+  m15_rlast            : in std_logic;
+  m15_rvalid           : in std_logic;
+  m15_rready           : out std_logic;
+  m15_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+  m15_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+  m15_awvalid          : out std_logic;
+  m15_awready          : in std_logic;
+  m15_awlen            : out std_logic_vector(7 downto 0);
+  m15_awsize           : out std_logic_vector(2 downto 0);
+  m15_awburst          : out std_logic_vector(1 downto 0);
+  m15_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+  m15_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+  m15_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+  m15_wlast            : out std_logic;
+  m15_wvalid           : out std_logic;
+  m15_wready           : in std_logic;
+  m15_bvalid           : in std_logic;
+  m15_bready           : out std_logic;
+  m15_bid              : in std_logic_vector(ID_WIDTH-1 downto 0)
   );
 -- ports }}}
 end entity;
@@ -261,7 +581,7 @@ architecture Behavioral of fgpu_top is
 
   type WG_dispatcher_state_type is (idle, st1_dispatch);
   type wg_req_vec_type is array(natural range <>) of std_logic_vector(N_CU-1 downto 0);
-  type sch_rqst_n_WFs_m1_vec_type is array (natural range <>) of unsigned(N_WF_CU_W-1 downto 0);
+  type sch_rqst_n_WFs_m01_vec_type is array (natural range <>) of unsigned(N_WF_CU_W-1 downto 0);
   type rtm_addr_vec_type is array (natural range<>) of unsigned(RTM_ADDR_W-1 downto 0);
 
   signal st_wg_disp, st_wg_disp_n         : WG_dispatcher_state_type;
@@ -298,8 +618,8 @@ architecture Behavioral of fgpu_top is
     -- CU request signal to read CRAM
   signal sch_rqst_n_WFs_m1                : unsigned(N_WF_CU_W-1 downto 0);
     -- number of WFs in the WG to be scheduled
-  signal sch_rqst_n_WFs_m1_vec            : sch_rqst_n_WFs_m1_vec_type(max(N_CU-1, 0) downto 0);
-	-- sch_rqst_n_WFs_m1_vec(N_CU-1 downto 0) <= sch_rqst_n_WFs_m1 & sch_rqst_n_WFs_m1_vec(N_CU-1 downto 1)
+  signal sch_rqst_n_WFs_m01_vec            : sch_rqst_n_WFs_m01_vec_type(max(N_CU-1, 0) downto 0);
+	-- sch_rqst_n_WFs_m01_vec(N_CU-1 downto 0) <= sch_rqst_n_WFs_m1 & sch_rqst_n_WFs_m01_vec(N_CU-1 downto 1)
   signal cram_served_CUs                  : std_logic;
     -- one-bit-toggle to serve different CUs when fetching instructions
 
@@ -783,7 +1103,7 @@ begin
         start_addr            => start_addr_vec(i),
 
         start_CUs             => start_CUs_vec(i),
-        sch_rqst_n_wfs_m1     => sch_rqst_n_WFs_m1_vec(i),
+        sch_rqst_n_wfs_m1     => sch_rqst_n_WFs_m01_vec(i),
         sch_rqst              => wg_req_vec(i)(i),
         sch_ack               => wg_ack(i),
         wg_info               => unsigned(wg_info_vec(i)),
@@ -846,7 +1166,7 @@ begin
         wg_req_vec(0) <= wg_req;
         wg_info_vec(0) <= std_logic_vector(wg_info);
         rtm_we_wg_vec(0) <= rtm_we_wg;
-        sch_rqst_n_WFs_m1_vec(0) <= sch_rqst_n_WFs_m1;
+        sch_rqst_n_WFs_m01_vec(0) <= sch_rqst_n_WFs_m1;
         rtm_wrData_wg_vec(0) <= rtm_wrData_wg;
         rtm_wrAddr_wg_vec(0) <= rtm_wrAddr_wg;
         cram_rdData_vec(0) <= cram_rdData;
@@ -863,7 +1183,7 @@ begin
         wg_req_vec            <= wg_req            & wg_req_vec(wg_req_vec'high downto 1);
         wg_info_vec           <= std_logic_vector(wg_info) & wg_info_vec(wg_info_vec'high downto 1);
         rtm_we_wg_vec         <= rtm_we_wg         & rtm_we_wg_vec(rtm_we_wg_vec'high downto 1);
-        sch_rqst_n_WFs_m1_vec <= sch_rqst_n_WFs_m1 & sch_rqst_n_WFs_m1_vec(sch_rqst_n_WFs_m1_vec'high downto 1);
+        sch_rqst_n_WFs_m01_vec <= sch_rqst_n_WFs_m1 & sch_rqst_n_WFs_m01_vec(sch_rqst_n_WFs_m01_vec'high downto 1);
         rtm_wrData_wg_vec     <= rtm_wrData_wg     & rtm_wrData_wg_vec(rtm_wrData_wg_vec'high downto 1);
         rtm_wrAddr_wg_vec     <= rtm_wrAddr_wg     & rtm_wrAddr_wg_vec(rtm_wrAddr_wg_vec'high downto 1);
         cram_rdData_vec       <= cram_rdData       & cram_rdData_vec(cram_rdData_vec'high downto 1);
@@ -950,167 +1270,666 @@ begin
       );
 
   -- fixed signals assignments {{{
-  m0_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m0_arlen'length));
-  m1_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m1_arlen'length));
-  m2_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m2_arlen'length));
-  m3_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m3_arlen'length));
-  m0_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m1_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m2_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m3_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m0_arburst  <= "01"; --INCR burst type
-  m1_arburst  <= "01"; --INCR burst type
-  m2_arburst  <= "01"; --INCR burst type
-  m3_arburst  <= "01"; --INCR burst type
-  m0_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m0_awlen'length));
-  m1_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m1_awlen'length));
-  m2_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m2_awlen'length));
-  m3_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m3_awlen'length));
-  m0_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m1_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m2_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m3_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
-  m0_awburst  <= "01"; --INCR burst type
-  m1_awburst  <= "01"; --INCR burst type
-  m2_awburst  <= "01"; --INCR burst type
-  m3_awburst  <= "01"; --INCR burst type
+  m00_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m00_arlen'length));
+  m01_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m01_arlen'length));
+  m02_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m02_arlen'length));
+  m03_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m03_arlen'length));
+  m04_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m04_arlen'length));
+  m05_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m05_arlen'length));
+  m06_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m06_arlen'length));
+  m07_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m07_arlen'length));
+  m08_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m08_arlen'length));
+  m09_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m09_arlen'length));
+  m10_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m10_arlen'length));
+  m11_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m11_arlen'length));
+  m12_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m12_arlen'length));
+  m13_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m13_arlen'length));
+  m14_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m14_arlen'length));
+  m15_arlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m15_arlen'length));
+  m00_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m01_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m02_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m03_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m04_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m05_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m06_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m07_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m08_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m09_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m10_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m11_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m12_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m13_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m14_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m15_arsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m00_arburst  <= "01"; --INCR burst type
+  m01_arburst  <= "01"; --INCR burst type
+  m02_arburst  <= "01"; --INCR burst type
+  m03_arburst  <= "01"; --INCR burst type
+  m04_arburst  <= "01"; --INCR burst type
+  m05_arburst  <= "01"; --INCR burst type
+  m06_arburst  <= "01"; --INCR burst type
+  m07_arburst  <= "01"; --INCR burst type
+  m08_arburst  <= "01"; --INCR burst type
+  m09_arburst  <= "01"; --INCR burst type
+  m10_arburst  <= "01"; --INCR burst type
+  m11_arburst  <= "01"; --INCR burst type
+  m12_arburst  <= "01"; --INCR burst type
+  m13_arburst  <= "01"; --INCR burst type
+  m14_arburst  <= "01"; --INCR burst type
+  m15_arburst  <= "01"; --INCR burst type
+  m00_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m00_awlen'length));
+  m01_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m01_awlen'length));
+  m02_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m02_awlen'length));
+  m03_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m03_awlen'length));
+  m04_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m04_awlen'length));
+  m05_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m05_awlen'length));
+  m06_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m06_awlen'length));
+  m07_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m07_awlen'length));
+  m08_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m08_awlen'length));
+  m09_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m09_awlen'length));
+  m10_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m10_awlen'length));
+  m11_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m11_awlen'length));
+  m12_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m12_awlen'length));
+  m13_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m13_awlen'length));
+  m14_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m14_awlen'length));
+  m15_awlen <= std_logic_vector(to_unsigned((2**BURST_W)-1, m15_awlen'length));
+  m00_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m01_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m02_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m03_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m04_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m05_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m06_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m07_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m08_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m09_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m10_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m11_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m12_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m13_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m14_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m15_awsize <= std_logic_vector(to_unsigned(2+GMEM_N_BANK_W, 3)); -- in 2^n bytes,
+  m00_awburst  <= "01"; --INCR burst type
+  m01_awburst  <= "01"; --INCR burst type
+  m02_awburst  <= "01"; --INCR burst type
+  m03_awburst  <= "01"; --INCR burst type
+  m04_awburst  <= "01"; --INCR burst type
+  m05_awburst  <= "01"; --INCR burst type
+  m06_awburst  <= "01"; --INCR burst type
+  m07_awburst  <= "01"; --INCR burst type
+  m08_awburst  <= "01"; --INCR burst type
+  m09_awburst  <= "01"; --INCR burst type
+  m10_awburst  <= "01"; --INCR burst type
+  m11_awburst  <= "01"; --INCR burst type
+  m12_awburst  <= "01"; --INCR burst type
+  m13_awburst  <= "01"; --INCR burst type
+  m14_awburst  <= "01"; --INCR burst type
+  m15_awburst  <= "01"; --INCR burst type
   --}}}
 
   -- axi assignments {{{
-  m0_araddr <= std_logic_vector(axi_araddr(0));
-  m0_arvalid <= axi_arvalid(0);
-  axi_arready(0) <= m0_arready;
-  axi_rdata(0) <= m0_rdata;
-  axi_rlast(0) <= m0_rlast;
-  axi_rvalid(0) <= m0_rvalid;
-  axi_rid(0) <= m0_rid;
-  axi_bid(0) <= m0_bid;
-  m0_awid <= axi_awid(0);
-  m0_rready <= axi_rready(0);
-  m0_arid <= axi_arid(0);
-  m0_awaddr <= std_logic_vector(axi_awaddr(0));
-  m0_awvalid <= axi_awvalid(0);
-  axi_awready(0) <= m0_awready;
-  m0_wdata <= axi_wdata(0);
-  m0_wstrb <= axi_wstrb(0);
-  m0_wlast <= axi_wlast(0);
-  m0_wvalid <= axi_wvalid(0);
-  axi_wready(0) <= m0_wready;
-  axi_bvalid(0) <= m0_bvalid;
-  m0_bready <= axi_bready(0);
+  m00_araddr <= std_logic_vector(axi_araddr(0));
+  m00_arvalid <= axi_arvalid(0);
+  axi_arready(0) <= m00_arready;
+  axi_rdata(0) <= m00_rdata;
+  axi_rlast(0) <= m00_rlast;
+  axi_rvalid(0) <= m00_rvalid;
+  axi_rid(0) <= m00_rid;
+  axi_bid(0) <= m00_bid;
+  m00_awid <= axi_awid(0);
+  m00_rready <= axi_rready(0);
+  m00_arid <= axi_arid(0);
+  m00_awaddr <= std_logic_vector(axi_awaddr(0));
+  m00_awvalid <= axi_awvalid(0);
+  axi_awready(0) <= m00_awready;
+  m00_wdata <= axi_wdata(0);
+  m00_wstrb <= axi_wstrb(0);
+  m00_wlast <= axi_wlast(0);
+  m00_wvalid <= axi_wvalid(0);
+  axi_wready(0) <= m00_wready;
+  axi_bvalid(0) <= m00_bvalid;
+  m00_bready <= axi_bready(0);
 
   AXI_1: if N_AXI > 1 generate
-    m1_araddr <= std_logic_vector(axi_araddr(1));
-    m1_arvalid <= axi_arvalid(1);
-    axi_arready(1) <= m1_arready;
-    axi_rdata(1) <= m1_rdata;
-    axi_rlast(1) <= m1_rlast;
-    axi_rvalid(1) <= m1_rvalid;
-    axi_rid(1) <= m1_rid;
-    axi_bid(1) <= m1_bid;
-    m1_awid <= axi_awid(1);
-    m1_rready <= axi_rready(1);
-    m1_arid <= axi_arid(1);
-    m1_awaddr <= std_logic_vector(axi_awaddr(1));
-    m1_awvalid <= axi_awvalid(1);
-    axi_awready(1) <= m1_awready;
-    m1_wdata <= axi_wdata(1);
-    m1_wstrb <= axi_wstrb(1);
-    m1_wlast <= axi_wlast(1);
-    m1_wvalid <= axi_wvalid(1);
-    axi_wready(1) <= m1_wready;
-    axi_bvalid(1) <= m1_bvalid;
-    m1_bready <= axi_bready(1);
+    m01_araddr <= std_logic_vector(axi_araddr(1));
+    m01_arvalid <= axi_arvalid(1);
+    axi_arready(1) <= m01_arready;
+    axi_rdata(1) <= m01_rdata;
+    axi_rlast(1) <= m01_rlast;
+    axi_rvalid(1) <= m01_rvalid;
+    axi_rid(1) <= m01_rid;
+    axi_bid(1) <= m01_bid;
+    m01_awid <= axi_awid(1);
+    m01_rready <= axi_rready(1);
+    m01_arid <= axi_arid(1);
+    m01_awaddr <= std_logic_vector(axi_awaddr(1));
+    m01_awvalid <= axi_awvalid(1);
+    axi_awready(1) <= m01_awready;
+    m01_wdata <= axi_wdata(1);
+    m01_wstrb <= axi_wstrb(1);
+    m01_wlast <= axi_wlast(1);
+    m01_wvalid <= axi_wvalid(1);
+    axi_wready(1) <= m01_wready;
+    axi_bvalid(1) <= m01_bvalid;
+    m01_bready <= axi_bready(1);
   end generate;
   AXI_1_NOT: if N_AXI <= 1 generate
-    m1_araddr  <= (others => '0');
-    m1_arvalid <= '0';
-    m1_awid    <= (others => '0');
-    m1_rready  <= '0';
-    m1_arid    <= (others => '0');
-    m1_awaddr  <= (others => '0');
-    m1_awvalid <= '0';
-    m1_wdata   <= (others => '0');
-    m1_wstrb   <= (others => '0');
-    m1_wlast   <= '0';
-    m1_wvalid  <= '0';
-    m1_bready  <= '0';
+    m01_araddr  <= (others => '0');
+    m01_arvalid <= '0';
+    m01_awid    <= (others => '0');
+    m01_rready  <= '0';
+    m01_arid    <= (others => '0');
+    m01_awaddr  <= (others => '0');
+    m01_awvalid <= '0';
+    m01_wdata   <= (others => '0');
+    m01_wstrb   <= (others => '0');
+    m01_wlast   <= '0';
+    m01_wvalid  <= '0';
+    m01_bready  <= '0';
   end generate;
 
   AXI_2: if N_AXI > 2 generate
-    m2_araddr <= std_logic_vector(axi_araddr(2));
-    m2_arvalid <= axi_arvalid(2);
-    axi_arready(2) <= m2_arready;
-    axi_rdata(2) <= m2_rdata;
-    axi_rlast(2) <= m2_rlast;
-    axi_rvalid(2) <= m2_rvalid;
-    axi_rid(2) <= m2_rid;
-    axi_bid(2) <= m2_bid;
-    m2_awid <= axi_awid(2);
-    m2_rready <= axi_rready(2);
-    m2_arid <= axi_arid(2);
-    m2_awaddr <= std_logic_vector(axi_awaddr(2));
-    m2_awvalid <= axi_awvalid(2);
-    axi_awready(2) <= m2_awready;
-    m2_wdata <= axi_wdata(2);
-    m2_wstrb <= axi_wstrb(2);
-    m2_wlast <= axi_wlast(2);
-    m2_wvalid <= axi_wvalid(2);
-    axi_wready(2) <= m2_wready;
-    axi_bvalid(2) <= m2_bvalid;
-    m2_bready <= axi_bready(2);
+    m02_araddr <= std_logic_vector(axi_araddr(2));
+    m02_arvalid <= axi_arvalid(2);
+    axi_arready(2) <= m02_arready;
+    axi_rdata(2) <= m02_rdata;
+    axi_rlast(2) <= m02_rlast;
+    axi_rvalid(2) <= m02_rvalid;
+    axi_rid(2) <= m02_rid;
+    axi_bid(2) <= m02_bid;
+    m02_awid <= axi_awid(2);
+    m02_rready <= axi_rready(2);
+    m02_arid <= axi_arid(2);
+    m02_awaddr <= std_logic_vector(axi_awaddr(2));
+    m02_awvalid <= axi_awvalid(2);
+    axi_awready(2) <= m02_awready;
+    m02_wdata <= axi_wdata(2);
+    m02_wstrb <= axi_wstrb(2);
+    m02_wlast <= axi_wlast(2);
+    m02_wvalid <= axi_wvalid(2);
+    axi_wready(2) <= m02_wready;
+    axi_bvalid(2) <= m02_bvalid;
+    m02_bready <= axi_bready(2);
   end generate;
   AXI_2_NOT: if N_AXI <= 2 generate
-    m2_araddr  <= (others => '0');
-    m2_arvalid <= '0';
-    m2_awid    <= (others => '0');
-    m2_rready  <= '0';
-    m2_arid    <= (others => '0');
-    m2_awaddr  <= (others => '0');
-    m2_awvalid <= '0';
-    m2_wdata   <= (others => '0');
-    m2_wstrb   <= (others => '0');
-    m2_wlast   <= '0';
-    m2_wvalid  <= '0';
-    m2_bready  <= '0';
+    m02_araddr  <= (others => '0');
+    m02_arvalid <= '0';
+    m02_awid    <= (others => '0');
+    m02_rready  <= '0';
+    m02_arid    <= (others => '0');
+    m02_awaddr  <= (others => '0');
+    m02_awvalid <= '0';
+    m02_wdata   <= (others => '0');
+    m02_wstrb   <= (others => '0');
+    m02_wlast   <= '0';
+    m02_wvalid  <= '0';
+    m02_bready  <= '0';
   end generate;
 
   AXI_3: if N_AXI > 3 generate
-    m3_araddr <= std_logic_vector(axi_araddr(3));
-    m3_arvalid <= axi_arvalid(3);
-    axi_arready(3) <= m3_arready;
-    axi_rdata(3) <= m3_rdata;
-    axi_rlast(3) <= m3_rlast;
-    axi_rvalid(3) <= m3_rvalid;
-    axi_rid(3) <= m3_rid;
-    axi_bid(3) <= m3_bid;
-    m3_awid <= axi_awid(3);
-    m3_rready <= axi_rready(3);
-    m3_arid <= axi_arid(3);
-    m3_awaddr <= std_logic_vector(axi_awaddr(3));
-    m3_awvalid <= axi_awvalid(3);
-    axi_awready(3) <= m3_awready;
-    m3_wdata <= axi_wdata(3);
-    m3_wstrb <= axi_wstrb(3);
-    m3_wlast <= axi_wlast(3);
-    m3_wvalid <= axi_wvalid(3);
-    axi_wready(3) <= m3_wready;
-    axi_bvalid(3) <= m3_bvalid;
-    m3_bready <= axi_bready(3);
+    m03_araddr <= std_logic_vector(axi_araddr(3));
+    m03_arvalid <= axi_arvalid(3);
+    axi_arready(3) <= m03_arready;
+    axi_rdata(3) <= m03_rdata;
+    axi_rlast(3) <= m03_rlast;
+    axi_rvalid(3) <= m03_rvalid;
+    axi_rid(3) <= m03_rid;
+    axi_bid(3) <= m03_bid;
+    m03_awid <= axi_awid(3);
+    m03_rready <= axi_rready(3);
+    m03_arid <= axi_arid(3);
+    m03_awaddr <= std_logic_vector(axi_awaddr(3));
+    m03_awvalid <= axi_awvalid(3);
+    axi_awready(3) <= m03_awready;
+    m03_wdata <= axi_wdata(3);
+    m03_wstrb <= axi_wstrb(3);
+    m03_wlast <= axi_wlast(3);
+    m03_wvalid <= axi_wvalid(3);
+    axi_wready(3) <= m03_wready;
+    axi_bvalid(3) <= m03_bvalid;
+    m03_bready <= axi_bready(3);
   end generate;
   AXI_3_NOT: if N_AXI <= 3 generate
-    m3_araddr  <= (others => '0');
-    m3_arvalid <= '0';
-    m3_awid    <= (others => '0');
-    m3_rready  <= '0';
-    m3_arid    <= (others => '0');
-    m3_awaddr  <= (others => '0');
-    m3_awvalid <= '0';
-    m3_wdata   <= (others => '0');
-    m3_wstrb   <= (others => '0');
-    m3_wlast   <= '0';
-    m3_wvalid  <= '0';
-    m3_bready  <= '0';
+    m03_araddr  <= (others => '0');
+    m03_arvalid <= '0';
+    m03_awid    <= (others => '0');
+    m03_rready  <= '0';
+    m03_arid    <= (others => '0');
+    m03_awaddr  <= (others => '0');
+    m03_awvalid <= '0';
+    m03_wdata   <= (others => '0');
+    m03_wstrb   <= (others => '0');
+    m03_wlast   <= '0';
+    m03_wvalid  <= '0';
+    m03_bready  <= '0';
+  end generate;
+  
+  AXI_7: if N_AXI > 4 generate
+    m04_araddr <= std_logic_vector(axi_araddr(4));
+    m04_arvalid <= axi_arvalid(4);
+    axi_arready(4) <= m04_arready;
+    axi_rdata(4) <= m04_rdata;
+    axi_rlast(4) <= m04_rlast;
+    axi_rvalid(4) <= m04_rvalid;
+    axi_rid(4) <= m04_rid;
+    axi_bid(4) <= m04_bid;
+    m04_awid <= axi_awid(4);
+    m04_rready <= axi_rready(4);
+    m04_arid <= axi_arid(4);
+    m04_awaddr <= std_logic_vector(axi_awaddr(4));
+    m04_awvalid <= axi_awvalid(4);
+    axi_awready(4) <= m04_awready;
+    m04_wdata <= axi_wdata(4);
+    m04_wstrb <= axi_wstrb(4);
+    m04_wlast <= axi_wlast(4);
+    m04_wvalid <= axi_wvalid(4);
+    axi_wready(4) <= m04_wready;
+    axi_bvalid(4) <= m04_bvalid;
+    m04_bready <= axi_bready(4);
+    
+    m05_araddr <= std_logic_vector(axi_araddr(5));
+    m05_arvalid <= axi_arvalid(5);
+    axi_arready(5) <= m05_arready;
+    axi_rdata(5) <= m05_rdata;
+    axi_rlast(5) <= m05_rlast;
+    axi_rvalid(5) <= m05_rvalid;
+    axi_rid(5) <= m05_rid;
+    axi_bid(5) <= m05_bid;
+    m05_awid <= axi_awid(5);
+    m05_rready <= axi_rready(5);
+    m05_arid <= axi_arid(5);
+    m05_awaddr <= std_logic_vector(axi_awaddr(5));
+    m05_awvalid <= axi_awvalid(5);
+    axi_awready(5) <= m05_awready;
+    m05_wdata <= axi_wdata(5);
+    m05_wstrb <= axi_wstrb(5);
+    m05_wlast <= axi_wlast(5);
+    m05_wvalid <= axi_wvalid(5);
+    axi_wready(5) <= m05_wready;
+    axi_bvalid(5) <= m05_bvalid;
+    m05_bready <= axi_bready(5);
+    
+    m06_araddr <= std_logic_vector(axi_araddr(6));
+    m06_arvalid <= axi_arvalid(6);
+    axi_arready(6) <= m06_arready;
+    axi_rdata(6) <= m06_rdata;
+    axi_rlast(6) <= m06_rlast;
+    axi_rvalid(6) <= m06_rvalid;
+    axi_rid(6) <= m06_rid;
+    axi_bid(6) <= m06_bid;
+    m06_awid <= axi_awid(6);
+    m06_rready <= axi_rready(6);
+    m06_arid <= axi_arid(6);
+    m06_awaddr <= std_logic_vector(axi_awaddr(6));
+    m06_awvalid <= axi_awvalid(6);
+    axi_awready(6) <= m06_awready;
+    m06_wdata <= axi_wdata(6);
+    m06_wstrb <= axi_wstrb(6);
+    m06_wlast <= axi_wlast(6);
+    m06_wvalid <= axi_wvalid(6);
+    axi_wready(6) <= m06_wready;
+    axi_bvalid(6) <= m06_bvalid;
+    m06_bready <= axi_bready(6);
+    
+    m07_araddr <= std_logic_vector(axi_araddr(7));
+    m07_arvalid <= axi_arvalid(7);
+    axi_arready(7) <= m07_arready;
+    axi_rdata(7) <= m07_rdata;
+    axi_rlast(7) <= m07_rlast;
+    axi_rvalid(7) <= m07_rvalid;
+    axi_rid(7) <= m07_rid;
+    axi_bid(7) <= m07_bid;
+    m07_awid <= axi_awid(7);
+    m07_rready <= axi_rready(7);
+    m07_arid <= axi_arid(7);
+    m07_awaddr <= std_logic_vector(axi_awaddr(7));
+    m07_awvalid <= axi_awvalid(7);
+    axi_awready(7) <= m07_awready;
+    m07_wdata <= axi_wdata(7);
+    m07_wstrb <= axi_wstrb(7);
+    m07_wlast <= axi_wlast(7);
+    m07_wvalid <= axi_wvalid(7);
+    axi_wready(7) <= m07_wready;
+    axi_bvalid(7) <= m07_bvalid;
+    m07_bready <= axi_bready(7);
+  end generate;
+  
+  AXI_7_NOT: if N_AXI <= 4 generate
+    m04_araddr  <= (others => '0');
+    m04_arvalid <= '0';
+    m04_awid    <= (others => '0');
+    m04_rready  <= '0';
+    m04_arid    <= (others => '0');
+    m04_awaddr  <= (others => '0');
+    m04_awvalid <= '0';
+    m04_wdata   <= (others => '0');
+    m04_wstrb   <= (others => '0');
+    m04_wlast   <= '0';
+    m04_wvalid  <= '0';
+    m04_bready  <= '0';
+    
+    m05_araddr  <= (others => '0');
+    m05_arvalid <= '0';
+    m05_awid    <= (others => '0');
+    m05_rready  <= '0';
+    m05_arid    <= (others => '0');
+    m05_awaddr  <= (others => '0');
+    m05_awvalid <= '0';
+    m05_wdata   <= (others => '0');
+    m05_wstrb   <= (others => '0');
+    m05_wlast   <= '0';
+    m05_wvalid  <= '0';
+    m05_bready  <= '0';
+    
+    m06_araddr  <= (others => '0');
+    m06_arvalid <= '0';
+    m06_awid    <= (others => '0');
+    m06_rready  <= '0';
+    m06_arid    <= (others => '0');
+    m06_awaddr  <= (others => '0');
+    m06_awvalid <= '0';
+    m06_wdata   <= (others => '0');
+    m06_wstrb   <= (others => '0');
+    m06_wlast   <= '0';
+    m06_wvalid  <= '0';
+    m06_bready  <= '0'; 
+    
+    m07_araddr  <= (others => '0');
+    m07_arvalid <= '0';
+    m07_awid    <= (others => '0');
+    m07_rready  <= '0';
+    m07_arid    <= (others => '0');
+    m07_awaddr  <= (others => '0');
+    m07_awvalid <= '0';
+    m07_wdata   <= (others => '0');
+    m07_wstrb   <= (others => '0');
+    m07_wlast   <= '0';
+    m07_wvalid  <= '0';
+    m07_bready  <= '0';       
+  end generate;
+  
+  AXI_15: if N_AXI > 8 generate
+    m08_araddr <= std_logic_vector(axi_araddr(8));
+    m08_arvalid <= axi_arvalid(8);
+    axi_arready(8) <= m08_arready;
+    axi_rdata(8) <= m08_rdata;
+    axi_rlast(8) <= m08_rlast;
+    axi_rvalid(8) <= m08_rvalid;
+    axi_rid(8) <= m08_rid;
+    axi_bid(8) <= m08_bid;
+    m08_awid <= axi_awid(8);
+    m08_rready <= axi_rready(8);
+    m08_arid <= axi_arid(8);
+    m08_awaddr <= std_logic_vector(axi_awaddr(8));
+    m08_awvalid <= axi_awvalid(8);
+    axi_awready(8) <= m08_awready;
+    m08_wdata <= axi_wdata(8);
+    m08_wstrb <= axi_wstrb(8);
+    m08_wlast <= axi_wlast(8);
+    m08_wvalid <= axi_wvalid(8);
+    axi_wready(8) <= m08_wready;
+    axi_bvalid(8) <= m08_bvalid;
+    m08_bready <= axi_bready(8);
+    
+    m09_araddr <= std_logic_vector(axi_araddr(9));
+    m09_arvalid <= axi_arvalid(9);
+    axi_arready(9) <= m09_arready;
+    axi_rdata(9) <= m09_rdata;
+    axi_rlast(9) <= m09_rlast;
+    axi_rvalid(9) <= m09_rvalid;
+    axi_rid(9) <= m09_rid;
+    axi_bid(9) <= m09_bid;
+    m09_awid <= axi_awid(9);
+    m09_rready <= axi_rready(9);
+    m09_arid <= axi_arid(9);
+    m09_awaddr <= std_logic_vector(axi_awaddr(9));
+    m09_awvalid <= axi_awvalid(9);
+    axi_awready(9) <= m09_awready;
+    m09_wdata <= axi_wdata(9);
+    m09_wstrb <= axi_wstrb(9);
+    m09_wlast <= axi_wlast(9);
+    m09_wvalid <= axi_wvalid(9);
+    axi_wready(9) <= m09_wready;
+    axi_bvalid(9) <= m09_bvalid;
+    m09_bready <= axi_bready(9);
+    
+    m10_araddr <= std_logic_vector(axi_araddr(10));
+    m10_arvalid <= axi_arvalid(10);
+    axi_arready(10) <= m10_arready;
+    axi_rdata(10) <= m10_rdata;
+    axi_rlast(10) <= m10_rlast;
+    axi_rvalid(10) <= m10_rvalid;
+    axi_rid(10) <= m10_rid;
+    axi_bid(10) <= m10_bid;
+    m10_awid <= axi_awid(10);
+    m10_rready <= axi_rready(10);
+    m10_arid <= axi_arid(10);
+    m10_awaddr <= std_logic_vector(axi_awaddr(10));
+    m10_awvalid <= axi_awvalid(10);
+    axi_awready(10) <= m10_awready;
+    m10_wdata <= axi_wdata(10);
+    m10_wstrb <= axi_wstrb(10);
+    m10_wlast <= axi_wlast(10);
+    m10_wvalid <= axi_wvalid(10);
+    axi_wready(10) <= m10_wready;
+    axi_bvalid(10) <= m10_bvalid;
+    m10_bready <= axi_bready(10);
+    
+    m11_araddr <= std_logic_vector(axi_araddr(11));
+    m11_arvalid <= axi_arvalid(11);
+    axi_arready(11) <= m11_arready;
+    axi_rdata(11) <= m11_rdata;
+    axi_rlast(11) <= m11_rlast;
+    axi_rvalid(11) <= m11_rvalid;
+    axi_rid(11) <= m11_rid;
+    axi_bid(11) <= m11_bid;
+    m11_awid <= axi_awid(11);
+    m11_rready <= axi_rready(11);
+    m11_arid <= axi_arid(11);
+    m11_awaddr <= std_logic_vector(axi_awaddr(11));
+    m11_awvalid <= axi_awvalid(11);
+    axi_awready(11) <= m11_awready;
+    m11_wdata <= axi_wdata(11);
+    m11_wstrb <= axi_wstrb(11);
+    m11_wlast <= axi_wlast(11);
+    m11_wvalid <= axi_wvalid(11);
+    axi_wready(11) <= m11_wready;
+    axi_bvalid(11) <= m11_bvalid;
+    m11_bready <= axi_bready(11);
+    
+    m12_araddr <= std_logic_vector(axi_araddr(12));
+    m12_arvalid <= axi_arvalid(12);
+    axi_arready(12) <= m12_arready;
+    axi_rdata(12) <= m12_rdata;
+    axi_rlast(12) <= m12_rlast;
+    axi_rvalid(12) <= m12_rvalid;
+    axi_rid(12) <= m12_rid;
+    axi_bid(12) <= m12_bid;
+    m12_awid <= axi_awid(12);
+    m12_rready <= axi_rready(12);
+    m12_arid <= axi_arid(12);
+    m12_awaddr <= std_logic_vector(axi_awaddr(12));
+    m12_awvalid <= axi_awvalid(12);
+    axi_awready(12) <= m12_awready;
+    m12_wdata <= axi_wdata(12);
+    m12_wstrb <= axi_wstrb(12);
+    m12_wlast <= axi_wlast(12);
+    m12_wvalid <= axi_wvalid(12);
+    axi_wready(12) <= m12_wready;
+    axi_bvalid(12) <= m12_bvalid;
+    m12_bready <= axi_bready(12);    
+    
+    m13_araddr <= std_logic_vector(axi_araddr(13));
+    m13_arvalid <= axi_arvalid(13);
+    axi_arready(13) <= m13_arready;
+    axi_rdata(13) <= m13_rdata;
+    axi_rlast(13) <= m13_rlast;
+    axi_rvalid(13) <= m13_rvalid;
+    axi_rid(13) <= m13_rid;
+    axi_bid(13) <= m13_bid;
+    m13_awid <= axi_awid(13);
+    m13_rready <= axi_rready(13);
+    m13_arid <= axi_arid(13);
+    m13_awaddr <= std_logic_vector(axi_awaddr(13));
+    m13_awvalid <= axi_awvalid(13);
+    axi_awready(13) <= m13_awready;
+    m13_wdata <= axi_wdata(13);
+    m13_wstrb <= axi_wstrb(13);
+    m13_wlast <= axi_wlast(13);
+    m13_wvalid <= axi_wvalid(13);
+    axi_wready(13) <= m13_wready;
+    axi_bvalid(13) <= m13_bvalid;
+    m13_bready <= axi_bready(13);    
+    
+    m14_araddr <= std_logic_vector(axi_araddr(14));
+    m14_arvalid <= axi_arvalid(14);
+    axi_arready(14) <= m14_arready;
+    axi_rdata(14) <= m14_rdata;
+    axi_rlast(14) <= m14_rlast;
+    axi_rvalid(14) <= m14_rvalid;
+    axi_rid(14) <= m14_rid;
+    axi_bid(14) <= m14_bid;
+    m14_awid <= axi_awid(14);
+    m14_rready <= axi_rready(14);
+    m14_arid <= axi_arid(14);
+    m14_awaddr <= std_logic_vector(axi_awaddr(14));
+    m14_awvalid <= axi_awvalid(14);
+    axi_awready(14) <= m14_awready;
+    m14_wdata <= axi_wdata(14);
+    m14_wstrb <= axi_wstrb(14);
+    m14_wlast <= axi_wlast(14);
+    m14_wvalid <= axi_wvalid(14);
+    axi_wready(14) <= m14_wready;
+    axi_bvalid(14) <= m14_bvalid;
+    m14_bready <= axi_bready(14);   
+    
+    m15_araddr <= std_logic_vector(axi_araddr(15));
+    m15_arvalid <= axi_arvalid(15);
+    axi_arready(15) <= m15_arready;
+    axi_rdata(15) <= m15_rdata;
+    axi_rlast(15) <= m15_rlast;
+    axi_rvalid(15) <= m15_rvalid;
+    axi_rid(15) <= m15_rid;
+    axi_bid(15) <= m15_bid;
+    m15_awid <= axi_awid(15);
+    m15_rready <= axi_rready(15);
+    m15_arid <= axi_arid(15);
+    m15_awaddr <= std_logic_vector(axi_awaddr(15));
+    m15_awvalid <= axi_awvalid(15);
+    axi_awready(15) <= m15_awready;
+    m15_wdata <= axi_wdata(15);
+    m15_wstrb <= axi_wstrb(15);
+    m15_wlast <= axi_wlast(15);
+    m15_wvalid <= axi_wvalid(15);
+    axi_wready(15) <= m15_wready;
+    axi_bvalid(15) <= m15_bvalid;
+    m15_bready <= axi_bready(15);     
+  end generate;
+  AXI_15_NOT: if N_AXI <= 8 generate
+    m08_araddr  <= (others => '0');
+    m08_arvalid <= '0';
+    m08_awid    <= (others => '0');
+    m08_rready  <= '0';
+    m08_arid    <= (others => '0');
+    m08_awaddr  <= (others => '0');
+    m08_awvalid <= '0';
+    m08_wdata   <= (others => '0');
+    m08_wstrb   <= (others => '0');
+    m08_wlast   <= '0';
+    m08_wvalid  <= '0';
+    m08_bready  <= '0';
+    
+    m09_araddr  <= (others => '0');
+    m09_arvalid <= '0';
+    m09_awid    <= (others => '0');
+    m09_rready  <= '0';
+    m09_arid    <= (others => '0');
+    m09_awaddr  <= (others => '0');
+    m09_awvalid <= '0';
+    m09_wdata   <= (others => '0');
+    m09_wstrb   <= (others => '0');
+    m09_wlast   <= '0';
+    m09_wvalid  <= '0';
+    m09_bready  <= '0';
+    
+    m10_araddr  <= (others => '0');
+    m10_arvalid <= '0';
+    m10_awid    <= (others => '0');
+    m10_rready  <= '0';
+    m10_arid    <= (others => '0');
+    m10_awaddr  <= (others => '0');
+    m10_awvalid <= '0';
+    m10_wdata   <= (others => '0');
+    m10_wstrb   <= (others => '0');
+    m10_wlast   <= '0';
+    m10_wvalid  <= '0';
+    m10_bready  <= '0'; 
+    
+    m11_araddr  <= (others => '0');
+    m11_arvalid <= '0';
+    m11_awid    <= (others => '0');
+    m11_rready  <= '0';
+    m11_arid    <= (others => '0');
+    m11_awaddr  <= (others => '0');
+    m11_awvalid <= '0';
+    m11_wdata   <= (others => '0');
+    m11_wstrb   <= (others => '0');
+    m11_wlast   <= '0';
+    m11_wvalid  <= '0';
+    m11_bready  <= '0'; 
+
+    m12_araddr  <= (others => '0');
+    m12_arvalid <= '0';
+    m12_awid    <= (others => '0');
+    m12_rready  <= '0';
+    m12_arid    <= (others => '0');
+    m12_awaddr  <= (others => '0');
+    m12_awvalid <= '0';
+    m12_wdata   <= (others => '0');
+    m12_wstrb   <= (others => '0');
+    m12_wlast   <= '0';
+    m12_wvalid  <= '0';
+    m12_bready  <= '0'; 
+    
+    m13_araddr  <= (others => '0');
+    m13_arvalid <= '0';
+    m13_awid    <= (others => '0');
+    m13_rready  <= '0';
+    m13_arid    <= (others => '0');
+    m13_awaddr  <= (others => '0');
+    m13_awvalid <= '0';
+    m13_wdata   <= (others => '0');
+    m13_wstrb   <= (others => '0');
+    m13_wlast   <= '0';
+    m13_wvalid  <= '0';
+    m13_bready  <= '0';    
+    
+    m14_araddr  <= (others => '0');
+    m14_arvalid <= '0';
+    m14_awid    <= (others => '0');
+    m14_rready  <= '0';
+    m14_arid    <= (others => '0');
+    m14_awaddr  <= (others => '0');
+    m14_awvalid <= '0';
+    m14_wdata   <= (others => '0');
+    m14_wstrb   <= (others => '0');
+    m14_wlast   <= '0';
+    m14_wvalid  <= '0';
+    m14_bready  <= '0'; 
+    
+    m15_araddr  <= (others => '0');
+    m15_arvalid <= '0';
+    m15_awid    <= (others => '0');
+    m15_rready  <= '0';
+    m15_arid    <= (others => '0');
+    m15_awaddr  <= (others => '0');
+    m15_awvalid <= '0';
+    m15_wdata   <= (others => '0');
+    m15_wstrb   <= (others => '0');
+    m15_wlast   <= '0';
+    m15_wvalid  <= '0';
+    m15_bready  <= '0';                    
   end generate;
   -- }}}
   ------------------------------------------------------------------------------------------------- }}}

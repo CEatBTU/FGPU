@@ -32,121 +32,470 @@ package components is
       s_rvalid  : out std_logic;
       s_rready  : in std_logic;
 
-      m0_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m0_arlen   : out std_logic_vector(7 downto 0);
-      m0_arsize  : out std_logic_vector(2 downto 0);
-      m0_arburst : out std_logic_vector(1 downto 0);
-      m0_arvalid : out std_logic;
-      m0_arready : in std_logic;
-      m0_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m0_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m0_rresp   : in std_logic_vector(1 downto 0);
-      m0_rlast   : in std_logic;
-      m0_rvalid  : in std_logic;
-      m0_rready  : out std_logic;
-      m0_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
-      m0_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m0_awvalid : out std_logic;
-      m0_awready : in std_logic;
-      m0_awlen   : out std_logic_vector(7 downto 0);
-      m0_awsize  : out std_logic_vector(2 downto 0);
-      m0_awburst : out std_logic_vector(1 downto 0);
-      m0_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m0_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-      m0_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-      m0_wlast   : out std_logic;
-      m0_wvalid  : out std_logic;
-      m0_wready  : in std_logic;
-      m0_bvalid  : in std_logic;
-      m0_bready  : out std_logic;
-      m0_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m00_arlen   : out std_logic_vector(7 downto 0);
+      m00_arsize  : out std_logic_vector(2 downto 0);
+      m00_arburst : out std_logic_vector(1 downto 0);
+      m00_arvalid : out std_logic;
+      m00_arready : in std_logic;
+      m00_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m00_rresp   : in std_logic_vector(1 downto 0);
+      m00_rlast   : in std_logic;
+      m00_rvalid  : in std_logic;
+      m00_rready  : out std_logic;
+      m00_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m00_awvalid : out std_logic;
+      m00_awready : in std_logic;
+      m00_awlen   : out std_logic_vector(7 downto 0);
+      m00_awsize  : out std_logic_vector(2 downto 0);
+      m00_awburst : out std_logic_vector(1 downto 0);
+      m00_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m00_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m00_wlast   : out std_logic;
+      m00_wvalid  : out std_logic;
+      m00_wready  : in std_logic;
+      m00_bvalid  : in std_logic;
+      m00_bready  : out std_logic;
+      m00_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-      m1_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m1_arlen   : out std_logic_vector(7 downto 0);
-      m1_arsize  : out std_logic_vector(2 downto 0);
-      m1_arburst : out std_logic_vector(1 downto 0);
-      m1_arvalid : out std_logic;
-      m1_arready : in std_logic;
-      m1_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m1_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m1_rresp   : in std_logic_vector(1 downto 0);
-      m1_rlast   : in std_logic;
-      m1_rvalid  : in std_logic;
-      m1_rready  : out std_logic;
-      m1_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
-      m1_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m1_awvalid : out std_logic;
-      m1_awready : in std_logic;
-      m1_awlen   : out std_logic_vector(7 downto 0);
-      m1_awsize  : out std_logic_vector(2 downto 0);
-      m1_awburst : out std_logic_vector(1 downto 0);
-      m1_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m1_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-      m1_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-      m1_wlast   : out std_logic;
-      m1_wvalid  : out std_logic;
-      m1_wready  : in std_logic;
-      m1_bvalid  : in std_logic;
-      m1_bready  : out std_logic;
-      m1_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m01_arlen   : out std_logic_vector(7 downto 0);
+      m01_arsize  : out std_logic_vector(2 downto 0);
+      m01_arburst : out std_logic_vector(1 downto 0);
+      m01_arvalid : out std_logic;
+      m01_arready : in std_logic;
+      m01_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m01_rresp   : in std_logic_vector(1 downto 0);
+      m01_rlast   : in std_logic;
+      m01_rvalid  : in std_logic;
+      m01_rready  : out std_logic;
+      m01_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m01_awvalid : out std_logic;
+      m01_awready : in std_logic;
+      m01_awlen   : out std_logic_vector(7 downto 0);
+      m01_awsize  : out std_logic_vector(2 downto 0);
+      m01_awburst : out std_logic_vector(1 downto 0);
+      m01_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m01_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m01_wlast   : out std_logic;
+      m01_wvalid  : out std_logic;
+      m01_wready  : in std_logic;
+      m01_bvalid  : in std_logic;
+      m01_bready  : out std_logic;
+      m01_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-      m2_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m2_arlen   : out std_logic_vector(7 downto 0);
-      m2_arsize  : out std_logic_vector(2 downto 0);
-      m2_arburst : out std_logic_vector(1 downto 0);
-      m2_arvalid : out std_logic;
-      m2_arready : in std_logic;
-      m2_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m2_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m2_rresp   : in std_logic_vector(1 downto 0);
-      m2_rlast   : in std_logic;
-      m2_rvalid  : in std_logic;
-      m2_rready  : out std_logic;
-      m2_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
-      m2_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m2_awvalid : out std_logic;
-      m2_awready : in std_logic;
-      m2_awlen   : out std_logic_vector(7 downto 0);
-      m2_awsize  : out std_logic_vector(2 downto 0);
-      m2_awburst : out std_logic_vector(1 downto 0);
-      m2_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m2_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-      m2_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-      m2_wlast   : out std_logic;
-      m2_wvalid  : out std_logic;
-      m2_wready  : in std_logic;
-      m2_bvalid  : in std_logic;
-      m2_bready  : out std_logic;
-      m2_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m02_arlen   : out std_logic_vector(7 downto 0);
+      m02_arsize  : out std_logic_vector(2 downto 0);
+      m02_arburst : out std_logic_vector(1 downto 0);
+      m02_arvalid : out std_logic;
+      m02_arready : in std_logic;
+      m02_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m02_rresp   : in std_logic_vector(1 downto 0);
+      m02_rlast   : in std_logic;
+      m02_rvalid  : in std_logic;
+      m02_rready  : out std_logic;
+      m02_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m02_awvalid : out std_logic;
+      m02_awready : in std_logic;
+      m02_awlen   : out std_logic_vector(7 downto 0);
+      m02_awsize  : out std_logic_vector(2 downto 0);
+      m02_awburst : out std_logic_vector(1 downto 0);
+      m02_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m02_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m02_wlast   : out std_logic;
+      m02_wvalid  : out std_logic;
+      m02_wready  : in std_logic;
+      m02_bvalid  : in std_logic;
+      m02_bready  : out std_logic;
+      m02_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
 
-      m3_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m3_arlen   : out std_logic_vector(7 downto 0);
-      m3_arsize  : out std_logic_vector(2 downto 0);
-      m3_arburst : out std_logic_vector(1 downto 0);
-      m3_arvalid : out std_logic;
-      m3_arready : in std_logic;
-      m3_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m3_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m3_rresp   : in std_logic_vector(1 downto 0);
-      m3_rlast   : in std_logic;
-      m3_rvalid  : in std_logic;
-      m3_rready  : out std_logic;
-      m3_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
-      m3_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m3_awvalid : out std_logic;
-      m3_awready : in std_logic;
-      m3_awlen   : out std_logic_vector(7 downto 0);
-      m3_awsize  : out std_logic_vector(2 downto 0);
-      m3_awburst : out std_logic_vector(1 downto 0);
-      m3_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
-      m3_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
-      m3_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
-      m3_wlast   : out std_logic;
-      m3_wvalid  : out std_logic;
-      m3_wready  : in std_logic;
-      m3_bvalid  : in std_logic;
-      m3_bready  : out std_logic;
-      m3_bid     : in std_logic_vector(ID_WIDTH-1 downto 0)
+      m03_araddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m03_arlen   : out std_logic_vector(7 downto 0);
+      m03_arsize  : out std_logic_vector(2 downto 0);
+      m03_arburst : out std_logic_vector(1 downto 0);
+      m03_arvalid : out std_logic;
+      m03_arready : in std_logic;
+      m03_arid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_rdata   : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m03_rresp   : in std_logic_vector(1 downto 0);
+      m03_rlast   : in std_logic;
+      m03_rvalid  : in std_logic;
+      m03_rready  : out std_logic;
+      m03_rid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_awaddr  : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m03_awvalid : out std_logic;
+      m03_awready : in std_logic;
+      m03_awlen   : out std_logic_vector(7 downto 0);
+      m03_awsize  : out std_logic_vector(2 downto 0);
+      m03_awburst : out std_logic_vector(1 downto 0);
+      m03_awid    : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_wdata   : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m03_wstrb   : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m03_wlast   : out std_logic;
+      m03_wvalid  : out std_logic;
+      m03_wready  : in std_logic;
+      m03_bvalid  : in std_logic;
+      m03_bready  : out std_logic;
+      m03_bid     : in std_logic_vector(ID_WIDTH-1 downto 0);
+      
+      m04_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m04_arlen            : out std_logic_vector(7 downto 0);
+      m04_arsize           : out std_logic_vector(2 downto 0);
+      m04_arburst          : out std_logic_vector(1 downto 0);
+      m04_arvalid          : out std_logic;
+      m04_arready          : in std_logic;
+      m04_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m04_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m04_rresp            : in std_logic_vector(1 downto 0);
+      m04_rlast            : in std_logic;
+      m04_rvalid           : in std_logic;
+      m04_rready           : out std_logic;
+      m04_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m04_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m04_awvalid          : out std_logic;
+      m04_awready          : in std_logic;
+      m04_awlen            : out std_logic_vector(7 downto 0);
+      m04_awsize           : out std_logic_vector(2 downto 0);
+      m04_awburst          : out std_logic_vector(1 downto 0);
+      m04_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m04_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m04_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m04_wlast            : out std_logic;
+      m04_wvalid           : out std_logic;
+      m04_wready           : in std_logic;
+      m04_bvalid           : in std_logic;
+      m04_bready           : out std_logic;
+      m04_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m05_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m05_arlen            : out std_logic_vector(7 downto 0);
+      m05_arsize           : out std_logic_vector(2 downto 0);
+      m05_arburst          : out std_logic_vector(1 downto 0);
+      m05_arvalid          : out std_logic;
+      m05_arready          : in std_logic;
+      m05_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m05_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m05_rresp            : in std_logic_vector(1 downto 0);
+      m05_rlast            : in std_logic;
+      m05_rvalid           : in std_logic;
+      m05_rready           : out std_logic;
+      m05_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m05_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m05_awvalid          : out std_logic;
+      m05_awready          : in std_logic;
+      m05_awlen            : out std_logic_vector(7 downto 0);
+      m05_awsize           : out std_logic_vector(2 downto 0);
+      m05_awburst          : out std_logic_vector(1 downto 0);
+      m05_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m05_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m05_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m05_wlast            : out std_logic;
+      m05_wvalid           : out std_logic;
+      m05_wready           : in std_logic;
+      m05_bvalid           : in std_logic;
+      m05_bready           : out std_logic;
+      m05_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m06_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m06_arlen            : out std_logic_vector(7 downto 0);
+      m06_arsize           : out std_logic_vector(2 downto 0);
+      m06_arburst          : out std_logic_vector(1 downto 0);
+      m06_arvalid          : out std_logic;
+      m06_arready          : in std_logic;
+      m06_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m06_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m06_rresp            : in std_logic_vector(1 downto 0);
+      m06_rlast            : in std_logic;
+      m06_rvalid           : in std_logic;
+      m06_rready           : out std_logic;
+      m06_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m06_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m06_awvalid          : out std_logic;
+      m06_awready          : in std_logic;
+      m06_awlen            : out std_logic_vector(7 downto 0);
+      m06_awsize           : out std_logic_vector(2 downto 0);
+      m06_awburst          : out std_logic_vector(1 downto 0);
+      m06_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m06_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m06_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m06_wlast            : out std_logic;
+      m06_wvalid           : out std_logic;
+      m06_wready           : in std_logic;
+      m06_bvalid           : in std_logic;
+      m06_bready           : out std_logic;
+      m06_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m07_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m07_arlen            : out std_logic_vector(7 downto 0);
+      m07_arsize           : out std_logic_vector(2 downto 0);
+      m07_arburst          : out std_logic_vector(1 downto 0);
+      m07_arvalid          : out std_logic;
+      m07_arready          : in std_logic;
+      m07_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m07_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m07_rresp            : in std_logic_vector(1 downto 0);
+      m07_rlast            : in std_logic;
+      m07_rvalid           : in std_logic;
+      m07_rready           : out std_logic;
+      m07_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m07_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m07_awvalid          : out std_logic;
+      m07_awready          : in std_logic;
+      m07_awlen            : out std_logic_vector(7 downto 0);
+      m07_awsize           : out std_logic_vector(2 downto 0);
+      m07_awburst          : out std_logic_vector(1 downto 0);
+      m07_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m07_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m07_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m07_wlast            : out std_logic;
+      m07_wvalid           : out std_logic;
+      m07_wready           : in std_logic;
+      m07_bvalid           : in std_logic;
+      m07_bready           : out std_logic;
+      m07_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m08_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m08_arlen            : out std_logic_vector(7 downto 0);
+      m08_arsize           : out std_logic_vector(2 downto 0);
+      m08_arburst          : out std_logic_vector(1 downto 0);
+      m08_arvalid          : out std_logic;
+      m08_arready          : in std_logic;
+      m08_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m08_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m08_rresp            : in std_logic_vector(1 downto 0);
+      m08_rlast            : in std_logic;
+      m08_rvalid           : in std_logic;
+      m08_rready           : out std_logic;
+      m08_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m08_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m08_awvalid          : out std_logic;
+      m08_awready          : in std_logic;
+      m08_awlen            : out std_logic_vector(7 downto 0);
+      m08_awsize           : out std_logic_vector(2 downto 0);
+      m08_awburst          : out std_logic_vector(1 downto 0);
+      m08_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m08_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m08_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m08_wlast            : out std_logic;
+      m08_wvalid           : out std_logic;
+      m08_wready           : in std_logic;
+      m08_bvalid           : in std_logic;
+      m08_bready           : out std_logic;
+      m08_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m09_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m09_arlen            : out std_logic_vector(7 downto 0);
+      m09_arsize           : out std_logic_vector(2 downto 0);
+      m09_arburst          : out std_logic_vector(1 downto 0);
+      m09_arvalid          : out std_logic;
+      m09_arready          : in std_logic;
+      m09_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m09_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m09_rresp            : in std_logic_vector(1 downto 0);
+      m09_rlast            : in std_logic;
+      m09_rvalid           : in std_logic;
+      m09_rready           : out std_logic;
+      m09_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m09_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m09_awvalid          : out std_logic;
+      m09_awready          : in std_logic;
+      m09_awlen            : out std_logic_vector(7 downto 0);
+      m09_awsize           : out std_logic_vector(2 downto 0);
+      m09_awburst          : out std_logic_vector(1 downto 0);
+      m09_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m09_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m09_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m09_wlast            : out std_logic;
+      m09_wvalid           : out std_logic;
+      m09_wready           : in std_logic;
+      m09_bvalid           : in std_logic;
+      m09_bready           : out std_logic;
+      m09_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m10_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m10_arlen            : out std_logic_vector(7 downto 0);
+      m10_arsize           : out std_logic_vector(2 downto 0);
+      m10_arburst          : out std_logic_vector(1 downto 0);
+      m10_arvalid          : out std_logic;
+      m10_arready          : in std_logic;
+      m10_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m10_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m10_rresp            : in std_logic_vector(1 downto 0);
+      m10_rlast            : in std_logic;
+      m10_rvalid           : in std_logic;
+      m10_rready           : out std_logic;
+      m10_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m10_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m10_awvalid          : out std_logic;
+      m10_awready          : in std_logic;
+      m10_awlen            : out std_logic_vector(7 downto 0);
+      m10_awsize           : out std_logic_vector(2 downto 0);
+      m10_awburst          : out std_logic_vector(1 downto 0);
+      m10_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m10_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m10_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m10_wlast            : out std_logic;
+      m10_wvalid           : out std_logic;
+      m10_wready           : in std_logic;
+      m10_bvalid           : in std_logic;
+      m10_bready           : out std_logic;
+      m10_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m11_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m11_arlen            : out std_logic_vector(7 downto 0);
+      m11_arsize           : out std_logic_vector(2 downto 0);
+      m11_arburst          : out std_logic_vector(1 downto 0);
+      m11_arvalid          : out std_logic;
+      m11_arready          : in std_logic;
+      m11_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m11_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m11_rresp            : in std_logic_vector(1 downto 0);
+      m11_rlast            : in std_logic;
+      m11_rvalid           : in std_logic;
+      m11_rready           : out std_logic;
+      m11_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m11_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m11_awvalid          : out std_logic;
+      m11_awready          : in std_logic;
+      m11_awlen            : out std_logic_vector(7 downto 0);
+      m11_awsize           : out std_logic_vector(2 downto 0);
+      m11_awburst          : out std_logic_vector(1 downto 0);
+      m11_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m11_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m11_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m11_wlast            : out std_logic;
+      m11_wvalid           : out std_logic;
+      m11_wready           : in std_logic;
+      m11_bvalid           : in std_logic;
+      m11_bready           : out std_logic;
+      m11_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m12_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m12_arlen            : out std_logic_vector(7 downto 0);
+      m12_arsize           : out std_logic_vector(2 downto 0);
+      m12_arburst          : out std_logic_vector(1 downto 0);
+      m12_arvalid          : out std_logic;
+      m12_arready          : in std_logic;
+      m12_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m12_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m12_rresp            : in std_logic_vector(1 downto 0);
+      m12_rlast            : in std_logic;
+      m12_rvalid           : in std_logic;
+      m12_rready           : out std_logic;
+      m12_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m12_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m12_awvalid          : out std_logic;
+      m12_awready          : in std_logic;
+      m12_awlen            : out std_logic_vector(7 downto 0);
+      m12_awsize           : out std_logic_vector(2 downto 0);
+      m12_awburst          : out std_logic_vector(1 downto 0);
+      m12_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m12_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m12_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m12_wlast            : out std_logic;
+      m12_wvalid           : out std_logic;
+      m12_wready           : in std_logic;
+      m12_bvalid           : in std_logic;
+      m12_bready           : out std_logic;
+      m12_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m13_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m13_arlen            : out std_logic_vector(7 downto 0);
+      m13_arsize           : out std_logic_vector(2 downto 0);
+      m13_arburst          : out std_logic_vector(1 downto 0);
+      m13_arvalid          : out std_logic;
+      m13_arready          : in std_logic;
+      m13_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m13_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m13_rresp            : in std_logic_vector(1 downto 0);
+      m13_rlast            : in std_logic;
+      m13_rvalid           : in std_logic;
+      m13_rready           : out std_logic;
+      m13_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m13_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m13_awvalid          : out std_logic;
+      m13_awready          : in std_logic;
+      m13_awlen            : out std_logic_vector(7 downto 0);
+      m13_awsize           : out std_logic_vector(2 downto 0);
+      m13_awburst          : out std_logic_vector(1 downto 0);
+      m13_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m13_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m13_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m13_wlast            : out std_logic;
+      m13_wvalid           : out std_logic;
+      m13_wready           : in std_logic;
+      m13_bvalid           : in std_logic;
+      m13_bready           : out std_logic;
+      m13_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m14_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m14_arlen            : out std_logic_vector(7 downto 0);
+      m14_arsize           : out std_logic_vector(2 downto 0);
+      m14_arburst          : out std_logic_vector(1 downto 0);
+      m14_arvalid          : out std_logic;
+      m14_arready          : in std_logic;
+      m14_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m14_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m14_rresp            : in std_logic_vector(1 downto 0);
+      m14_rlast            : in std_logic;
+      m14_rvalid           : in std_logic;
+      m14_rready           : out std_logic;
+      m14_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m14_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m14_awvalid          : out std_logic;
+      m14_awready          : in std_logic;
+      m14_awlen            : out std_logic_vector(7 downto 0);
+      m14_awsize           : out std_logic_vector(2 downto 0);
+      m14_awburst          : out std_logic_vector(1 downto 0);
+      m14_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m14_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m14_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m14_wlast            : out std_logic;
+      m14_wvalid           : out std_logic;
+      m14_wready           : in std_logic;
+      m14_bvalid           : in std_logic;
+      m14_bready           : out std_logic;
+      m14_bid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+
+      m15_araddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m15_arlen            : out std_logic_vector(7 downto 0);
+      m15_arsize           : out std_logic_vector(2 downto 0);
+      m15_arburst          : out std_logic_vector(1 downto 0);
+      m15_arvalid          : out std_logic;
+      m15_arready          : in std_logic;
+      m15_arid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+
+      m15_rdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m15_rresp            : in std_logic_vector(1 downto 0);
+      m15_rlast            : in std_logic;
+      m15_rvalid           : in std_logic;
+      m15_rready           : out std_logic;
+      m15_rid              : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m15_awaddr           : out std_logic_vector(GMEM_ADDR_W-1 downto 0) ;
+      m15_awvalid          : out std_logic;
+      m15_awready          : in std_logic;
+      m15_awlen            : out std_logic_vector(7 downto 0);
+      m15_awsize           : out std_logic_vector(2 downto 0);
+      m15_awburst          : out std_logic_vector(1 downto 0);
+      m15_awid             : out std_logic_vector(ID_WIDTH-1 downto 0) ;
+      m15_wdata            : out std_logic_vector(DATA_W*GMEM_N_BANK-1 downto 0);
+      m15_wstrb            : out std_logic_vector(DATA_W*GMEM_N_BANK/8-1 downto 0);
+      m15_wlast            : out std_logic;
+      m15_wvalid           : out std_logic;
+      m15_wready           : in std_logic;
+      m15_bvalid           : in std_logic;
+      m15_bready           : out std_logic;
+      m15_bid              : in std_logic_vector(ID_WIDTH-1 downto 0)
     );
   end component;
 
@@ -895,116 +1244,452 @@ package components is
       mx_arlen_awlen      : in std_logic_vector(7 downto 0);
       -- interface 0 {{{
       -- ar channel
-      m0_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m0_arvalid          : in std_logic;
-      m0_arready          : buffer std_logic;
-      m0_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m00_arvalid          : in std_logic;
+      m00_arready          : buffer std_logic;
+      m00_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- r channel
-      m0_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m0_rlast            : out std_logic;
-      m0_rvalid           : buffer std_logic;
-      m0_rready           : in std_logic;
-      m0_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m00_rlast            : out std_logic;
+      m00_rvalid           : buffer std_logic;
+      m00_rready           : in std_logic;
+      m00_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- aw channel
-      m0_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m0_awvalid          : in std_logic;
-      m0_awready          : buffer std_logic;
-      m0_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m00_awvalid          : in std_logic;
+      m00_awready          : buffer std_logic;
+      m00_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- w channel
-      m0_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m0_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
-      m0_wlast            : in std_logic;
-      m0_wvalid           : in std_logic;
-      m0_wready           : buffer std_logic;
+      m00_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m00_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m00_wlast            : in std_logic;
+      m00_wvalid           : in std_logic;
+      m00_wready           : buffer std_logic;
       -- b channel
-      m0_bvalid           : out std_logic;
-      m0_bready           : in std_logic;
-      m0_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m00_bvalid           : out std_logic;
+      m00_bready           : in std_logic;
+      m00_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- }}}
       -- interface 1 {{{
       -- ar channel
-      m1_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m1_arvalid          : in std_logic;
-      m1_arready          : buffer std_logic;
-      m1_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m01_arvalid          : in std_logic;
+      m01_arready          : buffer std_logic;
+      m01_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- r channel
-      m1_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m1_rlast            : out std_logic;
-      m1_rvalid           : buffer std_logic;
-      m1_rready           : in std_logic;
-      m1_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m01_rlast            : out std_logic;
+      m01_rvalid           : buffer std_logic;
+      m01_rready           : in std_logic;
+      m01_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- aw channel
-      m1_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m1_awvalid          : in std_logic;
-      m1_awready          : buffer std_logic;
-      m1_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m01_awvalid          : in std_logic;
+      m01_awready          : buffer std_logic;
+      m01_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- w channel
-      m1_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m1_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
-      m1_wlast            : in std_logic;
-      m1_wvalid           : in std_logic;
-      m1_wready           : buffer std_logic;
+      m01_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m01_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m01_wlast            : in std_logic;
+      m01_wvalid           : in std_logic;
+      m01_wready           : buffer std_logic;
       -- b channel
-      m1_bvalid           : out std_logic;
-      m1_bready           : in std_logic;
-      m1_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m01_bvalid           : out std_logic;
+      m01_bready           : in std_logic;
+      m01_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- }}}
       -- interface 2 {{{
       -- ar channel
-      m2_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m2_arvalid          : in std_logic;
-      m2_arready          : buffer std_logic;
-      m2_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m02_arvalid          : in std_logic;
+      m02_arready          : buffer std_logic;
+      m02_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- r channel
-      m2_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m2_rlast            : out std_logic;
-      m2_rvalid           : buffer std_logic;
-      m2_rready           : in std_logic;
-      m2_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m02_rlast            : out std_logic;
+      m02_rvalid           : buffer std_logic;
+      m02_rready           : in std_logic;
+      m02_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- aw channel
-      m2_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m2_awvalid          : in std_logic;
-      m2_awready          : buffer std_logic;
-      m2_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m02_awvalid          : in std_logic;
+      m02_awready          : buffer std_logic;
+      m02_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- w channel
-      m2_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m2_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
-      m2_wlast            : in std_logic;
-      m2_wvalid           : in std_logic;
-      m2_wready           : buffer std_logic;
+      m02_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m02_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m02_wlast            : in std_logic;
+      m02_wvalid           : in std_logic;
+      m02_wready           : buffer std_logic;
       -- b channel
-      m2_bvalid           : out std_logic;
-      m2_bready           : in std_logic;
-      m2_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m02_bvalid           : out std_logic;
+      m02_bready           : in std_logic;
+      m02_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- }}}
       -- interface 3 {{{
       -- ar channel
-      m3_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m3_arvalid          : in std_logic;
-      m3_arready          : buffer std_logic;
-      m3_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m03_arvalid          : in std_logic;
+      m03_arready          : buffer std_logic;
+      m03_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- r channel
-      m3_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m3_rlast            : out std_logic;
-      m3_rvalid           : buffer std_logic;
-      m3_rready           : in std_logic;
-      m3_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m03_rlast            : out std_logic;
+      m03_rvalid           : buffer std_logic;
+      m03_rready           : in std_logic;
+      m03_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- aw channel
-      m3_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
-      m3_awvalid          : in std_logic;
-      m3_awready          : buffer std_logic;
-      m3_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m03_awvalid          : in std_logic;
+      m03_awready          : buffer std_logic;
+      m03_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
       -- w channel
-      m3_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
-      m3_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
-      m3_wlast            : in std_logic;
-      m3_wvalid           : in std_logic;
-      m3_wready           : buffer std_logic;
+      m03_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m03_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m03_wlast            : in std_logic;
+      m03_wvalid           : in std_logic;
+      m03_wready           : buffer std_logic;
       -- b channel
-      m3_bvalid           : out std_logic;
-      m3_bready           : in std_logic;
-      m3_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      m03_bvalid           : out std_logic;
+      m03_bready           : in std_logic;
+      m03_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
       -- }}}
+      -- interface 4 {{{
+      -- ar channel
+      m04_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m04_arvalid          : in std_logic;
+      m04_arready          : buffer std_logic;
+      m04_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m04_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m04_rlast            : out std_logic;
+      m04_rvalid           : buffer std_logic;
+      m04_rready           : in std_logic;
+      m04_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m04_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m04_awvalid          : in std_logic;
+      m04_awready          : buffer std_logic;
+      m04_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m04_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m04_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m04_wlast            : in std_logic;
+      m04_wvalid           : in std_logic;
+      m04_wready           : buffer std_logic;
+      -- b channel
+      m04_bvalid           : out std_logic;
+      m04_bready           : in std_logic;
+      m04_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}
+      -- interface 5 {{{
+      -- ar channel
+      m05_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m05_arvalid          : in std_logic;
+      m05_arready          : buffer std_logic;
+      m05_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m05_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m05_rlast            : out std_logic;
+      m05_rvalid           : buffer std_logic;
+      m05_rready           : in std_logic;
+      m05_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m05_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m05_awvalid          : in std_logic;
+      m05_awready          : buffer std_logic;
+      m05_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m05_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m05_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m05_wlast            : in std_logic;
+      m05_wvalid           : in std_logic;
+      m05_wready           : buffer std_logic;
+      -- b channel
+      m05_bvalid           : out std_logic;
+      m05_bready           : in std_logic;
+      m05_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}
+      -- interface 6 {{{
+      -- ar channel
+      m06_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m06_arvalid          : in std_logic;
+      m06_arready          : buffer std_logic;
+      m06_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m06_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m06_rlast            : out std_logic;
+      m06_rvalid           : buffer std_logic;
+      m06_rready           : in std_logic;
+      m06_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m06_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m06_awvalid          : in std_logic;
+      m06_awready          : buffer std_logic;
+      m06_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m06_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m06_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m06_wlast            : in std_logic;
+      m06_wvalid           : in std_logic;
+      m06_wready           : buffer std_logic;
+      -- b channel
+      m06_bvalid           : out std_logic;
+      m06_bready           : in std_logic;
+      m06_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}
+      -- interface 7 {{{
+      -- ar channel
+      m07_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m07_arvalid          : in std_logic;
+      m07_arready          : buffer std_logic;
+      m07_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m07_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m07_rlast            : out std_logic;
+      m07_rvalid           : buffer std_logic;
+      m07_rready           : in std_logic;
+      m07_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m07_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m07_awvalid          : in std_logic;
+      m07_awready          : buffer std_logic;
+      m07_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m07_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m07_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m07_wlast            : in std_logic;
+      m07_wvalid           : in std_logic;
+      m07_wready           : buffer std_logic;
+      -- b channel
+      m07_bvalid           : out std_logic;
+      m07_bready           : in std_logic;
+      m07_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}      
+      -- interface 8 {{{
+      -- ar channel
+      m08_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m08_arvalid          : in std_logic;
+      m08_arready          : buffer std_logic;
+      m08_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m08_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m08_rlast            : out std_logic;
+      m08_rvalid           : buffer std_logic;
+      m08_rready           : in std_logic;
+      m08_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m08_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m08_awvalid          : in std_logic;
+      m08_awready          : buffer std_logic;
+      m08_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m08_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m08_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m08_wlast            : in std_logic;
+      m08_wvalid           : in std_logic;
+      m08_wready           : buffer std_logic;
+      -- b channel
+      m08_bvalid           : out std_logic;
+      m08_bready           : in std_logic;
+      m08_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}} 
+      -- interface 9 {{{
+      -- ar channel
+      m09_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m09_arvalid          : in std_logic;
+      m09_arready          : buffer std_logic;
+      m09_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m09_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m09_rlast            : out std_logic;
+      m09_rvalid           : buffer std_logic;
+      m09_rready           : in std_logic;
+      m09_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m09_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m09_awvalid          : in std_logic;
+      m09_awready          : buffer std_logic;
+      m09_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m09_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m09_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m09_wlast            : in std_logic;
+      m09_wvalid           : in std_logic;
+      m09_wready           : buffer std_logic;
+      -- b channel
+      m09_bvalid           : out std_logic;
+      m09_bready           : in std_logic;
+      m09_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}} 
+      -- interface 10 {{{
+      -- ar channel
+      m10_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m10_arvalid          : in std_logic;
+      m10_arready          : buffer std_logic;
+      m10_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m10_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m10_rlast            : out std_logic;
+      m10_rvalid           : buffer std_logic;
+      m10_rready           : in std_logic;
+      m10_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m10_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m10_awvalid          : in std_logic;
+      m10_awready          : buffer std_logic;
+      m10_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m10_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m10_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m10_wlast            : in std_logic;
+      m10_wvalid           : in std_logic;
+      m10_wready           : buffer std_logic;
+      -- b channel
+      m10_bvalid           : out std_logic;
+      m10_bready           : in std_logic;
+      m10_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}    
+      -- interface 11 {{{
+      -- ar channel
+      m11_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m11_arvalid          : in std_logic;
+      m11_arready          : buffer std_logic;
+      m11_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m11_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m11_rlast            : out std_logic;
+      m11_rvalid           : buffer std_logic;
+      m11_rready           : in std_logic;
+      m11_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m11_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m11_awvalid          : in std_logic;
+      m11_awready          : buffer std_logic;
+      m11_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m11_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m11_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m11_wlast            : in std_logic;
+      m11_wvalid           : in std_logic;
+      m11_wready           : buffer std_logic;
+      -- b channel
+      m11_bvalid           : out std_logic;
+      m11_bready           : in std_logic;
+      m11_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}  
+      -- interface 12 {{{
+      -- ar channel
+      m12_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m12_arvalid          : in std_logic;
+      m12_arready          : buffer std_logic;
+      m12_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m12_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m12_rlast            : out std_logic;
+      m12_rvalid           : buffer std_logic;
+      m12_rready           : in std_logic;
+      m12_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m12_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m12_awvalid          : in std_logic;
+      m12_awready          : buffer std_logic;
+      m12_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m12_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m12_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m12_wlast            : in std_logic;
+      m12_wvalid           : in std_logic;
+      m12_wready           : buffer std_logic;
+      -- b channel
+      m12_bvalid           : out std_logic;
+      m12_bready           : in std_logic;
+      m12_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}  
+      -- interface 13 {{{
+      -- ar channel
+      m13_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m13_arvalid          : in std_logic;
+      m13_arready          : buffer std_logic;
+      m13_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m13_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m13_rlast            : out std_logic;
+      m13_rvalid           : buffer std_logic;
+      m13_rready           : in std_logic;
+      m13_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m13_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m13_awvalid          : in std_logic;
+      m13_awready          : buffer std_logic;
+      m13_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m13_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m13_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m13_wlast            : in std_logic;
+      m13_wvalid           : in std_logic;
+      m13_wready           : buffer std_logic;
+      -- b channel
+      m13_bvalid           : out std_logic;
+      m13_bready           : in std_logic;
+      m13_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}  
+      -- interface 14 {{{
+      -- ar channel
+      m14_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m14_arvalid          : in std_logic;
+      m14_arready          : buffer std_logic;
+      m14_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m14_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m14_rlast            : out std_logic;
+      m14_rvalid           : buffer std_logic;
+      m14_rready           : in std_logic;
+      m14_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m14_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m14_awvalid          : in std_logic;
+      m14_awready          : buffer std_logic;
+      m14_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m14_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m14_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m14_wlast            : in std_logic;
+      m14_wvalid           : in std_logic;
+      m14_wready           : buffer std_logic;
+      -- b channel
+      m14_bvalid           : out std_logic;
+      m14_bready           : in std_logic;
+      m14_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}  
+      -- interface 15 {{{
+      -- ar channel
+      m15_araddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m15_arvalid          : in std_logic;
+      m15_arready          : buffer std_logic;
+      m15_arid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- r channel
+      m15_rdata            : out std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m15_rlast            : out std_logic;
+      m15_rvalid           : buffer std_logic;
+      m15_rready           : in std_logic;
+      m15_rid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- aw channel
+      m15_awaddr           : in std_logic_vector(GMEM_ADDR_W-1 downto 0);
+      m15_awvalid          : in std_logic;
+      m15_awready          : buffer std_logic;
+      m15_awid             : in std_logic_vector(ID_WIDTH-1 downto 0);
+      -- w channel
+      m15_wdata            : in std_logic_vector(GMEM_DATA_W-1 downto 0);
+      m15_wstrb            : in std_logic_vector(GMEM_DATA_W/8-1 downto 0);
+      m15_wlast            : in std_logic;
+      m15_wvalid           : in std_logic;
+      m15_wready           : buffer std_logic;
+      -- b channel
+      m15_bvalid           : out std_logic;
+      m15_bready           : in std_logic;
+      m15_bid              : out std_logic_vector(ID_WIDTH-1 downto 0);
+      -- }}}  
       clk, nrst           : in  std_logic
     );
   end component;

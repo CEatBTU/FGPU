@@ -70,7 +70,10 @@ set path_modelsim "/opt/pkg/modelsim-2020.1/modeltech/linux_x86_64"
 set num_threads 4
 
 # Set the target board
-set target_board "ZC706"
+#set target_board "ZC706"
+set target_board "u55c"
+#set target_board "u250"
+#set target_board "Ultra96"
 #set target_board "ZedBoard"
 # The target frequency (in MHz) for implementation
 set FREQ        100

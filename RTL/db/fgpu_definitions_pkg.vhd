@@ -9,7 +9,7 @@ package definitions is
   -- Begin of Configurable FGPU Parameters ----------------------------------------------------------------{{{
 
   -------- CU
-  constant N_CU_W                         : natural range 0 to 3 := 0; -- Range: [0,3]
+  constant N_CU_W                         : natural range 0 to 3 := 1; -- Range: [0,3]
     -- Bitwidth of # of CUs
   constant INSTR_READ_SLICE               : boolean := true;
     -- If true, insert a barrier of registers between WF Scheduler and CV
@@ -65,7 +65,7 @@ package definitions is
 
 
   -------- AXI
-  constant N_AXI_W                        : natural range 0 to 2 := 0; -- Range: [0,2]
+  constant N_AXI_W                        : natural range 0 to 4 := 1; -- Range: [0,4]
     -- Bitwidth of # of AXI data ports.
   constant BURST_WORDS_W                  : natural range 4 to 6 := 5;
     -- Bitwidth # of words within a single AXI burst (only 5 is tested intensively, 4 & 6 should work but needs testing)
@@ -93,7 +93,7 @@ package definitions is
 
 
   -------- Floating-point hardware support
-  constant FLOAT_IMPLEMENT                : natural := 1;
+  constant FLOAT_IMPLEMENT                : natural := 0;
     -- Implement floating-point hardware
   constant FADD_IMPLEMENT                 : integer := 1;
     -- Implement floating add

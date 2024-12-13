@@ -246,8 +246,8 @@ begin
           wr_fifo_set_araddr(i) <= '0';
           wr_fifo_rqst_addr_i(i) <= (others => '0');
 
-          --wr_fifo_push(i)   <= '0'; -- NOT NEEDED
-          --wr_fifo_free_i(i) <= '0'; -- NOT NEEDED
+          wr_fifo_push(i)   <= '0'; -- NOT NEEDED
+          wr_fifo_free_i(i) <= '0'; -- NOT NEEDED
         else
           st_wr_fifo(i) <= st_wr_fifo_n(i);
           wr_fifo_set_araddr(i) <= wr_fifo_set_araddr_n(i);
@@ -376,11 +376,11 @@ begin
         axi_araddr_i <= (others => (others => '0'));
         st_ar <= (others => idle);
 
-        --axi_set_araddr_ack <= (others => '0'); -- NOT NEEDED
-        --cache_dob_d0       <= (others => '0'); -- NOT NEEDED
-        --axi_arid_i         <= (others => (others => '0')); -- NOT NEEDED
-        --rd_fifo_din_v_d0   <= (others => '0'); -- NOT NEEDED
-        --fifo_be_din_d0     <= (others => '0'); -- NOT NEEDED
+        axi_set_araddr_ack <= (others => '0'); -- NOT NEEDED
+        cache_dob_d0       <= (others => '0'); -- NOT NEEDED
+        axi_arid_i         <= (others => (others => '0')); -- NOT NEEDED
+        rd_fifo_din_v_d0   <= (others => '0'); -- NOT NEEDED
+        fifo_be_din_d0     <= (others => '0'); -- NOT NEEDED
       else
         -- read signals
         axi_arvalid_i <= axi_arvalid_n;
@@ -438,10 +438,10 @@ begin
     begin
       if rising_edge(clk) then
         if nrst = '0' then
-          --axi_wdata(i)    <= (others => '0'); -- NOT NEEDED
-          --axi_wstrb(i)    <= (others => '0'); -- NOT NEEDED
-          --axi_wvalid_i(i) <= '0'; -- NOT NEEDED
-          --axi_wlast(i)    <= '0'; -- NOT NEEDED
+          axi_wdata(i)    <= (others => '0'); -- NOT NEEDED
+          axi_wstrb(i)    <= (others => '0'); -- NOT NEEDED
+          axi_wvalid_i(i) <= '0'; -- NOT NEEDED
+          axi_wlast(i)    <= '0'; -- NOT NEEDED
         else
           if axi_written(i) = '1' or rd_fifo_slice_filled(i) = '0' then
             axi_wdata(i) <= rd_fifo(i)(to_integer(rd_fifo_rdAddr(i)));
@@ -484,9 +484,9 @@ begin
           axi_wlast_p0(i) <= '0';
           rd_fifo_slice_filled(i) <= '0';
 
-          --rd_fifo_rqst_addr_i(i) <= (others => '0'); -- NOT NEEDED
-          --axi_writer_free(i)     <= '0'; -- NOT NEEDED
-          --rd_fifo_nempty(i)      <= '0'; -- NOT NEEDED
+          rd_fifo_rqst_addr_i(i) <= (others => '0'); -- NOT NEEDED
+          axi_writer_free(i)     <= '0'; -- NOT NEEDED
+          rd_fifo_nempty(i)      <= '0'; -- NOT NEEDED
           --axi_writer_ack(i)      <= '0'; -- NOT NEEDED
         else
           rd_fifo_rqst_addr_i(i) <= rd_fifo_rqst_addr_n(i);
@@ -614,7 +614,7 @@ begin
           awaddr_fifo_full(i) <= '0';
           awaddr_fifo_nempty(i) <= '0';
 
-          --axi_rdata_wr_fifo(i) <= (others => '0'); -- NOT NEEDED
+          axi_rdata_wr_fifo(i) <= (others => '0'); -- NOT NEEDED
         else
           for i in 0 to N_WR_FIFOS-1 loop
             axi_rdata_wr_fifo(i) <= axi_rdata(c_wr_fifo_axi_indx(i));

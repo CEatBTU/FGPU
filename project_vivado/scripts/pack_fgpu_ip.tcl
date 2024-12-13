@@ -34,7 +34,6 @@ ipx::unload_core ${path_fgpu_ip}/component.xml
 #set a temporary project for the IP packing and pack automatically
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory ${path_fgpu_ip} ${path_fgpu_ip}/component.xml
 
-#make number of master_axi interfaces customizable
 update_compile_order -fileset sources_1
 ipx::add_user_parameter num_master_intf [ipx::current_core]
 set_property value_resolve_type user [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
@@ -45,10 +44,22 @@ set_property layout {vertical} [ipgui::get_guiparamspec -name "num_master_intf" 
 set_property value 4 [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
 set_property value_format long [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
 set_property value_validation_type list [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
-set_property value_validation_list {1 2 4} [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
-set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) > 2} [ipx::get_bus_interfaces m1 -of_objects [ipx::current_core]]
-set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 4} [ipx::get_bus_interfaces m2 -of_objects [ipx::current_core]]
-set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 4} [ipx::get_bus_interfaces m3 -of_objects [ipx::current_core]]
+set_property value_validation_list {1 2 4 8 16} [ipx::get_user_parameters num_master_intf -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 2} [ipx::get_bus_interfaces m01 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 4} [ipx::get_bus_interfaces m02 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 4} [ipx::get_bus_interfaces m03 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 8} [ipx::get_bus_interfaces m04 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 8} [ipx::get_bus_interfaces m05 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 8} [ipx::get_bus_interfaces m06 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) >= 8} [ipx::get_bus_interfaces m07 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m08 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m09 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m10 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m11 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m12 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m13 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m14 -of_objects [ipx::current_core]]
+set_property enablement_dependency {spirit:decode(id('PARAM_VALUE.num_master_intf')) = 16} [ipx::get_bus_interfaces m15 -of_objects [ipx::current_core]]
 
 #set the revision and be ready to pack
 set_property NAME ${FGPU_IP_NAME} [ipx::current_core]
@@ -57,6 +68,8 @@ set_property VERSION ${FGPU_IP_VERSION} [ipx::current_core]
 set_property DESCRIPTION ${FGPU_IP_DESCRIPTION} [ipx::current_core]
 ipx::create_xgui_files [ipx::current_core]
 ipx::update_checksums [ipx::current_core]
+
+set_property supported_families {virtexuplus Beta virtexuplusHBM Beta} [ipx::current_core]
 
 #pack the IP
 ipx::save_core [ipx::current_core]
