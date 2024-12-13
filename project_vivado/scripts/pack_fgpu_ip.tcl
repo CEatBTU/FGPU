@@ -69,7 +69,7 @@ set_property DESCRIPTION ${FGPU_IP_DESCRIPTION} [ipx::current_core]
 ipx::create_xgui_files [ipx::current_core]
 ipx::update_checksums [ipx::current_core]
 
-set_property supported_families {virtexuplus Beta virtexuplusHBM Beta} [ipx::current_core]
+#set_property supported_families {virtexuplus Beta virtexuplusHBM Beta} [ipx::current_core]
 
 #pack the IP
 ipx::save_core [ipx::current_core]
